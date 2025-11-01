@@ -1,0 +1,92 @@
+programa ejemplo
+procesos
+  proceso juntarPapeles(ES papeles:numero)
+  comenzar
+    mientras HayPapelEnLaEsquina
+      tomarPapel
+      papeles := papeles + 1
+  fin
+  
+  proceso juntarFlores(ES flores: numero)
+  comenzar
+    mientras HayFlorEnLaEsquina
+      tomarFlor
+      flores := flores + 1
+  fin
+  
+  proceso recorridoA(ES papeles:numero)
+  comenzar
+    repetir 9
+      juntarPapeles(papeles)
+      mover
+    juntarPapeles(papeles)
+  fin
+  
+  proceso recorridoB(ES flores:numero)
+  comenzar
+    repetir 9
+      juntarFlores(flores)
+      mover
+    juntarFlores(flores)
+  fin
+  
+  
+areas
+  ciudad: AreaC (1,1,100,100)
+  
+robots
+  robot tipoA1
+  variables
+    papeles: numero
+  comenzar
+    papeles := 0
+    derecha
+    recorridoA(papeles)
+    EnviarMensaje(papeles,robotA2)
+  fin
+
+  robot tipoA2
+  variables
+    papeles: numero
+  comenzar
+    RecibirMensaje(papeles,robotA1)
+    derecha
+    recorridoA(papeles)  
+    Informar(papeles)
+  fin
+
+  robot tipoB1
+  variables 
+    flores:numero
+  comenzar
+    flores := 0
+    derecha
+    recorridoB(flores)
+    EnviarMensaje(flores,robotB2)
+  fin
+  
+  robot tipoB2
+  variables 
+    flores:numero
+  comenzar
+    RecibirMensaje(flores,robotB1)
+    derecha
+    recorridoB(flores)
+    Informar(flores)
+  fin
+variables
+  robotA1: tipoA1
+  robotA2:tipoA2
+  robotB1:tipoB1
+  robotB2:tipoB2
+  
+comenzar
+  AsignarArea(robotA1, ciudad)
+  AsignarArea(robotA2, ciudad)
+  AsignarArea(robotB1, ciudad)
+  AsignarArea(robotB2, ciudad)
+  Iniciar(robotA1, 1,1)
+  Iniciar(robotA2, 11,1)
+  Iniciar(robotB1, 1,5)
+  Iniciar(robotB2, 11,5)
+fin
