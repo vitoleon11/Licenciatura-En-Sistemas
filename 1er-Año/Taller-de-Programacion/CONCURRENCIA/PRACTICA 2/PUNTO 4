@@ -1,0 +1,50 @@
+programa ejemplo
+
+procesos
+  proceso limpiarEsquina
+  comenzar
+    mientras HayFlorEnLaEsquina
+      tomarFlor
+    mientras HayPapelEnLaEsquina
+      tomarPapel
+  fin
+areas
+  ciudad: AreaC(25,25,75,75)
+  areaFisca: AreaP(1,1,1,1)
+
+robots
+  robot robot1
+  variables
+    ingresar: boolean
+  comenzar
+    RecibirMensaje(fisca, ingresar)
+  fin
+
+  robot fisca
+  variables
+    ingresar: boolean
+  comenzar
+    ingresar := V
+    EnviarMensaje(*, ingresar)
+  fin
+
+variables
+  robot1: robot1
+  robot2: robot1
+  robot3: robot1
+  robot4: robot1
+  fiscalizador: fisca
+
+comenzar
+  AsignarArea(robot1, ciudad)
+  AsignarArea(robot2, ciudad)
+  AsignarArea(robot3, ciudad)
+  AsignarArea(robot4, ciudad)
+  AsignarArea(fiscalizador, areaFisca)
+
+  Iniciar(fiscalizador, 1,1)
+  Iniciar(robot1, 25,1)
+  Iniciar(robot2, 30,1)
+  Iniciar(robot3, 35,1)
+  Iniciar(robot4, 40,1)
+fin
