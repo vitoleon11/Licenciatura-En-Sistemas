@@ -1,0 +1,92 @@
+programa punto4
+procesos
+  proceso juntarFlor(ES noHayFlor:boolean)
+  comenzar
+    si HayFlorEnLaEsquina
+      tomarFlor
+    sino
+      noHayFlor := V
+  fin
+  
+areas 
+  area1: AreaP(9,9,9,9)
+  area2: AreaP(9,10,9,10)
+  area3: AreaP(9,11,9,11)
+  area4: AreaP(9,12,9,12)
+  areaFlores: AreaPC(10,10,10,10)
+  area11: AreaC(11,11,11,11)
+  areaCoordi: AreaP(1,1,1,1)
+  
+robots
+  robot tipo1
+  variables
+    avInicial,caInicial,id:numero
+    noHayFlor:boolean
+  comenzar
+    avInicial := PosAv
+    caInicial := PosCa
+    noHayFlor := F
+    RecibirMensaje(id,coordinador)
+    mientras (noHayFlor = F)
+      BloquearEsquina(10,10)
+      Pos(10,10)
+      juntarFlor(noHayFlor)
+      BloquearEsquina(11,11)
+      Pos(11,11)
+      LiberarEsquina(10,10)
+      si HayFlorEnLaEsquina
+        depositarFlor
+      Pos(avInicial,caInicial)
+      LiberarEsquina(11,11)
+    EnviarMensaje(id,coordinador)
+  fin
+  
+  
+  robot tipoCoordi
+  variables
+    id:numero
+  comenzar
+    EnviarMensaje(1,robot1)
+    EnviarMensaje(2,robot2)
+    EnviarMensaje(3,robot3)
+    EnviarMensaje(4,robot4)
+    RecibirMensaje(id,*)
+    RecibirMensaje(id,*)
+    RecibirMensaje(id,*)
+    RecibirMensaje(id,*)
+    Informar(id)
+    Pos(11,11)
+    mientras HayFlorEnLaEsquina
+      tomarFlor
+  fin
+  
+variables
+  robot1: tipo1
+  robot2: tipo1
+  robot3: tipo1
+  robot4: tipo1
+  coordinador: tipoCoordi
+comenzar
+  AsignarArea(robot1,area1)
+  AsignarArea(robot2,area2)
+  AsignarArea(robot3,area3)
+  AsignarArea(robot4,area4)
+  AsignarArea(coordinador,areaCoordi)
+  
+  AsignarArea(robot1,area11)
+  AsignarArea(robot2,area11)
+  AsignarArea(robot3,area11)
+  AsignarArea(robot4,area11)
+  AsignarArea(coordinador,area11)
+  
+  AsignarArea(robot1,areaFlores)
+  AsignarArea(robot2,areaFlores)
+  AsignarArea(robot3,areaFlores)
+  AsignarArea(robot4,areaFlores)
+  
+  Iniciar(robot1,9,9)
+  Iniciar(robot2,9,10)
+  Iniciar(robot3,9,11)
+  Iniciar(robot4,9,12)
+  Iniciar(coordinador,1,1)
+fin
