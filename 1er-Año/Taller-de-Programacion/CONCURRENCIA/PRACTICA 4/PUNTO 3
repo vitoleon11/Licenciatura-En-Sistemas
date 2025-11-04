@@ -1,0 +1,65 @@
+  ////INCISO A\\\\
+programa punto3
+
+procesos
+  proceso hacerEtapa
+  comenzar
+    repetir 5
+      mientras HayPapelEnLaEsquina
+        tomarPapel
+      mover
+  fin
+  
+areas
+  ciudad: AreaC(1,1,100,100)
+
+robots
+  robot limpiador
+  variables
+    termine : boolean
+  comenzar
+    mientras (PosCa < 96)
+      hacerEtapa
+      EnviarMensaje(V,r1)
+      EnviarMensaje(V,r2)
+      EnviarMensaje(V,r3)
+      RecibirMensaje(termine,*)
+      RecibirMensaje(termine,*)
+      RecibirMensaje(termine,*)
+    repetir 4
+      mover
+      mientras HayPapelEnLaEsquina
+        tomarPapel
+    EnviarMensaje(V,r1)
+    EnviarMensaje(V,r2)
+    EnviarMensaje(V,r3)
+    RecibirMensaje(termine,*)
+    RecibirMensaje(termine,*)
+    RecibirMensaje(termine,*)
+  fin
+
+  robot coordinador
+  comenzar
+    derecha
+  fin
+variables
+  r1: limpiador
+  r2: limpiador
+  r3: limpiador
+  coordi:coordinador
+
+comenzar
+  AsignarArea(r1,ciudad)
+  AsignarArea(r2,ciudad)
+  AsignarArea(r3,ciudad)
+  AsignarArea(coordi,ciudad)
+  
+  Iniciar(r1,1,1)
+  Iniciar(r2,2,1)
+  Iniciar(r3,3,1)
+  Iniciar(coordi,6,1)
+fin
+
+
+////INCISO B\\\\
+
