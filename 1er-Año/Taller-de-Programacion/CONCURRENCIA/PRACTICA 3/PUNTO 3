@@ -25,6 +25,7 @@ robots
     noHayFlores:boolean
     av,ca,avActual,caActual,cantFlores:numero
   comenzar
+    RecibirMensaje(id,robotJefe)
     cantFlores := 0
     RecibirMensaje(av,robotJefe)
     RecibirMensaje(ca,robotJefe)
@@ -35,6 +36,7 @@ robots
       juntarFlor(noHayFlores,av,ca,cantFlores)
       Pos(avActual,caActual)
       LiberarEsquina(av,ca)
+    EnviarMensaje(id,robotJefe)
     EnviarMensaje(cantFlores,robotJefe)
   fin
   
@@ -45,6 +47,10 @@ robots
     max := -1
     Random(av,2,10)
     Random(ca,2,10)
+    EnviarMensaje(1,robot1)
+    EnviarMensaje(2,robot2)
+    EnviarMensaje(3,robot3)
+    EnviarMensaje(4,robot4)
     EnviarMensaje(av,robot1)
     EnviarMensaje(ca,robot1)
     EnviarMensaje(av,robot2)
@@ -53,26 +59,22 @@ robots
     EnviarMensaje(ca,robot3)
     EnviarMensaje(av,robot4)
     EnviarMensaje(ca,robot4)
-    RecibirMensaje(f1,robot1)
-    RecibirMensaje(f2,robot2)
-    RecibirMensaje(f3,robot3)
-    RecibirMensaje(f4,robot4)
-    si (f1 > max)
-      max := f1
-    si (f2 > max)
-      max := f2 
-    si (f3 > max)
-      max := f3
-    si (f4 > max)
-      max := f4
-    si (f1 = max)
-      Informar(1)
-    si (f2 = max)
-      Informar(2)
-    si (f3 = max)
-      Informar(3)
-    si (f4 = max)
-      Informar(4)
+    repetir 4
+      RecibirMensaje(id,*)
+      si (id = 1)
+        RecibirMensaje(cantFlores,robot1)
+      sino
+          si (id = 2)
+              RecibirMensaje(cantFlores,robot2)
+          sino
+              si(id = 3)
+                  RecibirMensaje(cantFlores,robot3)
+              sino
+                  RecibirMensaje(cantFlores,robot4)
+        si (cantFlores > max)
+          max := cantFlores
+          robotMax := id
+  Infomar(robotMax)
   fin
 variables
   robot1 : tipo1
