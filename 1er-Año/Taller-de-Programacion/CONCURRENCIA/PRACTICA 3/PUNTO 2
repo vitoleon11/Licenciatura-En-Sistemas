@@ -1,1 +1,170 @@
-gorko
+programa carrera
+procesos
+  proceso izquierda
+  comenzar
+    repetir 3
+      derecha
+  fin
+
+  proceso juntarFlores(ES flores: numero)
+  comenzar
+    flores:= 0
+    mientras HayFlorEnLaEsquina
+      tomarFlor
+      flores := flores + 1
+  fin
+  
+  proceso juntarPapeles(ES papeles:numero)
+  comenzar
+    papeles := 0
+    mientras HayPapelEnLaEsquina
+      tomarPapel
+      papeles := papeles + 1
+  fin
+  
+  proceso escaleraFlores(ES floresTotales:numero)
+  variables
+    escalon,f:numero
+  comenzar
+    escalon := 5
+    repetir 4
+      repetir escalon
+        mover
+      juntarFlores(f)
+      floresTotales := floresTotales + f
+      derecha
+      repetir escalon
+        mover
+      juntarFlores(f)
+      floresTotales := floresTotales + f
+      izquierda
+      escalon := escalon -1
+    mover
+    derecha
+  fin
+  
+  proceso escaleraFloresInvertida(ES floresTotales:numero)
+  variables
+    escalon,f : numero
+  comenzar
+    escalon := 2
+    repetir 4
+      repetir escalon
+        mover
+      juntarFlores(f)
+      floresTotales := floresTotales + f
+      derecha
+      repetir escalon 
+        mover
+      juntarFlores(f)
+      floresTotales := floresTotales + f 
+      izquierda
+      escalon := escalon + 1
+  fin
+  
+  proceso escaleraPapeles(ES papelesTotales:numero)
+  variables
+    escalon,p:numero
+  comenzar
+    escalon := 5
+    repetir 4
+      repetir escalon
+        mover
+      juntarPapeles(p)
+      papelesTotales:= papelesTotales + p
+      izquierda
+      repetir escalon
+        mover
+      juntarPapeles(p)
+      papelesTotales:= papelesTotales + p
+      derecha
+      escalon := escalon -1 
+    mover
+    izquierda
+  fin
+    
+  proceso escaleraPapelesInvertida(ES papelesTotales:numero)
+  variables
+    escalon,p : numero
+  comenzar
+    escalon :=  2
+    repetir 4
+      repetir escalon 
+        mover
+      juntarPapeles(p)
+      papelesTotales:= papelesTotales + p
+      izquierda
+      repetir escalon 
+        mover
+      juntarPapeles(p)
+      papelesTotales:= papelesTotales + p
+      derecha
+      escalon := escalon + 1
+  fin
+areas
+  ciudad: AreaC(1,1,100,100)
+  
+robots
+  robot tipoFlor
+  variables
+    floresTotales,f,quienSoy: numero
+  comenzar
+    RecibirMensaje(quienSoy,robotJefe)
+    floresTotales := 0
+    escaleraFlores(floresTotales)
+    BloquearEsquina(16,16)
+    mover
+    juntarFlores(f)
+    floresTotales := floresTotales + f
+    repetir 2
+      izquierda
+    mover
+    LiberarEsquina(16,16)
+    escaleraFloresInvertida(floresTotales)
+    Informar(floresTotales)
+    EnviarMensaje(quienSoy,robotJefe)
+  fin
+
+
+  robot tipoPapel
+  variables
+    papelesTotales,p,quienSoy:numero
+  comenzar
+    RecibirMensaje(quienSoy,robotJefe)
+    papelesTotales := 0
+    escaleraPapeles(papelesTotales)
+    BloquearEsquina(16,16)
+    mover
+    juntarPapeles(p)
+    papelesTotales:= papelesTotales + p
+    repetir 2
+      derecha
+    mover
+    LiberarEsquina(16,16)
+    escaleraPapelesInvertida(papelesTotales)
+    Informar(papelesTotales)
+    EnviarMensaje(quienSoy,robotJefe)
+  fin
+
+
+  robot tipoJefe
+  variables
+    ganador:numero
+  comenzar
+    EnviarMensaje(1,robotFlores)
+    EnviarMensaje(2,robotPapeles)
+    RecibirMensaje(ganador,*)
+    Informar(ganador)
+  fin
+variables
+  robotFlores : tipoFlor
+  robotPapeles: tipoPapel
+  robotJefe: tipoJefe
+comenzar
+  AsignarArea(robotFlores,ciudad)
+  AsignarArea(robotPapeles,ciudad)
+  AsignarArea(robotJefe,ciudad)
+  Iniciar(robotJefe,15,1)
+  Iniciar(robotFlores,1,1)
+  Iniciar(robotPapeles,31,1)
+fin
