@@ -1,0 +1,55 @@
+programa punto2
+procesos
+  proceso dejarPapeles(E avActual:numero;E caActual:numero)
+  comenzar
+    BloquearEsquina(50,50)
+    Pos(50,50)
+    repetir 5
+      depositarPapel
+    Pos(avActual,caActual)
+    LiberarEsquina(50,50)
+  fin
+
+areas
+  ciudad: AreaC(1,1,100,100)
+  
+robots
+  robot productor
+  variables
+    cantPapeles:numero
+  comenzar
+    mientras (PosCa < 100)
+      cantPapeles := 0
+      mientras (HayPapelEnLaEsquina & cantPapeles < 5)
+        tomarPapel
+        cantPapeles := cantPapeles + 1
+      si (cantPapeles = 5)
+        dejarPapeles(PosAv,PosCa)
+      cantPapeles:= 0
+      mientras (HayPapelEnLaEsquina & cantPapeles < 5)
+        tomarPapel
+        cantPapeles := cantPapeles + 1
+      mover
+  fin
+  
+  robot consumidor
+  comenzar
+    derecha
+  fin
+  
+variables
+  productor1: productor
+  productor2: productor
+  consumidor1:consumidor
+  consumidor2: consumidor
+comenzar
+  AsignarArea(consumidor1,ciudad)
+  AsignarArea(consumidor2,ciudad)
+  AsignarArea(productor1,ciudad)
+  AsignarArea(productor2,ciudad)
+  
+  Iniciar(consumidor1,11,1)
+  Iniciar(consumidor2,12,1)
+  Iniciar(productor1,5,1)
+  Iniciar(productor2,10,1)
+fin
