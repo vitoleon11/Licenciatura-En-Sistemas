@@ -18,23 +18,36 @@ robots
   variables
     cantPapeles:numero
   comenzar
+    cantPapeles := 0
     mientras (PosCa < 100)
-      cantPapeles := 0
-      mientras (HayPapelEnLaEsquina & cantPapeles < 5)
+      mientras (HayPapelEnLaEsquina) & (cantPapeles < 5)
         tomarPapel
         cantPapeles := cantPapeles + 1
       si (cantPapeles = 5)
         dejarPapeles(PosAv,PosCa)
-      cantPapeles:= 0
-      mientras (HayPapelEnLaEsquina & cantPapeles < 5)
-        tomarPapel
-        cantPapeles := cantPapeles + 1
-      mover
+        cantPapeles:= 0
+      sino
+        mover
   fin
   
   robot consumidor
+  variables
+    cantPapeles,papeles50,caInicial,avInicial:numero
   comenzar
-    derecha
+    avInicial := PosAv
+    caInicial := PosCa
+    repetir 8
+      Random(cantPapeles,2,5)
+      BloquearEsquina(50,50)
+      Pos(50,50)
+      mientras (HayPapelEnLaEsquina)
+        tomarPapel
+        papeles50 := papeles50 +1
+      si (papeles50 <> cantPapeles)
+        mientras HayPapelEnLaBolsa
+          depositarPapel
+      Pos(avInicial,caInicial)
+      LiberarEsquina(50,50)
   fin
   
 variables
@@ -43,13 +56,13 @@ variables
   consumidor1:consumidor
   consumidor2: consumidor
 comenzar
+  AsignarArea(productor1,ciudad)
+  AsignarArea(productor2,ciudad) 
   AsignarArea(consumidor1,ciudad)
   AsignarArea(consumidor2,ciudad)
-  AsignarArea(productor1,ciudad)
-  AsignarArea(productor2,ciudad)
   
-  Iniciar(consumidor1,11,1)
-  Iniciar(consumidor2,12,1)
   Iniciar(productor1,5,1)
   Iniciar(productor2,10,1)
+  Iniciar(consumidor1,11,1)
+  Iniciar(consumidor2,12,1)
 fin
