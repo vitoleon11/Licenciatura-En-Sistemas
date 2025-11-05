@@ -25,8 +25,8 @@ robots
       mientras (HayFlorEnLaBolsa) & (PosCa <> 100)
         depositarFlor
         mover
-      si (PosCa = 100)
-        EnviarMensaje(0,rServidor)
+    EnviarMensaje(id,rServidor)
+    EnviarMensaje(0,rServidor)
   fin
   
   
@@ -40,7 +40,7 @@ robots
     EnviarMensaje(1,cliente1)
     EnviarMensaje(2,cliente2)
     EnviarMensaje(3,cliente3)
-    mientras (termine = F)
+    mientras (terminar = F)
       RecibirMensaje(id,*)
       {RECIBE LA CANTIDAD DE FLORES DE X CLIENTE}
       si (id = 1)
@@ -52,7 +52,7 @@ robots
           RecibirMensaje(cantFlores,cliente3)
       
       {RECIBE LA AVENIDA Y CALLE DONDE IR A DEJAR LAS FLORES}
-      si (cantFlores <> 0) & (termine <> 0)
+      si (cantFlores <> 0)
         si (id = 1)
           RecibirMensaje(av,cliente1)
           RecibirMensaje(ca,cliente1)
@@ -65,12 +65,10 @@ robots
             RecibirMensaje(ca,cliente3)
        
         {VA A LA ESQUINA Y DEPOSITA LAS FLORES}
-        BloquearEsquina(av,ca)
         Pos(av,ca)
         repetir cantFlores
           depositarFlor
         Pos(100,100)
-        LiberarEsquina(av,ca)
         
         {AVISA AL CLIENTE QUE TERMINO DE DEPOSITAR LAS FLORES}
         si (id =1)
@@ -87,9 +85,6 @@ robots
         terminar := V
   fin
 
-
-
-
 variables
   cliente1: tipoCliente
   cliente2: tipoCliente
@@ -100,7 +95,6 @@ comenzar
   AsignarArea(cliente1,ciudad)
   AsignarArea(cliente2,ciudad)
   AsignarArea(cliente3,ciudad)
-  
   
   Iniciar(rServidor,100,100)
   Iniciar(cliente1,1,1)
