@@ -32,22 +32,29 @@ robots
   
   robot consumidor
   variables
-    cantPapeles,papeles50,caInicial,avInicial:numero
+    cantPapeles,papeles50,caInicial,avInicial,fallos:numero
   comenzar
     avInicial := PosAv
     caInicial := PosCa
-    repetir 8
+    fallos := 0
+    mientras (fallos < 8)
       Random(cantPapeles,2,5)
       BloquearEsquina(50,50)
       Pos(50,50)
-      mientras (HayPapelEnLaEsquina)
+      mientras (HayPapelEnLaEsquina) & (papeles50 < cantPapeles)
         tomarPapel
-        papeles50 := papeles50 +1
-      si (papeles50 <> cantPapeles)
+        papeles50 := papeles50 + 1
+      si (papeles50 = cantPapeles)
+        Pos(avInicial,caInicial)
+        LiberarEsquina(50,50)
         mientras HayPapelEnLaBolsa
           depositarPapel
-      Pos(avInicial,caInicial)
-      LiberarEsquina(50,50)
+      sino 
+        mientras HayPapelEnLaBolsa
+          depositarPapel
+        Pos(avInicial,caInicial)
+        LiberarEsquina(50,50)
+        fallos := fallos + 1
   fin
   
 variables
