@@ -1,0 +1,109 @@
+programa punto1
+areas
+  ciudad: AreaC(1,1,100,100)
+  
+robots
+  robot tipoCliente
+  variables
+    id,cantFlores,avInicial,caInicial,juntarFlores:numero
+    terminoServidor:boolean
+  comenzar
+    RecibirMensaje(id,rServidor)
+    mientras (PosCa <> 100)
+      avInicial := PosAv
+      caInicial := PosCa
+      Random(cantFlores,1,4)
+      EnviarMensaje(id,rServidor)
+      EnviarMensaje(cantFlores,rServidor)
+      EnviarMensaje(avInicial,rServidor)
+      EnviarMensaje(caInicial + 1 ,rServidor)
+      RecibirMensaje(terminoServidor,rServidor)
+      Pos(avInicial,caInicial+1)
+      mientras HayFlorEnLaEsquina 
+        tomarFlor
+      Pos(avInicial,caInicial)
+      mientras (HayFlorEnLaBolsa) & (PosCa <> 100)
+        depositarFlor
+        mover
+      si (PosCa = 100)
+        EnviarMensaje(0,rServidor)
+  fin
+  
+  
+  robot tipoServidor
+  variables 
+    id,robotsTerminados,cantFlores,av,ca:numero
+    terminar,termine:boolean
+  comenzar
+    robotsTerminados := 0
+    terminar := F
+    EnviarMensaje(1,cliente1)
+    EnviarMensaje(2,cliente2)
+    EnviarMensaje(3,cliente3)
+    mientras (termine = F)
+      RecibirMensaje(id,*)
+      {RECIBE LA CANTIDAD DE FLORES DE X CLIENTE}
+      si (id = 1)
+        RecibirMensaje(cantFlores,cliente1)
+      sino
+        si (id =2)
+          RecibirMensaje(cantFlores,cliente2)
+        sino
+          RecibirMensaje(cantFlores,cliente3)
+      
+      {RECIBE LA AVENIDA Y CALLE DONDE IR A DEJAR LAS FLORES}
+      si (cantFlores <> 0) & (termine <> 0)
+        si (id = 1)
+          RecibirMensaje(av,cliente1)
+          RecibirMensaje(ca,cliente1)
+        sino
+          si (id=2)
+            RecibirMensaje(av,cliente2)
+            RecibirMensaje(ca,cliente2)
+          sino
+            RecibirMensaje(av,cliente3)
+            RecibirMensaje(ca,cliente3)
+       
+        {VA A LA ESQUINA Y DEPOSITA LAS FLORES}
+        BloquearEsquina(av,ca)
+        Pos(av,ca)
+        repetir cantFlores
+          depositarFlor
+        Pos(100,100)
+        LiberarEsquina(av,ca)
+        
+        {AVISA AL CLIENTE QUE TERMINO DE DEPOSITAR LAS FLORES}
+        si (id =1)
+          EnviarMensaje(termine,cliente1)
+        sino
+          si (id=2)
+            EnviarMensaje(termine,cliente2)
+          sino 
+            EnviarMensaje(termine,cliente3)
+         
+      sino
+        robotsTerminados := robotsTerminados + 1
+      si (robotsTerminados = 3)
+        terminar := V
+  fin
+
+
+
+
+variables
+  cliente1: tipoCliente
+  cliente2: tipoCliente
+  cliente3: tipoCliente
+  rServidor: tipoServidor
+comenzar
+  AsignarArea(rServidor,ciudad)
+  AsignarArea(cliente1,ciudad)
+  AsignarArea(cliente2,ciudad)
+  AsignarArea(cliente3,ciudad)
+  
+  
+  Iniciar(rServidor,100,100)
+  Iniciar(cliente1,1,1)
+  Iniciar(cliente2,2,1)
+  Iniciar(cliente3,3,1)
+fin
