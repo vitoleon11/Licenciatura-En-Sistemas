@@ -49,8 +49,8 @@ C)
 .data
     F: .word 1
         .text
-        ld $s0, F($0)
         daddi $s1 , $0, 8
+        daddi $s0, $0, 8
 LOOP:   daddi $s1, $s1 , -1
         beqz $s1, fin
         dmul $s0, $s0, $s1
