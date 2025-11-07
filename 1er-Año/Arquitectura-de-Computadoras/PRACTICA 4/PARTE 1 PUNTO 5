@@ -18,3 +18,28 @@ dadd r6, r0, r5
 ddiv r6 , r5 , r2
 
 halt
+
+B)
+.data
+A: .word 5
+B: .word 4
+C: .word 0
+.code
+
+        ld $s0, A(r0)
+        ld $s1, B(r0)
+        ld $s2, C(r0)
+        beqz $s0, esCero
+        slt $t0, $s1 , $s0
+        bnez $t0, esMayor
+        dadd $s2, $zero, $s1
+        j fin
+esCero: dadd $s2 , $zero , $zero
+        j fin
+
+esMayor: daddi $t1, $zero, 2
+         dmul $s2, $t1, $s0
+         j fin
+
+fin: sd $s2, C($zero)
+halt
