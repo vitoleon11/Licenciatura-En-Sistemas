@@ -57,3 +57,20 @@ LOOP:   daddi $s1, $s1 , -1
         j LOOP
 fin:    sd $s1, F($0)
         HALT
+D)
+.data
+    L: .word 0
+    N: .word 20   
+        .text
+        ld $s0, L($0)
+        ld $s1, N($0)
+        daddi $s2, $0, 0
+        daddi $s3, $0 , 2
+LOOP:   slti $s2, $s1, 1
+        beqz $s2, seguir
+        j fin
+seguir: ddiv $s1, $s1, $s3
+        daddi $s0, $s0, 1
+        j LOOP
+fin:    sd $s0, L($0)
+        HALT
