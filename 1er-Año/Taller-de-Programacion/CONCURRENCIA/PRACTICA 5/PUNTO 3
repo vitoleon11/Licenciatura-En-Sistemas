@@ -1,0 +1,68 @@
+programa punto1
+procesos
+  proceso dejarFlores(E avActual:numero; E caActual:numero)
+  comenzar
+    BloquearEsquina(10,10)
+    Pos(10,10)
+    mientras HayFlorEnLaBolsa
+      depositarFlor
+    Pos(avActual,caActual)
+    LiberarEsquina(10,10)
+  fin
+areas
+  ciudad: AreaC(1,1,100,100)
+  
+robots
+  robot recolector
+  variables
+    esquinas,cantFlores,avActual,caActual:numero
+    termine:boolean
+  comenzar
+    derecha
+    esquinas := 1
+    cantFlores := 0
+    mientras (PosAv < 100)
+      mientras HayFlorEnLaEsquina
+        tomarFlor
+        cantFlores := cantFlores + 1
+      mover
+      esquinas := esquinas + 1
+      si ((esquinas = 15) | (cantFlores = 10))
+        cantFlores := 0
+        esquinas := 1
+        avActual:= PosAv
+        caActual := PosCa
+        dejarFlores(avActual,caActual)
+        EnviarMensaje(V,R1)
+        EnviarMensaje(V,R2)
+        RecibirMensaje(termine,R1)
+        RecibirMensaje(termine,R2)
+    EnviarMensaje(V,fisca)
+  fin
+  
+  robot fiscalizador
+  variables
+    empezar:boolean
+    cantFlores:numero
+  comenzar
+    RecibirMensaje(empezar,R1)
+    RecibirMensaje(empezar,R2)
+    Pos(10,10)
+    mientras HayFlorEnLaEsquina
+      tomarFlor
+      cantFlores := cantFlores +1
+    Informar(cantFlores)
+  fin
+variables
+  R1 : recolector
+  R2 : recolector
+  fisca: fiscalizador
+comenzar
+  AsignarArea(R1, ciudad)
+  AsignarArea(R2, ciudad)
+  AsignarArea(fisca,ciudad)
+  
+  Iniciar(R1,1,3)
+  Iniciar(R2,1,4)
+  Iniciar(fisca,1,5)
+fin
