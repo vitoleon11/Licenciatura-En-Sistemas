@@ -1,0 +1,74 @@
+programa punto1
+procesos 
+  proceso depositarFlores(E avActual:numero;E caActual:numero)
+  comenzar
+    BloquearEsquina(50,50)
+    Pos(50,50)
+    mientras HayFlorEnLaBolsa
+      depositarFlor
+    Pos(avActual,caActual)
+    LiberarEsquina(50,50)
+  fin 
+areas
+  ciudad: AreaC(1,1,100,100)
+  
+robots
+  robot recolector
+  variables
+    avActual,caActual,esquinas:numero
+    termine:boolean
+  comenzar
+    derecha
+    esquinas := 1
+    mientras (PosAv < 100)
+      mientras HayFlorEnLaEsquina
+        tomarFlor
+      mover
+      esquinas := esquinas + 1
+      si (PosAv = 100)
+        mientras HayFlorEnLaEsquina
+          tomarFlor
+      si (esquinas = 10)
+        esquinas := 1
+        avActual := PosAv
+        caActual := PosCa
+        depositarFlores(avActual,caActual)
+        EnviarMensaje(V,R1)
+        EnviarMensaje(V,R2)
+        EnviarMensaje(V,R3)
+        RecibirMensaje(termine,*)
+        RecibirMensaje(termine,*)
+        RecibirMensaje(termine,*)
+    EnviarMensaje(termine,fisca)
+  fin
+  
+  robot fiscalizador
+  variables
+    cantFlores:numero
+    termino:boolean
+  comenzar
+    RecibirMensaje(termino,*)
+    RecibirMensaje(termino,*)
+    RecibirMensaje(termino,*)
+    Pos(50,50)
+    mientras HayFlorEnLaEsquina
+      tomarFlor
+      cantFlores := cantFlores +1
+    Informar(cantFlores)
+  fin
+variables
+  R1 : recolector
+  R2 : recolector
+  R3 : recolector
+  fisca: fiscalizador
+comenzar
+  AsignarArea(R1, ciudad)
+  AsignarArea(R2, ciudad)
+  AsignarArea(R3, ciudad)
+  AsignarArea(fisca,ciudad)
+  
+  Iniciar(R1,1,1)
+  Iniciar(R2,1,2)
+  Iniciar(R3,1,3)
+  Iniciar(fisca,1,4)
+fin
