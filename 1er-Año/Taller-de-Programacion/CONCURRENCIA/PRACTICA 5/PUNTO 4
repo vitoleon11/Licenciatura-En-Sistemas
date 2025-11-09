@@ -1,0 +1,84 @@
+programa punto1
+areas
+  cuadrante: AreaPC(40,40,60,60)
+  area1: AreaP(1,1,1,1)
+  area2: AreaP(2,1,2,1)
+  area3: AreaP(3,1,3,1)
+  areaFisca: AreaP(4,1,4,1)
+robots
+  robot florero
+  variables
+    av,ca,avInicial,id,caInicial,f:numero
+  comenzar
+    avInicial := PosAv
+    caInicial := PosCa
+    RecibirMensaje(id,fisca)
+    RecibirMensaje(av,fisca)
+    RecibirMensaje(ca,fisca)
+    mientras (av <> 0)
+      BloquearEsquina(av,ca)
+      Pos(av,ca)
+      mientras HayFlorEnLaEsquina
+        tomarFlor
+        f := f + 1
+      Pos(avInicial,caInicial)
+      LiberarEsquina(av,ca)
+      RecibirMensaje(av,fisca)
+      RecibirMensaje(ca,fisca)
+    BloquearEsquina(10,10)
+    Pos(10,10)
+    mientras HayFlorEnLaBolsa
+      depositarFlor
+    Pos(avInicial,caInicial)
+    LiberarEsquina(10,10)
+    EnviarMensaje(f,fisca)
+  fin
+  
+  robot fiscalizador
+  variables
+    av,ca,id,flores1,flores2,flores3:numero
+  comenzar
+    EnviarMensaje(1,F1)
+    EnviarMensaje(2,F2)
+    EnviarMensaje(3,F3)
+    repetir 8 
+      Random(av,40,60)
+      Random(ca,40,60)
+      Random(id,1,3)
+      si (id = 1)
+        EnviarMensaje(av,F1)
+        EnviarMensaje(ca,F1)
+      sino
+        si (id = 2)
+          EnviarMensaje(av,F2)
+          EnviarMensaje(ca,F2)
+        sino
+          EnviarMensaje(av,F3)
+          EnviarMensaje(ca,F3)
+    EnviarMensaje(0,F1)
+    EnviarMensaje(0,F2)
+    EnviarMensaje(0,F3)
+    RecibirMensaje(flores1,F1)
+    RecibirMensaje(flores2,F2)
+    RecibirMensaje(flores3,F3)
+    Informar(flores1 + flores2 + flores3)
+  fin
+variables
+  F1: florero
+  F2: florero
+  F3: florero
+  fisca: fiscalizador
+comenzar
+  AsignarArea(F1, cuadrante)
+  AsignarArea(F2, cuadrante)
+  AsignarArea(F3, cuadrante)
+  AsignarArea(F1, area1)
+  AsignarArea(F2, area2)
+  AsignarArea(F3, area3)
+  AsignarArea(fisca,areaFisca)
+  
+  Iniciar(F1,1,1)
+  Iniciar(F2,2,1)
+  Iniciar(F3,3,1)
+  Iniciar(fisca,4,1)
+fin
