@@ -5,6 +5,7 @@ areas
   area2: AreaP(2,1,2,1)
   area3: AreaP(3,1,3,1)
   areaFisca: AreaP(4,1,4,1)
+  area10: AreaPC(10,10,10,10)
 robots
   robot florero
   variables
@@ -14,8 +15,8 @@ robots
     caInicial := PosCa
     RecibirMensaje(id,fisca)
     RecibirMensaje(av,fisca)
-    RecibirMensaje(ca,fisca)
     mientras (av <> 0)
+      RecibirMensaje(ca,fisca)
       BloquearEsquina(av,ca)
       Pos(av,ca)
       mientras HayFlorEnLaEsquina
@@ -24,7 +25,6 @@ robots
       Pos(avInicial,caInicial)
       LiberarEsquina(av,ca)
       RecibirMensaje(av,fisca)
-      RecibirMensaje(ca,fisca)
     BloquearEsquina(10,10)
     Pos(10,10)
     mientras HayFlorEnLaBolsa
@@ -69,12 +69,15 @@ variables
   F3: florero
   fisca: fiscalizador
 comenzar
-  AsignarArea(F1, cuadrante)
-  AsignarArea(F2, cuadrante)
-  AsignarArea(F3, cuadrante)
   AsignarArea(F1, area1)
   AsignarArea(F2, area2)
   AsignarArea(F3, area3)
+  AsignarArea(F1, cuadrante)
+  AsignarArea(F2, cuadrante)
+  AsignarArea(F3, cuadrante)
+  AsignarArea(F1, area10)
+  AsignarArea(F2, area10)
+  AsignarArea(F3, area10)
   AsignarArea(fisca,areaFisca)
   
   Iniciar(F1,1,1)
