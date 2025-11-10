@@ -80,33 +80,46 @@ robots
   robot florero
   variables
     av: numero
-    cantFlores,avInicial,caInicial: numero
+    cantFlores: numero
     soyElPrimero, seguir: boolean
     ID: numero
+    avInicial, caInicial: numero
   comenzar
-    avInicial := PosAv
-    caInicial := PosCa
+    avInicial:= PosAv
+    caInicial:= PosCa
     cantFlores:= 0
     RecibirMensaje(av, Rfisc)
+    Pos(av, 1)
     RecibirMensaje(ID, Rfisc)
-    completarAvenida(av, cantFlores)
+    completarAvenida(cantFlores)
     
     EnviarMensaje(ID, Rfisc)
     EnviarMensaje(cantFlores, Rfisc)
     RecibirMensaje(seguir, Rfisc)
     si (seguir = V)
-      Pos(avInicial,caInicial)
+      Pos(avInicial, caInicial)
   fin
   
   robot papelero
   variables
-    ID,avInicial,caInicial: numero
+    ID: numero
+    cantPapeles: numero
+    av, avInicial, caInicial: numero
+    seguir: boolean
   comenzar
-    RecibirMensaje(ID, Rfisc)
-    avInicial := PosAv
-    caInicial := PosCa
     cantPapeles:= 0
-    completarCalle()
+    avInicial:= PosAv
+    caInicial:= PosCa
+    derecha
+    RecibirMensaje(av, Rfisc)
+    RecibirMensaje(ID, Rfisc)
+    completarCalle(av, cantPapeles)
+    
+    EnviarMensaje(ID, Rfisc)
+    EnviarMensaje(cantPapeles, Rfisc)
+    RecibirMensaje(seguir, Rfisc)
+    si (seguir = V)
+      Pos(avInicial, caInicial)
   fin
   
   robot fiscalizador
@@ -116,13 +129,16 @@ robots
     cantPapeles: numero
     robotsTerminados: numero
     primerID, primerCant: numero
+    ID: numero
   comenzar
     Random(av, 2,35)
     EnviarMensaje(av, RF)
+    EnviarMensaje(av, RP1)
+    EnviarMensaje(av, RP2)
     EnviarMensaje(1, RP1)
     EnviarMensaje(2, RP2)
     EnviarMensaje(3, RF)
-
+    
     RecibirMensaje(ID, *)
     si (ID = 1)
       RecibirMensaje(cantPapeles, RP1)
@@ -131,12 +147,12 @@ robots
         RecibirMensaje(cantPapeles, RP2)
       sino
         RecibirMensaje(cantFlores, RF)
-
+    
     primerID:= ID
     primerCant:= cantFlores
-
+    
     repetir 2
-      RecibirMensaje(ID,*)
+      RecibirMensaje(ID, *)
       si (ID = 1)
         RecibirMensaje(cantPapeles, RP1)
         EnviarMensaje(F, RP1)
@@ -147,8 +163,14 @@ robots
         sino
           RecibirMensaje(cantFlores, RF)
           EnviarMensaje(F, RF)
-
-    EnviarMensaje(V, primerID)
+    
+    si (primerID = 1)
+      EnviarMensaje(V, RP1)
+    sino
+      si (primerID = 2)
+        EnviarMensaje(V, RP2)
+      sino
+        EnviarMensaje(V, RF)
     Informar(primerCant)
   fin
   
@@ -158,6 +180,12 @@ variables
   RF: florero
   Rfisc: fiscalizador
 comenzar
-  AsignarArea(R_info, ciudad)
-  Iniciar(R_info, 1,1)
+  AsignarArea(RP1, ciudad)
+  AsignarArea(RP2, ciudad)
+  AsignarArea(RF, ciudad)
+  AsignarArea(Rfisc, ciudad)
+  Iniciar(RP1, 1,8)
+  Iniciar(RP2, 1,15)
+  Iniciar(RF, 1,2)
+  Iniciar(Rfisc, 1,1)
 fin
