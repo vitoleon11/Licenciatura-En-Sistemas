@@ -1,0 +1,147 @@
+programa ejemplo
+procesos
+  
+  proceso izquierda
+  comenzar
+    repetir 3
+      derecha
+  fin
+  proceso hacerTarea(E tarea:numero;ES papeles:numero;ES flores: numero)
+  comenzar
+    si (tarea = 1)
+      tareaUno(flores)
+    sino
+      tareaDos(papeles)
+  fin
+  proceso tareaUno(ES f : numero)
+  comenzar
+    mientras HayFlorEnLaEsquina
+      tomarFlor
+      f :=f + 1
+  fin
+  
+  proceso tareaDos(ES p : numero)
+  comenzar
+    mientras HayPapelEnLaEsquina
+      tomarPapel
+      p := p + 1
+  fin
+  
+  proceso hacerEscalon(E tarea: numero;ES p:numero; ES f : numero)
+  comenzar
+    repetir 4
+      hacerTarea(tarea,p,f)
+      mover
+    derecha
+    repetir 3
+      hacerTarea(tarea,p,f)
+      mover
+    izquierda
+  fin
+areas
+  ciudad: AreaC (1,1,100,100)
+robots
+  robot recolector 
+  variables
+    id,cantPapeles,cantFlores,avInicial,caInicial,tarea : numero
+    terminamos:boolean
+  comenzar
+    avInicial := PosAv
+    caInicial := PosCa
+    cantFlores := 0
+    cantPapeles := 0
+    RecibirMensaje(id,fisca)
+    repetir 3
+      EnviarMensaje(id,fisca)
+      RecibirMensaje(tarea,fisca)
+      hacerEscalon(tarea,cantPapeles,cantFlores)
+    hacerTarea(tarea,cantPapeles,cantFlores)
+    si HayFlorEnLaBolsa
+      BloquearEsquina(99,99)
+      Pos(99,99)
+      mientras HayFlorEnLaBolsa
+        depositarFlor
+      Pos(avInicial,caInicial)
+      LiberarEsquina(99,99)
+    si HayPapelEnLaEsquina
+      BloquearEsquina(98,98)
+      Pos(98,98)
+      mientras HayPapelEnLaBolsa
+        depositarPapel
+      Pos(avInicial,caInicial)
+      LiberarEsquina(98,98)
+    EnviarMensaje(0,fisca)
+    RecibirMensaje(terminamos,fisca)
+    EnviarMensaje(id,fisca)
+    EnviarMensaje(cantPapeles,fisca)
+    EnviarMensaje(cantFlores,fisca)
+  fin
+  
+  robot fiscalizador
+  variables
+    id,tarea,robotsTerminados,cantPapeles,cantFlores,cantFloresTotal,cantPapelesTotal : numero
+  comenzar
+    cantPapelesTotal := 0
+    cantFloresTotal := 0
+    EnviarMensaje(1,r1)
+    EnviarMensaje(2,r2)
+    EnviarMensaje(3,r3)
+    mientras (robotsTerminados < 3)
+      RecibirMensaje(id,*)
+      si (id <> 0)
+        Random(tarea,1,2)
+        si (id = 1)
+          EnviarMensaje(tarea,r1)
+        sino
+          si (id = 2)
+            EnviarMensaje(tarea,r2)
+          sino
+            EnviarMensaje(tarea,r3)
+      sino
+        robotsTerminados := robotsTerminados + 1
+    EnviarMensaje(V,r1)
+    EnviarMensaje(V,r2)
+    EnviarMensaje(V,r3)
+    repetir 3
+      RecibirMensaje(id,*)
+      si (id = 1)
+        RecibirMensaje(cantPapeles,r1)
+        RecibirMensaje(cantFlores,r1)
+        cantPapelesTotal := cantPapelesTotal + cantPapeles
+        cantFloresTotal := cantFloresTotal + cantFlores
+      sino
+        si (id =2)
+          RecibirMensaje(cantPapeles,r2)
+          RecibirMensaje(cantFlores,r2)
+          cantPapelesTotal := cantPapelesTotal + cantPapeles
+          cantFloresTotal := cantFloresTotal + cantFlores
+        sino 
+          RecibirMensaje(cantPapeles,r3)
+          RecibirMensaje(cantFlores,r3)
+          cantPapelesTotal := cantPapelesTotal + cantPapeles
+          cantFloresTotal := cantFloresTotal + cantFlores
+    
+    si (cantPapelesTotal < cantFloresTotal)
+      Pos(98,98)
+      mientras HayPapelEnLaEsquina
+        tomarPapel
+    sino
+      Pos(99,99)
+      mientras HayFlorEnLaEsquina
+        tomarFlor
+  fin
+variables
+  r1: recolector
+  r2: recolector
+  r3: recolector
+  fisca : fiscalizador
+comenzar
+  AsignarArea(r1, ciudad)
+  AsignarArea(r2, ciudad)
+  AsignarArea(r3, ciudad)
+  AsignarArea(fisca,ciudad)
+  Iniciar(r1, 2,1)
+  Iniciar(r2,32,1)
+  Iniciar(r3,62,1)
+  Iniciar(fisca,1,1)
+fin
