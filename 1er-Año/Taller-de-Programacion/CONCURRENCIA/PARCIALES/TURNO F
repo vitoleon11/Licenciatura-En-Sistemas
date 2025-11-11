@@ -1,0 +1,145 @@
+programa gorko
+procesos
+  proceso hacerEtapa(ES f : numero)
+  comenzar
+    repetir 10
+      mientras HayFlorEnLaEsquina
+        tomarFlor
+        f := f + 1
+      mover
+    derecha
+    repetir 10
+      mientras HayFlorEnLaEsquina
+        tomarFlor
+        f := f + 1
+      mover
+  fin
+  proceso hacerEtapa2(ES f : numero)
+  comenzar
+    repetir 9
+      mientras HayFlorEnLaEsquina
+        tomarFlor
+        f := f + 1
+      mover
+    derecha
+    repetir 9
+      mientras HayFlorEnLaEsquina
+        tomarFlor
+        f := f + 1
+      mover
+  fin
+areas
+  ciudad: AreaC(1,1,100,100)
+  
+robots
+  robot equipoA1
+  variables
+    f : numero
+  comenzar
+    f := 0
+    hacerEtapa(f)
+    EnviarMensaje(f,A2)
+    EnviarMensaje(f,fisca)
+    BloquearEsquina(20,20)
+    Pos(20,20)
+    mientras HayFlorEnLaBolsa
+      depositarFlor
+    Pos(1,1)
+    LiberarEsquina(20,20)
+  fin
+  
+  robot equipoA2
+  variables
+    f ,id: numero
+    arrancar :boolean
+  comenzar
+    RecibirMensaje(id,fisca)
+    repetir 2
+      derecha
+    RecibirMensaje(f,A1)
+    hacerEtapa2(f)
+    EnviarMensaje(id, fisca)
+    EnviarMensaje(f,fisca)
+    BloquearEsquina(20,20)
+    Pos(20,20)
+    mientras HayFlorEnLaBolsa
+      depositarFlor
+    Pos(11,10)
+    LiberarEsquina(20,20)
+  fin
+  
+  robot equipoB1
+  variables
+    f : numero
+  comenzar
+    f := 0
+    hacerEtapa(f)
+    EnviarMensaje(f,B2)
+    EnviarMensaje(f,fisca)
+    
+    BloquearEsquina(20,20)
+    Pos(20,20)
+    mientras HayFlorEnLaBolsa
+      depositarFlor
+    Pos(13,1)
+    LiberarEsquina(20,20)
+  fin
+  
+  robot equipoB2
+  variables
+    f,id : numero
+    arrancar:boolean
+  comenzar
+    RecibirMensaje(id,fisca)
+    RecibirMensaje(f,B1)
+    repetir 2
+      derecha
+    hacerEtapa2(f)
+    EnviarMensaje(id, fisca)
+    EnviarMensaje(f,fisca)
+    
+    BloquearEsquina(20,20)
+    Pos(20,20)
+    mientras HayFlorEnLaBolsa
+      depositarFlor
+    Pos(23,10)
+    LiberarEsquina(20,20)
+  fin
+  
+  robot fiscalizador
+  variables
+    cantFloresEquipoA,cantFloresEquipoB,id:numero
+  comenzar
+    EnviarMensaje(1,A2)
+    EnviarMensaje(2,B2)
+    repetir 2
+      RecibirMensaje(id,*)
+      si (id = 1)
+        RecibirMensaje(cantFloresEquipoA,A2)
+      sino
+        RecibirMensaje(cantFloresEquipoB,B2)
+        
+    si (cantFloresEquipoA > cantFloresEquipoB)
+      Informar(cantFloresEquipoA)
+    sino
+      Informar(cantFloresEquipoB)
+  fin
+variables
+  A1:equipoA1
+  A2:equipoA2
+  B1: equipoB1
+  B2: equipoB2
+  fisca : fiscalizador
+comenzar
+  AsignarArea(A1,ciudad)
+  AsignarArea(A2,ciudad)
+  AsignarArea(B1,ciudad)
+  AsignarArea(B2,ciudad)
+  AsignarArea(fisca,ciudad)
+  
+  Iniciar(A1,1,1) 
+  Iniciar(A2,11,10) 
+  Iniciar(B1,13,1) 
+  Iniciar(B2,23,10)  
+  Iniciar(fisca,30,1)  
+fin
