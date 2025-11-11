@@ -1,0 +1,81 @@
+programa gorko
+procesos
+  proceso hacerCuadrado(E lado : numero)
+  comenzar
+    repetir 4
+      repetir lado
+        mientras HayFlorEnLaEsquina
+          tomarFlor
+        mover
+      derecha
+  fin
+  
+areas
+  ciudad: AreaC(1,1,100,100)
+  
+robots
+  robot cliente
+  variables
+    lado,id,avInicial,caInicial : numero
+  comenzar
+    RecibirMensaje(id,rServidor)
+    repetir 3
+      EnviarMensaje(id,rServidor)
+      RecibirMensaje(lado,rServidor)
+      hacerCuadrado(lado)
+      Pos(PosAv,PosCa + lado + 1)
+    avInicial := PosAv
+    caInicial := PosCa
+    mientras HayFlorEnLaBolsa
+      BloquearEsquina(50,50)
+      Pos(50,50)
+      depositarFlor
+      Pos(avInicial,caInicial)
+      LiberarEsquina(50,50)
+    EnviarMensaje(0,rServidor)
+  fin
+  robot servidor
+  variables
+    robotsTerminados,id ,lado,floresJuntadas: numero
+  comenzar
+    floresJuntadas := 0
+    robotsTerminados:=0
+    EnviarMensaje(1,C1)
+    EnviarMensaje(2,C2)
+    EnviarMensaje(3,C3)
+    mientras robotsTerminados < 3
+      RecibirMensaje(id, *)
+      Random(lado,1,5)
+      si (id <> 0)
+        si (id = 1)
+          EnviarMensaje(lado, C1)
+        sino
+          si (id = 2)
+            EnviarMensaje(lado,C2)
+          sino
+            EnviarMensaje(lado,C3)      
+      sino
+        robotsTerminados := robotsTerminados + 1
+    Pos(50,50)
+    mientras HayFlorEnLaEsquina
+      tomarFlor
+      floresJuntadas := floresJuntadas +1      
+    Informar(floresJuntadas)
+  fin
+
+variables
+  C1 : cliente
+  C2 : cliente
+  C3 : cliente
+  rServidor : servidor
+comenzar
+  AsignarArea(C1,ciudad)
+  AsignarArea(C2,ciudad)
+  AsignarArea(C3,ciudad)
+  AsignarArea(rServidor,ciudad)
+  
+  Iniciar(C1,1,1) 
+  Iniciar(C2,8,1) 
+  Iniciar(C3,15,1) 
+  Iniciar(rServidor,22,1)  
+fin
