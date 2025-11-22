@@ -234,17 +234,23 @@ type
 	begin
 		if (a1 = nil) then
 			cantPrestamosEntreISBN1 := 0
-		else if (a1^.dato.ISBN > ISBN1) AND ( a1^.dato.ISBN2 < ISBN2) then
-				cantPrestamosEntreISBN1 := 
+		else if (a1^.dato.ISBN >= ISBN1) AND (a1^.dato.ISBN
+		323 <= ISBN2) then
+				cantPrestamosEntreISBN1 := 1 + cantPrestamosEntreISBN1(a1^.hi,ISBN1,ISBN2) + cantPrestamosEntreISBN1(a1^.hd,ISBN1,ISBN2)
+			else if (a1^.dato.ISBN > ISBN2) then
+					cantPrestamosEntreISBN1 := cantPrestamosEntreISBN1(a1^.hi,ISBN1,ISBN2)
+				else
+					cantPrestamosEntreISBN1 := cantPrestamosEntreISBN1(a1^.hd,ISBN1,ISBN2);
 	end;
-	
+
+//	function cantPrestamosEntreISBN2(a2:arbol2;ISBN1:integer,ISBN2:integer):integer;
 	
 var
 	a1: arbol1;
 	a2:arbol2;
 	a3: arbol3;
 	a4:arbol4;
-	num1,num2:integer;
+	num1,num2,ISBN1,ISBN2:integer;
 begin
 	a1:=nil;
 	a2:=nil;
@@ -263,5 +269,5 @@ begin
 	cantPrestamosEntreISBN1(a1,ISBN1,ISBN2);
 	read(ISBN1);
 	read(ISBN2);
-	cantPrestamosEntreISBN2(a2,ISBN1,ISBN2);
+	//cantPrestamosEntreISBN2(a2,ISBN1,ISBN2);
 end.
