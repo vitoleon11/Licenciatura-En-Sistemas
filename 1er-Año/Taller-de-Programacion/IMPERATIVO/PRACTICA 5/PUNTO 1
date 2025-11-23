@@ -81,7 +81,16 @@ type
 	
 var
 	v:vector;
-	dimL: integer;
+	dimL,valor: integer;
 begin
 	cargarVector(v,dimL);
+	vectorOrdenado(v,dimL);
+	writeln('Ingrese un valor');
+	readln(valor);
+	busqueda(v,dimL,valor);
+	if (busqueda(v,dimL,valor) = 0) then
+		writeln('El valor no se encontro en el vector')
+	else
+		writeln('El valor se encontro en la posicion', busqueda(v,dimL,valor));
+	writeln('El monto total acumulado de las expensas fue ', montoTotalAcumulado(v,dimL,1));
 end.
