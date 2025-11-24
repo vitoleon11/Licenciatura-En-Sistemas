@@ -1,0 +1,151 @@
+program gork;
+type
+	rangoAnios = 2015..2024;
+
+	auto = record
+		patente : string;
+		anio: rangoAnios;
+		marca : string;
+		color:string;
+		modelo:string;
+	end;
+	
+	
+	arbol1 = ^nodo1;
+	nodo1 = record
+		dato : auto;
+		hi: arbol1;
+		hd : arbol1;
+	end;
+	lista = ^nodoLista;
+	nodoLista = record
+		patente : String;
+		color :String;
+		sig:lista;
+	end;
+	
+	arbol2 = ^nodo2;
+	nodo2 = record
+		marca:string;
+		dato:lista;
+		hi:arbol2;
+		hd:arbol2;
+	end;
+	
+		
+	procedure leerAuto(var a :auto);
+	begin
+		writeln('Ingrese una marca');
+		readln(a.marca);
+		if ( a.marca <> 'MMM') then begin
+			writeln('Ingrese una patente');
+			readln(a.patente);
+			writeln('Ingrese un año');
+			readln(a.anio);
+			writeln('Ingrese un color');
+			readln(a.color);
+			writeln('Ingrese un modelo');
+			readln(a.modelo);
+		end;
+	end;
+
+	
+	procedure agregarArbol1(var a1:arbol1; var au:auto);
+	begin
+		if (a1 = nil) then begin
+			new(a1);
+			a1^.dato := au;
+			a1^.hi := nil;
+			a1^.hd := nil;
+		end
+		else if(au.patente <= a1^.dato.patente) then
+				agregarArbol1(a1^.hi,au)
+			else
+				agregarArbol1(a1^.hd,au);
+	end;
+	
+	procedure agregarALista(var l :lista;au:auto);
+	var
+		nue:lista;
+	begin
+		new(nue);
+		nue^.patente := au.patente;
+		nue^.color := au.color;
+		nue^.sig := l;
+		l:=nue;
+	end;
+	
+	procedure agregarArbol2(var a2 :arbol2;var au:auto);
+	begin
+		if (a2 = nil) then begin
+			new(a2);
+			a2^.marca := au.marca;
+			agregarALista(a2^.dato,au);
+			a2^.hi := nil;
+			a2^.hd := nil; 
+		end;
+	end;
+
+	procedure procesarArboles(var a1:arbol1;var a2:arbol2);
+	var
+		au:auto;
+	begin
+		leerAuto(au);
+		while (au.marca <> 'MMM') do begin
+			agregarArbol1(a1,au);
+			agregarArbol2(a2,au);
+			leerAuto(au);
+		end;
+	end;
+	
+	{EMPIEZA B}
+	
+	function cantAutosArbol1(a1:arbol1;marca:string):integer;
+	begin
+		if (a1 = nil) then 
+			cantAutosArbol1 := 0
+		else if (a1^.dato.marca = marca) then
+				cantAutosArbol1 := 1 + cantAutosArbol1(a1^.hi,marca) + cantAutosArbol1(a1^.hd,marca)
+			else
+				cantAutosArbol1 := cantAutosArbol1(a1^.hi,marca) + cantAutosArbol1(a1^.hd,marca)
+	end; 
+	{TERMINA B}
+	{EMPIEZA C}
+	
+	function contarLista(l:lista):integer;
+	begin
+		contarLista := 0;
+		while (l <> nil) do begin
+			contarLista := contarLista +1;
+			l := l^.sig;
+		end;
+	end;
+	
+	function cantAutosArbol2(a2:arbol2;marca:string):integer;
+	begin
+		if (a2 = nil) then
+			cantAutosArbol2 := 0
+		else if (a2^.marca = marca) then
+				cantAutosArbol2 := contarLista(a2^.dato) + cantAutosArbol2(a2^.hi,marca) + cantAutosArbol2(a2^.hd,marca)
+			else
+				cantAutosArbol2 := cantAutosArbol2(a2^.hi,marca) + cantAutosArbol2(a2^.hd,marca);
+	end;
+	
+	
+	
+	{TERMINA C}
+	
+	
+var
+	a1:arbol1;
+	a2: arbol2;
+	marca:string;
+begin
+	a1:=nil;
+	a2:= nil;
+	procesarArboles(a1,a2);
+	read(marca);
+	cantAutosArbol1(a1,marca);
+	read(marca);
+	cantAutosArbol2(a2,marca);
+end.
