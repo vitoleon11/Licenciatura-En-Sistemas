@@ -32,7 +32,24 @@ type
 		hd:arbol2;
 	end;
 	
+	listaVector = ^nodoVector;
+	nodoVector = record
+		dato : auto;
+		sig:listaVector;
+	end;
+	
+	vector = array [rangoAnios] of listaVector;
+	
 		
+		
+	procedure inicializarVector(var v:vector);
+	var
+		i : integer;
+	begin
+		for i := 2015 to 2024 do begin
+			v[i] := nil;
+		end;
+	end;
 	procedure leerAuto(var a :auto);
 	begin
 		writeln('Ingrese una marca');
@@ -83,7 +100,13 @@ type
 			agregarALista(a2^.dato,au);
 			a2^.hi := nil;
 			a2^.hd := nil; 
-		end;
+		end
+		else if (au.marca = a2^.marca) then
+				agregarALista(a2^.dato,au)
+			else if (au.marca < a2^.marca) then
+					agregarArbol2(a2^.hi,au)
+				else
+					agregarArbol2(a2^.hd,au);
 	end;
 
 	procedure procesarArboles(var a1:arbol1;var a2:arbol2);
@@ -134,6 +157,33 @@ type
 	
 	
 	{TERMINA C}
+	{EMPIEZA D}
+	procedure insertarALista(var l:listaVector; au:auto);
+	var nue:listaVector;
+	begin
+		new(nue);
+		nue^.dato := au;
+		nue^.sig := l;
+		l := nue;
+	end;
+	
+	procedure agregarAlVector(var v : vector;au:auto);
+	begin
+		insertarALista(v[au.anio],au);
+	end;
+	
+	procedure procesarVectorPorAnios(var v:vector; a1:arbol1);
+	begin
+		if (a1 <> nil) then begin
+			procesarVectorPorAnios(v,a1^.hi);
+			agregarAlVector(v,a1^.dato);
+			procesarVectorPorAnios(v,a1^.hd);
+		end;
+	end;
+	{TERMINA D}
+	{EMPIEZA E}
+	
+	{TERMINA E}
 	
 	
 var
