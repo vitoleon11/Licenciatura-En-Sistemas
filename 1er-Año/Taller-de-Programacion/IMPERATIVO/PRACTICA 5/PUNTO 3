@@ -1,0 +1,115 @@
+program gork;
+type
+	rangoMes = 1..12;
+	
+	compra = record
+		codJuego : integer;
+		codCliente:integer;
+		mes: rangoMes;
+	end;
+	
+	
+	
+	lista = ^nodoLista;
+	nodoLista = record
+		codCliente: integer;
+		mes:rangoMes;
+		sig:lista;
+	end;
+	
+	arbol = ^nodoArbol;
+	nodoArbol = record
+		codJuego:integer;
+		dato: lista;
+		hi:arbol;
+		hd:arbol;
+	end;
+	
+	procedure leerCompra(var c:compra);
+	begin
+		writeln('Ingrese un codigo de cliente');
+		readln(c.codCliente);
+		if (c.codCliente <> 0) then begin
+			writeln('Ingrese un codigo de juego');
+			readln(c.codJuego);
+			writeln('Ingrese un mes del anio');
+			readln(c.mes);
+		end;
+	end;
+	
+	procedure cargarLista(var l : lista; c:compra);
+	var
+		nue:lista;
+	begin
+		new(nue);
+		nue^.codCliente := c.codCliente;
+		nue^.mes := c.mes;
+		nue^.sig := l;
+		l := nue;
+		
+	end;
+	
+	procedure cargarArbol(var a:arbol;c:compra);
+	begin
+		if (a = nil) then begin
+			new(a);
+			a^.codJuego := c.codJuego;
+			a^.dato := nil;
+			cargarLista(a^.dato,c);
+			a^.hi:= nil;
+			a^.hd:=nil;
+		end
+		else if (c.codJuego = a^.codJuego ) then
+				cargarLista(a^.dato,c)
+			else if (c.codJuego < a^.codJuego) then
+					cargarArbol(a^.hi,c)
+				else
+					cargarArbol(a^.hd,c);
+	end;
+	
+	procedure procesarArbol(var a :arbol);
+	var
+		c:compra;
+	begin
+		a:= nil;
+		leerCompra(c);
+		while (c.codCliente <> 0 ) do begin
+			cargarArbol(a,c);
+			leerCompra(c);
+		end;
+	end;
+	
+	function retornarLista(a:arbol;codJuego:integer):lista;
+	begin
+		if (a = nil) then
+			retornarLista := nil
+		else if (codJuego = a^.codJuego) then
+				retornarLista := a^.dato
+			else if (codJuego < a^.codJuego) then
+					retornarLista := retornarLista(a^.hi,codJuego)
+				else
+					retornarLista := retornarLista(a^.hd,codJuego);
+	end;
+	
+	function retornarCantClientes(l:lista;mes:integer):integer;
+	begin
+		if (l = nil) then
+			retornarCantClientes := 0
+		else if (l^.mes = mes) then
+				retornarCantClientes := 1 + retornarCantClientes(l^.sig,mes)
+			else
+				retornarCantClientes := retornarCantClientes(l^.sig,mes);	
+	end;
+	
+var 
+	a:arbol;
+	codJuego,mes:integer;
+begin
+	procesarArbol(a);
+	writeln('Ingrese un codigo de juego');
+	read(codJuego);
+	retornarLista(a,codJuego);
+	writeln('Ingrese un mes');
+	readln(mes);
+	writeln('La cantidad de clientes del codigo de juego: ', codJuego, 'en el mes ',mes,' fue ', retornarCantClientes(retornarLista(a,codJuego),mes));
+end.
