@@ -182,14 +182,54 @@ type
 	end;
 	{TERMINA D}
 	{EMPIEZA E}
-	
+	function devolverModelo1(a:arbol1;patente:string):string;
+	begin
+		if (a = nil) then 
+			devolverModelo1 := 'No se encontró'
+		else if (a^.dato.patente = patente) then
+				devolverModelo1 := a^.dato.modelo
+			else if (patente < a^.dato.patente) then	
+					devolverModelo1 := devolverModelo1(a^.hi,patente)
+				else 
+					devolverModelo1 := devolverModelo1(a^.hd,patente);
+	end;
 	{TERMINA E}
+	{EMPIEZA F}
+	function buscarEnLista(l:lista;patente:string):string;
+	var
+		seEncontro : boolean;
+	begin
+		buscarEnLista := 'No se encontro';
+		seEncontro := false;
+		while (l <> nil) AND (not seEncontro)do begin
+			if (l^.patente = patente) then begin
+				buscarEnLista := l^.color;
+				seEncontro := true;
+			end;
+			l := l^.sig;
+		end;
+	end;
 	
+	 function devolverColor(a:arbol2; patente:string):string; 
+	 begin
+		if (a = nil) then
+			devolverColor := 'No se encontro'
+		else if (buscarEnLista(a^.dato,patente) <> 'No se encontro') then
+				devolverColor := buscarEnLista(a^.dato,patente)
+			else begin
+				devolverColor := devolverColor(a^.hi,patente);
+				if (devolverColor = 'No se encontro') then
+					devolverColor := devolverColor(a^.hd,patente);
+				end;
+	 end;
+	{TERMINA F}
 	
 var
 	a1:arbol1;
 	a2: arbol2;
+	v:vector;
 	marca:string;
+	patente:string;
 begin
 	a1:=nil;
 	a2:= nil;
@@ -198,4 +238,10 @@ begin
 	cantAutosArbol1(a1,marca);
 	read(marca);
 	cantAutosArbol2(a2,marca);
+	procesarVectorPorAnios(v,a1);
+	read(patente);
+	devolverModelo1(a1,patente);
+	read(patente);
+	devolverColor(a2,patente);
 end.
+
