@@ -18,6 +18,12 @@ type
         hd:arbol;
     end;
     
+    lista = ^nodoLista;
+    nodoLista = record
+        dato:paquete;
+        sig:lista;
+    end;
+    
     procedure leerPaquete(var p : paquete);
     begin
         writeln('Ingrese un codigo de envio');
@@ -61,9 +67,38 @@ type
         end;
     end;
     
+    {EMPIEZA B}
+    
+    procedure agregarAdelante(var l : lista;p:paquete);
+    var
+        nue :lista;
+    begin
+        new(nue);
+        nue^.dato := p;
+        nue^.sig := l;
+        l := nue;
+    end;
+    
+    procedure generarLista(a:arbol; var l:lista;valor1:integer;valor2:integer);
+    begin
+        if (a <> nil) then begin
+            if (a^.dato.pesoPaquete >= valor1) AND (a^.dato.pesoPaquete <= valor2) then begin
+                generarLista(a^.hi, l, valor1, valor2);
+                agregarAdelante(l, a^.dato);
+                generarLista(a^.hd, l, valor1, valor2);
+            end
+            else if (a^.dato.pesoPaquete < valor1) then
+                    generarLista(a^.hd,l,valor1,valor2)
+                else if (a^.dato.pesoPaquete > valor2 ) then
+                        generarLista(a^.hi,l,valor1,valor2);
+        end;
+    end;
+    
+    {TERMINA B}
+    
 var
     a:arbol;
 begin
     procesarArbol(a);
-    
+    generarLista(a,l,valor1,valor2)
 end.
