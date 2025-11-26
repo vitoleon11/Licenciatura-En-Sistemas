@@ -1,0 +1,107 @@
+program gork;
+type
+	rangoGeneros = 1..7;
+	
+	libro = record
+		ISBN : integer;
+		codAutor:integer;
+		codGenero:rangoGeneros;
+	end;
+	
+	arbol = ^nodoArbol;
+	nodoArbol = record
+		cantLibros:integer;
+		codAutor : integer;
+		hi:arbol;
+		hd:arbol;
+	end;
+	
+	libroVector = record
+		codGenero : integer;
+		cantLibros:integer;
+	end;
+	
+	vector = array [rangoGeneros] of libroVector;
+	
+	procedure leerLibro(var l:libro);
+	begin
+		writeln('Ingrese ISBN');
+		readln(l.ISBN);
+		if (l.ISBN <> 0) then begin
+			writeln('Ingrese codigo de autor');
+			readln(l.codAutor);
+			writeln('Ingrese codigo de genero');
+			readln(l.codGenero);	
+		end;
+	end;
+	
+	procedure cargarArbol(var a:arbol;l:libro);
+	begin
+		if (a = nil) then begin
+			new(a);
+			a^.cantLibros := 1;
+			a^.codAutor := l.codAutor;
+			a^.hi:=nil;
+			a^.hd:=nil;
+		end
+		else if (l.codAutor = a^.codAutor) then
+				a^.cantLibros := a^.cantLibros + 1
+			else if (l.codAutor < a^.codAutor) then
+					cargarArbol(a^.hi,l)
+				else
+					cargarArbol(a^.hd,l);
+	end;
+	
+	procedure inicializarVector(var v:vector);
+	var
+		i:integer;
+	begin
+		for i := 1 to 7 do begin
+			v[i].cantLibros := 0;
+		end;
+	end;
+	
+	procedure agregarAlVector(var v:vector;l:libro);
+	begin
+		v[l.codGenero].codGenero := l.codGenero;
+		v[l.codGenero].cantLibros := v[l.codGenero].cantLibros + 1;
+	end;
+	
+	
+	procedure procesarEstructuras(var a:arbol;var v:vector);
+	var
+		l:libro;
+	begin
+		a:= nil;
+		leerLibro(l);
+		while (l.ISBN <> 0) do begin
+			agregarAlVector(v,l);
+			cargarArbol(a,l);
+			leerLibro(l);
+		end;
+	end;
+	
+	function devolverMayorLibros(var v :vector):integer;
+	var
+		i,j,pos:integer;
+		l:libroVector;
+	begin
+		for i := 1 to 6 do begin
+			pos := i;
+			for j := i + 1 to 7 do begin
+				if (v[j].cantLibros  > v[pos].cantLibros) then
+					pos := j;
+			end;
+			l := v[pos];
+			v[pos] := v[i];
+			v[i] := l;
+		end;
+		devolverMayorLibros := v[1].codGenero;
+	end;
+	
+var
+	v:vector;
+	a:arbol;
+begin
+	procesarEstructuras(a,v);
+end.
