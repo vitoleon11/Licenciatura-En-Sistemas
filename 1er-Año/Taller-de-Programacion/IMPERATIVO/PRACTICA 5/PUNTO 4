@@ -99,6 +99,19 @@ type
 		devolverMayorLibros := v[1].codGenero;
 	end;
 	
+	function devolverCantTotal(a:arbol;cod1:integer;cod2:integer):integer;
+	begin
+		if (a = nil) then 
+			devolverCantTotal := 0
+		else if (a^.codAutor >= cod1) AND (a^.codAutor <= cod2) then begin
+				devolverCantTotal := a^.cantLibros + devolverCantTotal(a^.hi,cod1,cod2) + devolverCantTotal(a^.hd,cod1,cod2)
+			end
+			else if (a^.codAutor < cod1) then
+					devolverCantTotal := devolverCantTotal(a^.hd,cod1,cod2)
+				else
+					devolverCantTotal := devolverCantTotal(a^.hi,cod1,cod2);
+	end;
+	
 var
 	v:vector;
 	a:arbol;
