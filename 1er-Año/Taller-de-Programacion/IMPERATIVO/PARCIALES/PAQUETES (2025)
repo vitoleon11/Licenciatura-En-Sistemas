@@ -1,0 +1,68 @@
+
+program Hello;
+type
+    paquete = record
+        codEnvio:integer;
+        DNIemisor : integer;
+        DNIreceptor:integer;
+        cantObjetos:integer;
+        pesoPaquete:real;
+    end;
+    
+    arbol = ^nodoArbol;
+    nodoArbol = record
+        dato:paquete;
+        hi:arbol;
+        hd:arbol;
+    end;
+    
+    procedure leerPaquete(var p : paquete);
+    begin
+        writeln("Ingrese un codigo de envio");
+        readln(p.codEnvio);
+        if (p.codEnvio <> 0) then begin
+            writeln("Ingrese un DNI de emisor");
+            readln(p.DNIemisor);
+            writeln("Ingrese un DNI de receptor");
+            readln(p.DNIreceptor);
+            writeln("Ingrese cantidad de objetos");
+            readln(p.cantObjetos);
+            writeln("Ingrese peso del paquete");
+            readln(p.pesoPaquete);
+        end;
+    end;
+    
+    
+    procedure cargarArbol(var a:arbol;p:paquete);
+    begin
+        if (a = nil) then begin
+           new(a);
+           a^.dato := p;
+           a^.hi := nil;
+           a^.hd := nil;
+        end
+        else if (p.pesoPaquete <= a^.dato.pesoPaquete) then
+                cargarArbol(a^.hi,p)
+            else
+                cargarArbol(a^.hd,p);
+    end;
+    
+    procedure procesarArbol(var a:arbol);
+    var
+        p:paquete;
+    begin
+        a := nil;
+        leerPaquete(p);
+        while (p.codEnvio <> 0) do begin
+            cargarArbol(a,p);
+            leerPaquete(p);
+        end;
+    end;
+    
+var
+    a:arbol;
+begin
+    procesarArbol(a);
+    
+end.
+    
