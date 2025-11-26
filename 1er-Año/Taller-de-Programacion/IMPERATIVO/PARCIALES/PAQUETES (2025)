@@ -1,4 +1,6 @@
 
+
+
 program Hello;
 type
     paquete = record
@@ -18,16 +20,16 @@ type
     
     procedure leerPaquete(var p : paquete);
     begin
-        writeln("Ingrese un codigo de envio");
+        writeln('Ingrese un codigo de envio');
         readln(p.codEnvio);
         if (p.codEnvio <> 0) then begin
-            writeln("Ingrese un DNI de emisor");
+            writeln('Ingrese un DNI de emisor');
             readln(p.DNIemisor);
-            writeln("Ingrese un DNI de receptor");
+            writeln('Ingrese un DNI de receptor');
             readln(p.DNIreceptor);
-            writeln("Ingrese cantidad de objetos");
+            writeln('Ingrese cantidad de objetos');
             readln(p.cantObjetos);
-            writeln("Ingrese peso del paquete");
+            writeln('Ingrese peso del paquete');
             readln(p.pesoPaquete);
         end;
     end;
@@ -65,4 +67,3 @@ begin
     procesarArbol(a);
     
 end.
-    
