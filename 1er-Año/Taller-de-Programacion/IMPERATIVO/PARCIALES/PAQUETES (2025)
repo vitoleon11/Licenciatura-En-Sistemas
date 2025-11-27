@@ -1,6 +1,5 @@
 
 
-
 program Hello;
 type
     paquete = record
@@ -95,7 +94,23 @@ type
     end;
     
     {TERMINA B}
+    {EMPIEZA C}
     
+    function devolverMayor(a:arbol):paquete;
+    var
+        maxCant:integer;
+    begin
+        if (a <> nil) then begin
+            devolverMayor := devolverMayor(a^.hi);
+            if (a^.dato.cantObjetos > maxCant) then begin
+                maxCant := a^.dato.cantObjetos;
+                devolverMayor := a^.dato;
+            end;
+            devolverMayor(a^.hd);
+        end;
+    end;
+    
+    {TERMINA C}
 var
     a:arbol;
 begin
