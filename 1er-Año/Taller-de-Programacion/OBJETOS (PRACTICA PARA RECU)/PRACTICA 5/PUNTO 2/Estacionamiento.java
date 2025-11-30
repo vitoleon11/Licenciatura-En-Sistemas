@@ -1,32 +1,82 @@
+
 package punto2practica5;
-import PaqueteLectura.Lector;
+
 /**
  *
  * @author vitol
  */
-public class Punto2Practica5 {
-
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String[] args) {
-        Estacionamiento e1 = new Estacionamiento("Polla","NEgra","8:00","15:00",3,3);
-        Auto a1 = new Auto("Emiliano","AC200CJ");
-        Auto a2 = new Auto("Matias","OVF345");
-        Auto a3 = new Auto("Vito", "NIV231");
-        Auto a4 = new Auto("Alan","MAL066");
-        Auto a5 = new Auto("Hector","AD137QF");
-        Auto a6 = new Auto("Maga","JPQ635");
-        e1.agregarAuto(a1, 0, 0);
-        e1.agregarAuto(a2, 0, 1);
-        e1.agregarAuto(a3, 1, 2);
-        e1.agregarAuto(a4, 2, 0);
-        e1.agregarAuto(a5, 2, 1);
-        e1.agregarAuto(a6, 2, 2);
-        System.out.println(e1.toString());
-        System.out.println(e1.cantAutosPlaza(1));
-        String patente = Lector.leerString();
-        System.out.println(e1.devolverPorPatente(patente));
+public class Estacionamiento {
+    private String nombre;
+    private String direccion;
+    private String horaApertura;
+    private String horaCierre;
+    private Auto [][] vAutos;
+    private int numPisos;
+    private int numPlazas;
+    
+    public Estacionamiento(String miNombre, String miDireccion){
+        this.nombre = miNombre;
+        this.direccion = miDireccion;
+        this.horaApertura = "8:00";
+        this.horaCierre = "21:00";
+        this.numPisos = 5;
+        this.numPlazas = 10;
+        vAutos = new Auto[numPisos][numPlazas];
     }
+    
+    public Estacionamiento(String miNombre, String miDireccion, String miHoraApertura, String miHoraCierre, int miNumPisos,int miNumPlazas) {
+        this.nombre = miNombre;
+        this.direccion = miDireccion;
+        this.horaApertura = miHoraApertura;
+        this.horaCierre = miHoraCierre;
+        vAutos = new Auto[miNumPisos][miNumPlazas];
+        this.numPisos = miNumPisos;
+        this.numPlazas = miNumPlazas;
+    }
+    
+    public void agregarAuto(Auto autoA, int X, int Y) {
+        this.vAutos[X][Y] = autoA;
+    }
+    
+    public String devolverPorPatente(String miPatente) {
+        String aux = "Auto Inexistente";
+        for(int i = 0;i < numPisos; i++) {
+            for ( int j = 0 ; j < numPlazas; j++) {
+                if ((vAutos[i][j].getPatente().equals(miPatente)) && (vAutos[i][j] != null)) {
+                    return "El auto está en el piso " + (i+1) + " y en la plaza " + (j+1);
+                }
+            }
+        }
+        return "Auto Inexistente";
+    }
+    
+    public int cantAutosPlaza(int Y) {
+        int total = 0;
+        for (int i= 0; i < numPisos; i++) {
+            if (this.vAutos[i][Y] != null) {
+                total++;
+            }
+        }
+     return total;
+    }
+     
+    public String toString() {
+        String aux = "";
+        for(int i = 0; i < numPisos; i++) {
+            for ( int j = 0; j < numPlazas; j++) {
+                aux += "Piso "+ (i+1) + " Plaza " + (j+1) + ": " ;
+                if (this.vAutos[i][j] == null) {
+                   aux += "libre \n";
+                } else {
+                    aux += "Nombre: " + this.vAutos[i][j].getNombreDueño() + " Patente: " + this.vAutos[i][j].getPatente() + "\n";
+                }
+            }
+        }
+        return aux;
+    }
+    
+    
+    
+    
     
 }
