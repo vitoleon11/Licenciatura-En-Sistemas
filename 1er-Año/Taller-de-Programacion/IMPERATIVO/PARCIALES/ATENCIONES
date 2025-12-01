@@ -21,6 +21,7 @@ type
         hd:arbol;
     end;
     
+    vector = array [rangoCodigo] of integer;
     
     procedure leerAtencion(var a:atencion);
     begin
@@ -44,13 +45,40 @@ type
             ar^.hd := nil;
         end 
         else if (at.DNI = ar^.dato.DNI) then
-                ar^.dato.cantAtenciones := ar^.dato.cantAtenciones + 1;
+                ar^.dato.cantAtenciones := ar^.dato.cantAtenciones + 1
             else if (at.DNI < ar^.dato.DNI) then
                     cargarArbol(ar^.hi,at)
                 else
                     cargarArbol(ar^.hd,at);
     end;
     
+    procedure inicializarVector(var v :vector);
+    var
+        i:integer;
+    begin
+        for i := 1 to 15 do begin
+            v[i] := 0;
+        end;
+    end;
+    
+    procedure cargarVector(var v:vector; a:atencion);
+    begin
+        v[a.codigo] := v[a.codigo] + 1;
+    end;
+    
+    procedure procesarEstructuras(var v:vector;var a:arbol);
+    var
+        at:atencion;
+    begin
+        leerAtencion(at);
+        while (at.mes <> 0) do begin
+            cargarVector(v,at);
+            cargarArbol(a,at);
+            leerAtencion(at);
+        end;
+    end;
+var
+    v:vector;
 begin
-  
+  inicializarVector(v);
 end.
