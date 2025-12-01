@@ -1,0 +1,56 @@
+program Hello;
+type
+    rangoCodigo = 1..15;
+    
+    atencion = record
+        DNI : integer;
+        mes: integer;
+        codigo:integer;
+    end;
+    
+    atencionArbol = record
+        DNI:integer;
+        cantAtenciones:integer;
+    end;
+    
+    
+    arbol = ^nodoArbol;
+    nodoArbol = record
+        dato : atencionArbol;
+        hi:arbol;
+        hd:arbol;
+    end;
+    
+    
+    procedure leerAtencion(var a:atencion);
+    begin
+        writeln('Ingrese mes');
+        readln(a.mes);
+        if (a.mes <> 0) then begin
+            writeln('Ingrese DNI');
+            readln(a.DNI);
+            writeln('Ingrese codigo');
+            readln(a.codigo);
+        end;
+    end;
+    
+    procedure cargarArbol(var ar :arbol;at:atencionArbol);
+    begin
+        if (ar = nil) then begin
+            new(ar);
+            ar^.dato.DNI := at.DNI;
+            ar^.dato.cantAtenciones := 1;
+            ar^.hi := nil;
+            ar^.hd := nil;
+        end 
+        else if (at.DNI = ar^.dato.DNI) then
+                ar^.dato.cantAtenciones := ar^.dato.cantAtenciones + 1;
+            else if (at.DNI < ar^.dato.DNI) then
+                    cargarArbol(ar^.hi,at)
+                else
+                    cargarArbol(ar^.hd,at);
+    end;
+    
+begin
+  
+end.
