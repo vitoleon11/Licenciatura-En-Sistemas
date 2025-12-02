@@ -35,7 +35,7 @@ type
         end;
     end;
     
-    procedure cargarArbol(var ar :arbol;at:atencionArbol);
+    procedure cargarArbol(var ar :arbol;at:atencion);
     begin
         if (ar = nil) then begin
             new(ar);
@@ -77,8 +77,39 @@ type
             leerAtencion(at);
         end;
     end;
+    
+    function devolverCantEntreValores(a:arbol;dni1:integer;dni2:integer;valorX:integer):integer;
+    begin
+        if (a = nil) then
+            devolverCantEntreValores := 0
+        else if (a^.dato.DNI >= dni1) AND (a^.dato.DNI <= dni2) AND (a^.dato.cantAtenciones > valorX) then
+                devolverCantEntreValores := 1 + devolverCantEntreValores(a^.hi,dni1,dni2,valorX) + devolverCantEntreValores(a^.hd,dni1,dni2,valorX)
+            else if (a^.dato.DNI < dni1) then
+                    devolverCantEntreValores := devolverCantEntreValores(a^.hd,dni1,dni2,valorX)
+                else if (a^.dato.DNI > dni2) then
+                        devolverCantEntreValores := devolverCantEntreValores(a^.hi,dni1,dni2,valorX)
+                    else 
+                        devolverCantEntreValores := devolverCantEntreValores(a^.hi,dni1,dni2,valorX) + devolverCantEntreValores(a^.hd,dni1,dni2,valorX);
+                        
+    end;
+    
+    function devolverCantCero(v:vector;i:integer):integer;
+    begin
+        if (i > 15) then 
+            devolverCantCero := 0
+            else if (v[i] = 0) then
+                devolverCantCero := 1 + devolverCantCero(v,i + 1)
+                else 
+                    devolverCantCero := devolverCantCero(v,i+1)
+    end;
+    
 var
     v:vector;
+    a:arbol;
 begin
   inicializarVector(v);
+  a:= nil;
+  procesarEstructuras(v,a);
+  devolverCantEntreValores(a,dni1,dni2,valorX);
+  devolverCantCero(v,1);
 end.
