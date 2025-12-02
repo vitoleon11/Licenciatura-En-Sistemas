@@ -1,131 +1,129 @@
-programa punto1
-procesos 
-  proceso tomarFlores(ES f :numero)
+programa ejemplo
+procesos
+  proceso juntarFlores(ES f:numero)
   comenzar
     mientras HayFlorEnLaEsquina
       tomarFlor
-      f := f + 1
+      f := f+1
   fin
-  proceso tomarPapeles(ES p:numero)
+  proceso primerTramoRojo(ES f :numero)
+  comenzar
+    repetir 96
+      juntarFlores(f)
+      mover 
+    juntarFlores(f)
+  fin
+  
+  proceso juntarPapeles(ES p:numero)
   comenzar
     mientras HayPapelEnLaEsquina
       tomarPapel
-      p := p + 1
+      p:= p +1
   fin
-  proceso callePapeles (ES cantPapeles:numero)
-  variables
-    p:numero
+  
+  proceso segundoTramoAzul(ES p:numero)
   comenzar
-    cantPapeles:= 0
-    tomarPapeles(p)
-    cantPapeles:= cantPapeles + p
-    BloquearEsquina(2,PosCa)
-    mover
-    tomarPapeles(p)
-    cantPapeles:= cantPapeles + p
-    BloquearEsquina(3,PosCa)
-    mover
-    LiberarEsquina(2,PosCa)
-    tomarPapeles(p)
-    cantPapeles:= cantPapeles + p
-    mover
-    LiberarEsquina(3,PosCa)
-    mientras (PosAv < 100)
-      tomarPapeles(p)
-      cantPapeles:= cantPapeles + p
+    repetir 96 
+      juntarPapeles(p)
       mover
-  fin
-  proceso avenidaFlores(ES cantFlores: numero)
-  variables
-    f:numero
-  comenzar
-    cantFlores :=0 
-    mientras (PosCa < 100)
-      tomarFlores(f)
-      cantFlores := cantFlores + f
-      si ((PosCa +1 = 98) | (PosCa +1 = 99))
-        BloquearEsquina(PosAv,PosCa +1)
-      mover
-      si ((PosCa - 1 = 98) | (PosCa -1 = 99))
-        LiberarEsquina(PosAv, PosCa -1)
-      tomarFlores(f)
-      cantFlores := cantFlores + f
+    juntarPapeles(p)
   fin
   
 areas
-  ciudad: AreaC(1,1,100,100)
+  ciudad: AreaC (1,1,100,100)
 robots
-  robot rojo
-  variables
-    cantFlores,id:numero
-  comenzar
-    RecibirMensaje(id,fisca)
-    avenidaFlores(cantFlores)
-    EnviarMensaje(id,fisca)
-    EnviarMensaje(cantFlores,fisca)
-  fin
-  
+
   robot azul
   variables
-    cantPapeles,id:numero
+    p,id:numero
   comenzar
-    RecibirMensaje(id,fisca)
+    RecibirMensaje(id,fiscalizador)
     derecha
-    callePapeles(cantPapeles)
-    EnviarMensaje(id,fisca)
-    EnviarMensaje(cantPapeles,fisca)
+    juntarPapeles(p)
+    BloquearEsquina(PosAv+1,PosCa)
+    mover
+    juntarPapeles(p)
+    BloquearEsquina(PosAv+1,PosCa)
+    mover
+    LiberarEsquina(PosAv-1,PosCa)
+    juntarPapeles(p)
+    mover
+    LiberarEsquina(PosAv-1,PosCa)
+    segundoTramoAzul(p)
+    EnviarMensaje(id,fiscalizador)
+    EnviarMensaje(p,fiscalizador)
   fin
   
-  robot fiscalizador
+  robot rojo
   variables
-    totalPapelesAzul,totalFloresRojo,id,cantFlores,cantPapeles:numero
+    f,id:numero
   comenzar
-    EnviarMensaje(1,R1)
-    EnviarMensaje(2,R2)
-    EnviarMensaje(3,A1)
-    EnviarMensaje(4,A2)
-    totalPapelesAzul:= 0
-    totalFloresRojo := 0
+    RecibirMensaje(id,fiscalizador)
+    f := 0
+    primerTramoRojo(f)
+    BloquearEsquina(PosAv,PosCa +1)
+    mover
+    juntarFlores(f)
+    BloquearEsquina(PosAv,PosCa+1)
+    mover
+    LiberarEsquina(PosAv,PosCa-1)
+    juntarFlores(f)
+    mover
+    LiberarEsquina(PosAv,PosCa-1)
+    juntarFlores(f)
+    EnviarMensaje(id,fiscalizador)
+    EnviarMensaje(f,fiscalizador)
+  fin
+  
+  robot fisca
+  variables
+    id,cantEquipoAzul,cantEquipoRojo,cantFlores,cantPapeles:numero
+  comenzar
+    EnviarMensaje(1,A1)
+    EnviarMensaje(2,A2)
+    EnviarMensaje(3,R1)
+    EnviarMensaje(4,R2)
+    cantEquipoAzul := 0
+    cantEquipoRojo := 0
     repetir 4
       RecibirMensaje(id,*)
       si (id = 1)
-        RecibirMensaje(cantFlores,R1)
-        totalFloresRojo:= totalFloresRojo + cantFlores
+        RecibirMensaje(cantPapeles,A1)
+        cantEquipoAzul := cantEquipoAzul + cantPapeles
       sino
         si (id = 2)
-          RecibirMensaje(cantFlores,R2)
-          totalFloresRojo:= totalFloresRojo + cantFlores
-        sino
+          RecibirMensaje(cantPapeles,A2)
+          cantEquipoAzul := cantEquipoAzul + cantPapeles
+        sino 
           si (id = 3)
-            RecibirMensaje(cantPapeles,A1)
-            totalPapelesAzul:= totalPapelesAzul + cantPapeles
+            RecibirMensaje(cantFlores,R1)
+            cantEquipoRojo := cantEquipoRojo + cantFlores
           sino
-            RecibirMensaje(cantPapeles,A2)
-            totalPapelesAzul:= totalPapelesAzul + cantPapeles
-    si (totalPapelesAzul > totalFloresRojo)
+            RecibirMensaje(cantFlores,R2)
+            cantEquipoRojo := cantEquipoRojo + cantFlores
+    si (cantEquipoAzul > cantEquipoRojo)
       Informar(1)
     sino
-      si (totalFloresRojo > totalPapelesAzul)
+      si (cantEquipoRojo > cantEquipoAzul)
         Informar(2)
       sino
         Informar(0)
   fin
 variables
-  R1 : rojo
-  R2 : rojo
   A1: azul
   A2: azul
-  fisca: fiscalizador
+  R1 :rojo
+  R2: rojo
+  fiscalizador:fisca
 comenzar
-  AsignarArea(R1, ciudad)
-  AsignarArea(R2, ciudad)
   AsignarArea(A1, ciudad)
   AsignarArea(A2, ciudad)
-  AsignarArea(fisca,ciudad)
-  
-  Iniciar(R1,2,1)
-  Iniciar(R2,3,1)
-  Iniciar(A1,1,98)
-  Iniciar(A2,1,99)
-  Iniciar(fisca,100,100)
+  AsignarArea(R1, ciudad)
+  AsignarArea(R2, ciudad)
+  AsignarArea(fiscalizador, ciudad)
+  Iniciar(R1, 2,1)
+  Iniciar(R2, 3,1)
+  Iniciar(A1, 1,98)
+  Iniciar(A2, 1,99)
+  Iniciar(fiscalizador,1,1)
 fin
