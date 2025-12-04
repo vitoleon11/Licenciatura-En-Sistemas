@@ -1,34 +1,33 @@
 
-
 package parcialtorneos;
 
-
-
-public abstract class Torneo {
-    private String nombre;
-    private String fechaInicio;
-    private double costoIns;
-    private double montoPremio;
-
-    public Torneo(String nombre, String fechaInicio, double costoIns, double montoPremio) {
-        this.nombre = nombre;
-        this.fechaInicio = fechaInicio;
-        this.costoIns = costoIns;
-        this.montoPremio = montoPremio;
+public class TorneoFutbol extends Torneo {
+    private Equipo [] vEquipos;
+    private int dimL;
+    private int dimF;
+    
+    public TorneoFutbol(String nombre, String fechaInicio, double costoIns, double montoPremio,int dimF) {
+        super(nombre, fechaInicio, costoIns, montoPremio);
+        this.dimL = 0;
+        this.dimF = dimF;
+        this.vEquipos = new Equipo[dimF];
+        this.inicializarVector();
     }
     
-    public double getCostoIns() {
-        return costoIns;
+    public void inicializarVector() {
+        for(int i = 0;i < this.dimF ; i++) {
+            this.vEquipos[i] = null;
+        }
     }
     
-    public boolean esViable() {
-        return this.obtenerRecaudacion() > this.montoPremio * 2;
+    public void agregarEquipo(Equipo miEquipo){
+        if (dimL < dimF) {
+            this.vEquipos[dimL] = miEquipo;
+            dimL++;
+        }
     }
-            
-    public String toSring() {
-        String aux = "Nombre del torneo: " + this.nombre + ", Fecha: " + this.fechaInicio + ", Monto a otorgar: " + this.montoPremio + "\n Recaudación: " + this.obtenerRecaudacion() + " Es viable: " + this.esViable();
-        return aux;
-    }       
-            
-    public abstract double obtenerRecaudacion();
+    
+    public double obtenerRecaudacion(){
+        return dimL * 11 * this.getCostoIns();
+    }
 }
