@@ -1,0 +1,93 @@
+
+programa ejemplo
+procesos
+  proceso tomarFlores(ES f:numero)
+  comenzar
+    mientras HayFlorEnLaEsquina
+      tomarFlor
+      f := f + 1
+  fin
+areas
+  cuadrante: AreaPC (40,40,60,60)
+  area1: AreaP (1,1,1,1)
+  area2: AreaP (2,1,2,1)
+  area3: AreaP (3,1,3,1)
+  areaFisca: AreaP (4,1,4,1)
+  areaFlores: AreaPC(10,10,10,10)
+robots
+  robot florero
+  variables
+    id,av,f,ca,avInicial,caInicial:numero
+  comenzar
+    avInicial := PosAv
+    caInicial := PosCa
+    RecibirMensaje(id,fisca)
+    f := 0
+    RecibirMensaje(av,fisca)
+    mientras (av <> 0)
+      RecibirMensaje(ca,fisca)
+      BloquearEsquina(av,ca)
+      Pos(av,ca)
+      tomarFlores(f)
+      Pos(avInicial,caInicial)
+      LiberarEsquina(av,ca)
+      RecibirMensaje(av,fisca)
+    BloquearEsquina(10,10)
+    Pos(10,10)
+    repetir f
+      depositarFlor
+    Pos(avInicial,caInicial)
+    LiberarEsquina(10,10)
+    EnviarMensaje(f,fisca)
+  fin
+  
+  robot fiscalizador
+  variables
+    flores1,flores2,flores3,id,av,ca:numero
+  comenzar
+    EnviarMensaje(1,f1)
+    EnviarMensaje(2,f2)
+    EnviarMensaje(3,f3)
+    repetir 8
+      Random(id,1,3)
+      Random(av,40,60)
+      Random(ca,40,60)
+      si (id = 1)
+        EnviarMensaje(av,f1)
+        EnviarMensaje(ca,f1)
+      sino
+        si ( id = 2)
+          EnviarMensaje(av,f2)
+          EnviarMensaje(ca,f2)
+        sino 
+          EnviarMensaje(av,f3)
+          EnviarMensaje(ca,f3)
+    EnviarMensaje(0,f1)
+    EnviarMensaje(0,f2)
+    EnviarMensaje(0,f3)
+    RecibirMensaje(flores1,f1)
+    RecibirMensaje(flores2,f2)
+    RecibirMensaje(flores3,f3)
+    Informar(flores1 + flores2 + flores3)
+  fin
+variables
+  f1:florero
+  f2:florero
+  f3:florero
+  fisca:fiscalizador
+comenzar
+  AsignarArea(f1, cuadrante)
+  AsignarArea(f2, cuadrante)
+  AsignarArea(f3, cuadrante)
+  AsignarArea(f1, area1)
+  AsignarArea(f2, area2)
+  AsignarArea(f3, area3)
+  AsignarArea(f1, areaFlores)
+  AsignarArea(f2, areaFlores)
+  AsignarArea(f3, areaFlores)
+  AsignarArea(fisca, areaFisca)
+  Iniciar(f1, 1,1)
+  Iniciar(f2, 2,1)
+  Iniciar(f3, 3,1)
+  Iniciar(fisca, 4,1)
+fin
