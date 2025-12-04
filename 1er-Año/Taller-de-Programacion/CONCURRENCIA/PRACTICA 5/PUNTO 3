@@ -43,8 +43,8 @@ robots
     floresTotal := 0
     terminar := 0
     mientras (terminar < 2)
-      RecibirMensaje(terminar,*)
-      si (terminar = F)
+      RecibirMensaje(termine,*)
+      si (termine = F)
         RecibirMensaje(cantFlores,*)
         floresTotal := floresTotal + cantFlores
         BloquearEsquina(10,10)
