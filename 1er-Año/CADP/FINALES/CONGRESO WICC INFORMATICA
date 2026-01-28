@@ -1,0 +1,28 @@
+{1. La Facultad de Informática organiza el congreso WICC, en donde se expondrán trabajos de investigación.
+Realizar un programa que lea la información de cada publicación: título de la publicación, nombre del autor, 
+DNI del autor y tipo de publicación (1..12).
+
+La carga de publicaciones finaliza al ingresar un DNI de autor con valor 0 (el cual no debe procesarse). 
+La información se lee ordenada por DNI del autor y un autor puede tener varias publicaciones. Se pide escribir un programa que:
+
+a. Informar el tipo de publicación con mayor cantidad de publicaciones.
+b. Informar para cada autor la cantidad de publicaciones presentadas.}
+
+program gork;
+type
+    publicacion = record
+        titulo:string;
+        nombre:string;
+        dni:integer;
+        tipo:integer;
+    end;
+    
+    lista =^nodo;
+    nodo = record
+        dato:publicacion;
+        sig:lista;
+    end;
+    
+begin
+
+end.
