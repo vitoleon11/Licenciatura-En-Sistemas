@@ -1,0 +1,26 @@
+{Una inmobiliaria de la ciudad de La Plata necesita un programa para administrar información sobre los 
+inmuebles que tuvo alquilados en el 2016. Para ello se dispone de la información de los inmuebles. De cada 
+inmueble se conoce: código de inmueble, tipo de inmueble (1: monoambiente, 2: departamento, 3: casa, 4: local), 
+DNI del dueño, DNI del inquilino y precio del alquiler. La lectura finaliza cuando se lee el inmueble con código 999. 
+La información está almacenada de manera ordenada por DNI del dueño.
+
+Procesar e informar:
+
+Para cada dueño, la cantidad de inmuebles que tuvo alquilados con precio de alquiler superior a 5000.
+
+El precio de alquiler promedio de aquellos inmuebles tipo departamento.}
+
+
+program gork;
+type
+    inmueble = record
+        codigo:integer;
+        tipo :integer;
+        dniDuenio : integer;
+        dniInquilino : integer;
+        precio: real;
+    end;
+    
+
+begin
+end.
