@@ -1,0 +1,25 @@
+program gork; 
+type
+venta = record 
+  codVenta:integer; 
+  codProducto: integer; 
+  cantVendida:integer; 
+end; 
+lista =^nodo; 
+nodo = record 
+  dato :venta; 
+  sig:lista; 
+end; 
+procedure leerVenta(var v:venta);
+begin 
+  readln(v.codVenta); 
+  if (v.codVenta <> 9999) then begin 
+    readln(v.codProducto); 
+    readln(v.cantVendida); 
+    end; 
+end; 
+procedure insertarOrdenado(var l :lista; v:venta); 
+var 
+  nue,ant,act:lista; 
+begin 
+end;
