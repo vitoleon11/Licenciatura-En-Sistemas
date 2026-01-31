@@ -35,7 +35,7 @@ type
     
     vectorGeneros = array [1..5] of integer;
     
-    procedure inicializarVector(var v: vector);
+    procedure inicializarVector(var v: vectorGeneros);
     var
         i:integer
     begin
@@ -97,7 +97,7 @@ type
         cantidadPares := cant;
     end;
     
-    procedure maximosCodigos(v:vector,var cod1:integer;var cod2:integer);
+    procedure maximosCodigos(v:vectorGeneros,var cod1:integer;var cod2:integer);
     var
         max1,max2,i:integer;
     begin
@@ -135,7 +135,7 @@ type
         end;
     end;
     
-    procedure procesarTodo(var l : lista; var v: vector);
+    procedure procesarTodo(var l : lista; var v: vectorGeneros);
     var
         p:persona;
         cod1,cod2,dni:integer;
@@ -146,13 +146,27 @@ type
             leerPersona(p);
             v[p.codGenero] := v[p.codGenero] + 1;
             agregarAdelante(l,p)
-        until (dni = 33555444);
+        until (p.dni = 33555444);
         writeln('La cantidad de DNI con mas digitos pares son: ', cantidadPares(l));
-        maximosCodigos(l,cod1,cod2);
+        maximosCodigos(v,cod1,cod2);
         writeln('Los dos codigos maximos fueron ', cod1, ' y ', cod2);
         writeln('Ingrese un dni');
         readln(dni);
         eliminarDNI(l,dni);
     end;
+
+
+
+
+
+var
+    l:lista;
+begin   
+    l := nil;
+    procesarTodo(l);
+end.
+
+
+
 
 
