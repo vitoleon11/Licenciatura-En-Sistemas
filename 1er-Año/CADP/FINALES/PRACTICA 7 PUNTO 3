@@ -28,10 +28,16 @@ type
         sig:lista;
     end;
     
+    lista2= ^nodo2;
+    nodo2 = record
+        dato:viaje;
+        sig:lista2;
+    end;
+    
     procedure informarMaximos(l:lista);
     var
-        maxCod1,maxCod2,codActual,kmActual:integer;
-        max1,max2:real;
+        maxCod1,maxCod2,codActual:integer;
+        max1,max2,kmActual:real;
         aux:lista;
     begin
         aux:=l;
@@ -55,9 +61,49 @@ type
                     maxCod2 := codActual;
             end;
         end;
+        writeln('Los maximos codigos fueron: ', maxCod1,' y ', maxCod2);
+    end;
+    
+    procedure insertarOrdenado(var l2 : lista2; v:viaje);
+    var
+        nue,act,ant:lista2;
+    begin
+        new(nue);
+        nue^.dato := v;
+        nue^.sig := nil;
+        if (l2 = nil) OR (v.numViaje <= l2^.dato.numViaje) then begin
+            nue^.sig := l2;
+            l2:= nue;
+        end
+        else begin
+                ant := l2;
+                act:= l2^.sig;
+                while (act <> nil) and (act^.dato.numViaje < v.numViaje) do begin
+                    ant := act;
+                    act := act^.sig;
+                end;
+                ant^.sig := nue;
+                nue^.sig := act;
+        end;
+    end;
+    
+    procedure cargarLista2(var l2:lista2;l:lista);
+    var
+        aux:lista;
+    begin
+        aux:=l;
+        while (aux <> nil) do begin
+            if (aux^.dato.kmReco > 5) then 
+                insertarOrdenado(l2,aux^.dato);
+            aux := aux^.sig;
+        end;
     end;
     
 var
     l:lista;
+    l2:lista2;
 begin
+    l2:=nil;
+    informarMaximos(l);
+    cargarLista2(l2,l);
 end.
