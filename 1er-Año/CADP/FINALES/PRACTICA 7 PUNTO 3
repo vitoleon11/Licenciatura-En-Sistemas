@@ -1,0 +1,63 @@
+{
+
+Una remisería dispone de información acerca de los viajes realizados durante el mes de mayo de 2020. De
+cada viaje se conoce: número de viaje, código de auto, dirección de origen, dirección de destino y
+kilómetros recorridos durante el viaje. Esta información se encuentra ordenada por código de auto y para
+un mismo código de auto pueden existir 1 o más viajes. Se pide:
+
+a. Informar los dos códigos de auto que más kilómetros recorrieron.
+
+b. Generar una lista nueva con los viajes de más de 5 kilómetros recorridos, ordenada por número de
+viaje.
+
+}
+
+
+program Hello;
+type
+    viaje = record
+        numViaje:integer;
+        codAuto:integer;
+        dirOrigen:string;
+        dirDestino:string;
+        kmReco:real;
+    end;
+    lista = ^nodo;  //SE DISPONE
+    nodo = record
+        dato:viaje;
+        sig:lista;
+    end;
+    
+    procedure informarMaximos(l:lista);
+    var
+        maxCod1,maxCod2,codActual,kmActual:integer;
+        max1,max2:real;
+        aux:lista;
+    begin
+        aux:=l;
+        max1:=-1;
+        max2:= -1;
+        while (aux <> nil) do begin
+            codActual := aux^.dato.codAuto;
+            kmActual := 0;
+            while (aux <> nil) AND (codActual = aux^.dato.codAuto) do begin
+                kmActual := kmActual + aux^.dato.kmReco;
+                aux := aux^.sig;
+            end;
+            if (kmActual > max1) then begin
+                max2 := max1;
+                max1 := kmActual;
+                maxCod2 := maxCod1;
+                maxCod1 := codActual;
+            end
+            else if (kmActual > max2) then begin
+                    max2:= kmActual;
+                    maxCod2 := codActual;
+            end;
+        end;
+    end;
+    
+var
+    l:lista;
+begin
+end.
