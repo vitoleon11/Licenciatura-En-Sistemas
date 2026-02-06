@@ -1,3 +1,4 @@
+
 {5. Una empresa de transporte de cargas dispone de la información de su flota compuesta por 100 camiones.
 De cada camión se tiene: patente, año de fabricación y capacidad (peso máximo en toneladas que puede
 transportar).
@@ -5,12 +6,108 @@ Realizar un programa que lea y almacene la información de los viajes realizados
 viaje se lee: código de viaje, código del camión que lo realizó (1..100), distancia en kilómetros recorrida,
 ciudad de destino, año en que se realizó el viaje y DNI del chofer. La lectura finaliza cuando se lee el código
 de viaje -1.
+
 Una vez leída y almacenada la información, se pide:
+
 1. Informar la patente del camión que más kilómetros recorridos posee y la patente del camión que
 menos kilómetros recorridos posee.
+
 2. Informar la cantidad de viajes que se han realizado en camiones con capacidad mayor a 30,5 toneladas
 y que posean una antigüedad mayor a 5 años al momento de realizar el viaje (año en que se realizó el
 viaje).
+
 3. Informar los códigos de los viajes realizados por choferes cuyo DNI tenga sólo dígitos impares.
 Nota: Los códigos de viaje no se repiten.
 }
+
+}
+
+
+program gork;
+type
+    camion = record
+        patente : integer;
+        anio:integer;
+        capacidad: real;
+    end;
+    
+    viaje = record
+        codViaje:integer;
+        codCamion: integer;
+        distancia:real;
+        ciudad:string;
+        anioViaje:integer;
+        dniChofer:integer;
+    end;
+    
+    vector = array [1..100] of camion; //SE DISPONE
+    
+    lista = ^nodo;
+    nodo = record
+        dato:viaje;
+        sig:lista;
+    end;
+    
+    procedure leerViaje(var v:viaje);
+    begin
+        readln(v.codViaje);
+        if (v.codViaje <> -1) then begin
+            readln(v.codCamion);
+            readln(v.distancia);
+            readln(v.ciudad);
+            readln(v.anioViaje);
+            readln(v.dniChofer);
+        end;
+    end;
+    
+    procedure agregarAdelante(var l:lista;v:viaje);
+    var
+        nue:lista;
+    begin
+        new(nue);
+        nue^.dato := v;
+        nue^.sig := l;
+        l := nue;
+    end;
+    
+    procedure cargarLista(var l: lista);
+    var
+        v:viaje;
+    begin
+        leerViaje(v);
+        while (v.codViaje <> -1) do begin
+            agregarAdelante(l,v);
+            leerViaje(v);
+        end;
+    end;
+    
+    procedure informarMasYMenosKM(l:lista;v:vector);
+    var
+        aux:lista;
+        maxKM,minKm,maxPatente,minPatente:integer;
+    begin
+        maxKM:= -1;
+        minKM := 9999;
+        maxPatente := -1;
+        minPatente:= -1;
+        aux := l;
+        while (aux <> nil) do begin
+            if (aux^.dato.distancia > maxKM) then begin
+                maxKM := aux^.dato.distancia;
+                maxPatente := v[aux^.dato.codCamion];
+            end;
+            if (aux^.dato.distancia < minKM) then begin
+                minKM := aux^.dato.distancia;
+                minPatente := v[aux^.dato.codCamion]
+            end;
+            aux := aux^.sig;
+        end;
+    end;
+    
+var
+    l:lista;
+    
+begin
+    l := nil;
+    cargarLista(l);
+end.
