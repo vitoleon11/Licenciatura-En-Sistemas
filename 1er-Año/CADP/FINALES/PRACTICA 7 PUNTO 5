@@ -20,8 +20,6 @@ viaje).
 Nota: Los códigos de viaje no se repiten.
 }
 
-}
-
 
 program gork;
 type
@@ -41,13 +39,24 @@ type
     end;
     
     vector = array [1..100] of camion; //SE DISPONE
-    
+
+    vectorKilometros = array [1..100] of real;
+
     lista = ^nodo;
     nodo = record
         dato:viaje;
         sig:lista;
     end;
     
+    procedure inicializarVector(var v:vectorKilometros);
+    var
+        i:integer;
+    begin
+        for i := 1 to 100 do begin
+            v[i] := 0;
+        end;
+    end;
+
     procedure leerViaje(var v:viaje);
     begin
         readln(v.codViaje);
@@ -81,33 +90,51 @@ type
         end;
     end;
     
-    procedure informarMasYMenosKM(l:lista;v:vector);
+    procedure informarMasYMenosKM(l:lista;v:vector;var vKm:vectorKilometros);
     var
         aux:lista;
-        maxKM,minKm,maxPatente,minPatente:integer;
+        maxKM,minKm:real;
+        maxPatente,minPatente,i:integer;
     begin
-        maxKM:= -1;
-        minKM := 9999;
-        maxPatente := -1;
-        minPatente:= -1;
         aux := l;
         while (aux <> nil) do begin
-            if (aux^.dato.distancia > maxKM) then begin
-                maxKM := aux^.dato.distancia;
-                maxPatente := v[aux^.dato.codCamion];
-            end;
-            if (aux^.dato.distancia < minKM) then begin
-                minKM := aux^.dato.distancia;
-                minPatente := v[aux^.dato.codCamion]
-            end;
+            vKm[aux^.dato.codCamion] := vKm[aux^.dato.codCamion] + aux^.dato.distancia;
             aux := aux^.sig;
+        end;
+        maxKM :=  -1;
+        minKm := 9999;
+        for i := 1 to 100 do begin
+            if (vKm[i] > maxKM) then begin
+                maxKM := vKm[i];
+                maxPatente := v[i].patente
+            end;
+            if (vKm[i] < minKm) then begin
+                minKm := vKm[i];
+                minPatente := v[i].patente;
+            end;
         end;
     end;
     
+
+    procedure informarToneladas(l:lista;v:vector);
+    var
+        aux:lista;
+        cant : integer;
+    begin
+        aux := l;
+        cant := 0;
+        while (aux <> nil) do begin
+            if (v[aux^.dato.codCamion].capacidad > 30.5) AND (aux^.dato.anioViaje - v[aux^.dato.codCamion].anio > 5) then 
+                cant := cant + 1;
+            aux := aux^.sig;
+        end;
+        writeln('La cantidad de viajes con mayor a 30.5T y antiguedad de 5 anios fue ', cant);
+    end;
 var
     l:lista;
-    
+    vKm:vectorKilometros;
 begin
     l := nil;
+    inicializarVector(vKm);
     cargarLista(l);
 end.
