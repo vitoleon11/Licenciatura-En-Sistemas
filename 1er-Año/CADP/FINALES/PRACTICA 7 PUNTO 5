@@ -130,6 +130,23 @@ type
         end;
         writeln('La cantidad de viajes con mayor a 30.5T y antiguedad de 5 anios fue ', cant);
     end;
+
+    function dniImpar(dni:integer):boolean;
+    var
+        dig:integer;
+        esPar:boolean;
+    begin
+
+        while (dni <> 0) AND (not esPar) do begin
+            dig := dni MOD 10;
+
+        end;
+    end;
+
+    procedure informarCodigos(l:lista);
+    begin
+        
+    end;
 var
     l:lista;
     vKm:vectorKilometros;
@@ -137,4 +154,6 @@ begin
     l := nil;
     inicializarVector(vKm);
     cargarLista(l);
+    informarMasYMenosKM(l,v,vKm);
+    informarToneladas(l,v);
 end.
