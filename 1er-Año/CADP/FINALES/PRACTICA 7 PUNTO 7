@@ -1,0 +1,149 @@
+{La Facultad de Informática desea procesar la información de los alumnos que finalizaron la carrera de
+Analista Programador Universitario. Para ello se deberá leer la información de cada alumno, a saber:
+número de alumno, apellido, nombres, dirección de correo electrónico, año de ingreso, año de egreso y las
+notas obtenidas en cada una de las 24 materias que aprobó (los aplazos no se registran).
+1. Realizar un módulo que lea y almacene la información de los alumnos hasta que se ingrese el alumno
+con número de alumno -1, el cual no debe procesarse. Las 24 notas correspondientes a cada alumno
+deben quedar ordenadas de forma descendente.
+2. Una vez leída y almacenada la información del inciso 1, se solicita calcular e informar:
+a. El promedio de notas obtenido por cada alumno.
+b. La cantidad de alumnos ingresantes 2012 cuyo número de alumno está compuesto únicamente
+por dígitos impares.
+c. El apellido, nombres y dirección de correo electrónico de los dos alumnos que más rápido se
+recibieron (o sea, que tardaron menos años)
+3. Realizar un módulo que, dado un número de alumno leído desde teclado, lo busque y elimine de la
+estructura generada en el inciso 1. El alumno puede no existir}
+
+program gork;
+type
+
+    vNotas = array [1..24] of real;
+
+    alumno = record
+        numero:integer;
+        apellido: string;
+        nombre: string;
+        correo:string;
+        ingreso:integer;
+        egreso:integer;
+        notas:vNotas;
+    end;
+    
+    lista = record
+        dato:alumno;
+        sig:lista;
+    end;
+
+    procedure leerAlumno(var a : alumno);
+    var
+        i,j,p,item:integer;
+    begin
+        readln(a.numero);
+        if (a.numero <> -1 ) then begin
+            readln(a.apellido);
+            readln(a.nombre);
+            readln(a.correo);
+            readln(a.ingreso);
+            readln(a.egreso);
+            for i:= 1 to 24 do begin
+                readln(a.notas[i]);
+            end;
+            for i:= 1 to 23 do begin
+            p := i;
+            for j := i + 1 to 24 do begin
+                if (a.notas[j] < a.notas[p]) then
+                    p := j;
+            end;
+            item := a.notas[p];
+            a.notas[p] := a.notas[i];
+            a.notas[i] := item;
+            
+        end;
+        end;
+    end;
+
+    procedure agregarAdelante(var l : lista;a : alumno);
+    var
+        nue:lista;
+    begin
+        new(nue);
+        nue^.dato := a;
+        nue^.sig := l;
+        l := nue;
+    end;
+
+    procedure cargarLista(var l : lista);
+    var
+        a:alumno;
+    begin
+        leerAlumno(a);
+        while (a.numero <> -1) do begin
+            agregarAdelante(l,a);
+            leerAlumno(a);
+        end;
+    end;
+
+    function numImpares(num:integer):boolean;
+    var
+        dig:integer;
+        esPar:boolean;
+    begin
+        esPar := false;
+        while (num <> 0) AND (not esPar) do begin
+            dig := num MOD 10;
+            if (dig MOD 2 = 0) then
+                esPar := true;
+            num := num div 10;
+        end;
+        numImpares := not esPar;
+    end;
+
+    procedure procesarTodo(l:lista);
+    var
+        aux:lista;
+        promedio,notaTotal:real;
+        cant2012,minAnio1,minAnio2,i: integer;
+        minCorreo1,minCorreo2,minNom1,minNom2,minApe1,minApe2:string;
+    begin
+        aux := l;
+        cant2012 := 0;
+        minAnio1 := 999;
+        minAnio2 := 999;
+        while (aux <> nil) do begin
+            notaTotal := 0;
+            //INCISO A
+            for i := 1 to 24 do begin 
+                notaTotal := notaTotal + aux^.dato.notas[i];
+            end;
+            promedio := notaTotal / 24;
+            writeln('El promedio de las notas es: ', promedio);
+            // INCISO B
+            if (aux^.dato.ingreso = 2012) AND (numImpares(aux^.dato.numero)) then
+                cant2012 := cant2012 + 1;
+                //INCISO C
+            if (aux^.dato.egreso - aux^.dato.ingreso < minAnio1) then begin
+                minAnio2 := minAnio1;
+                minApe2 := minApe1;
+                minNom2 := minNom1;
+                minCorreo2 := minCorreo1;
+                minAnio1 := aux^.dato.egreso - aux^.dato.ingreso;
+                minApe1 := aux^.dato.apellido;
+                minNom1 := aux^.dato.nombre;
+                minCorreo1 := aux^.dato.correo;
+            end
+            else if (aux^.dato.egreso - aux^.dato.ingreso < minAnio2) then begin
+                    minAnio2 := aux^.dato.egreso - aux^.dato.ingreso;
+                    minApe2 := aux^.dato.apellido;
+                    minNom2 := aux^.dato.nombre;
+                    minCorreo2 := aux^.dato.correo;
+                end;
+            aux := aux^.sig;
+        end;
+    end;
+var
+    l:lista
+begin
+    l:= nil;
+    cargarLista(l);
+    procesarTodo(l);
+end.
