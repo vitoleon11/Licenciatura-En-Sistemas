@@ -140,10 +140,34 @@ type
             aux := aux^.sig;
         end;
     end;
+
+    procedure eliminarAlumno(var l: lista);
+    var
+        num: integer;
+        act, ant: lista;
+    begin
+        readln(num);
+        act := l;
+        ant := nil;
+        while (act <> nil) and (act^.dato.numero <> num) do begin
+            ant := act;
+            act := act^.sig;
+        end;
+        if (act <> nil) then begin
+            { lo encontró }
+            if (ant = nil) then
+                l := act^.sig      { borrar primero }
+            else
+                ant^.sig := act^.sig;
+            dispose(act);
+        end;
+    end;
+
 var
     l:lista
 begin
     l:= nil;
     cargarLista(l);
     procesarTodo(l);
+    eliminarAlumno(l);
 end.
