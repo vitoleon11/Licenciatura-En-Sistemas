@@ -1,4 +1,6 @@
-{ 8. Una entidad bancaria de la ciudad de La Plata solicita realizar un programa destinado a la administración de
+{
+
+8. Una entidad bancaria de la ciudad de La Plata solicita realizar un programa destinado a la administración de
 transferencias de dinero entre cuentas bancarias, efectuadas entre los meses de Enero y Noviembre del año
 2018.
 El banco dispone de una lista de transferencias realizadas entre Enero y Noviembre del 2018. De cada
@@ -7,6 +9,7 @@ destino, DNI de titular de cuenta destino, fecha, hora, monto y el código del m
 alquiler, 2: expensas, 3: facturas, 4: préstamo, 5: seguro, 6: honorarios y 7: varios). Esta estructura no posee
 orden alguno.
 Se pide:
+
 a) Generar una nueva estructura que contenga sólo las transferencias a terceros (son aquellas en las que
 las cuentas origen y destino no pertenecen al mismo titular). Esta nueva estructura debe estar
 ordenada por número de cuenta origen.
@@ -16,3 +19,38 @@ c) Calcular e informar cuál es el código de motivo que más transferencias a t
 d) Calcular e informar la cantidad de transferencias a terceros realizadas en el mes de Junio en las cuales
 el número de cuenta destino posea menos dígitos pares que impares.
 }
+program gork;
+type
+    transferencia = record
+        numOrigen : integer;
+        dniOrigen:integer;
+        numDestino:integer;
+        dniDestino:integer;
+        fecha:string;
+        hora:string;
+        monto:real;
+        codigo:integer;
+    end;
+
+    lista = ^nodo;  //SE DISPONE
+    nodo = record
+        dato:transferencia;
+        sig:lista;
+    end;
+    
+    lista2= ^nodo2;
+    nodo2 = record
+        dato:transferencia;
+        sig:lista2;
+    end;
+
+    procedure insertarOrdenado(var l : lista; t: transferencia)
+    var
+        nue,act,ant:lista;
+    begin
+    end;
+
+var
+
+begin 
+end;
