@@ -1,4 +1,5 @@
-{10. Una compañía de venta de insumos agrícolas desea procesar la información de las empresas a las que les
+{
+10. Una compañía de venta de insumos agrícolas desea procesar la información de las empresas a las que les
 provee sus productos. De cada empresa se conoce su código, nombre, si es estatal o privada, nombre de la
 ciudad donde está radicada y los cultivos que realiza (a lo sumo 20). Para cada cultivo de la empresa se
 registra: tipo de cultivo (trigo, maíz, soja, girasol, etc.), cantidad de hectáreas dedicadas y la cantidad de
@@ -14,3 +15,21 @@ total de hectáreas.
 d. La empresa que dedica más tiempo al cultivo de maíz
 e. Realizar un módulo que incremente en un mes los tiempos de cultivos de girasol de menos de 5
 hectáreas de todas las empresas que no son estatales.}
+
+program gork;
+type
+    empresa = record
+        codigo:integer;
+        nombreEmpresa:string;
+        estOpriv:string;
+        nombreCiudad:string;
+        cultivos:vCultivos;
+        cantHectareas:integer;
+        cantMeses:integer;
+    end;
+
+    vCultivos = array [1..5] of integer;
+var
+begin
+    
+end.
