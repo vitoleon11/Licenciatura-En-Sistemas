@@ -16,6 +16,7 @@
     parámetro (el mismo puede no existir)
 
 }
+
 program gork;
 type
     pelicula = record
@@ -130,10 +131,34 @@ type
         writeln('El genero con mayor puntaje es ', codMax)
     end;
 
+
+    procedure eliminarPelicula(var l:lista;codigo:integer);
+    var
+        act,ant:lista;
+    begin
+        act := l;
+        ant:= nil;
+        while (act <> nil) AND (act^.dato.codPelicula <> codigo) do begin
+            ant := act;
+            act := act^.sig;
+        end;
+        if (act <> nil) then begin
+            if (ant = nil) then
+                l := act^.sig
+            else
+                ant^.sig := act^.sig;
+            dispose(act);
+        end
+        else
+            writeln('No se encontro la pelicula a eliminar.')
+    end;
 var
     l:lista;
     v:vector;
+    codigo:integer;
 begin
     inicializarVector(v);
     actualizarLista(l,v);
+    readln(codigo);
+    eliminarPelicula(l,codigo);
 end.
