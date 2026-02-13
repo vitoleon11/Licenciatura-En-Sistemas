@@ -1,11 +1,11 @@
-Práctica:
+{Práctica:
 Se dispone de la información de los productos de un supermercado.
 De cada producto se tiene:
 - Código
 - Nombre
 - Rubro (1..20)
 - Precio
-Se pide implementar un programa que guarde en una estructura adecuada los productos de los rubros que tengan 10 productos.
+Se pide implementar un programa que guarde en una estructura adecuada los productos de los rubros que tengan 10 productos.}
 
 program gork;
 type
