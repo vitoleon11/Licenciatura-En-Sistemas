@@ -9,3 +9,100 @@ Esta estructura debe quedar ordenada por ISBN de libro.
 B) Calcular e informar el día del mes en que se realizaron menos préstamos.
 C) Calcular e informar el porcentaje de préstamos que poseen nro. de préstamo impar y nro. de socio par.
 }
+
+program gork;
+type
+    prestamo = record
+        numPrestamo:integer;
+        isbn:integer;
+        numSocio:integer;
+        dia:integer;
+    end;
+
+    libro = record
+        isbn:integer;
+        cantidad:integer;
+    end;
+
+    vector = array [1..31] of integer;
+
+    lista = ^nodo;
+    nodo = record
+        dato:prestamo;
+        sig:lista;
+    end;
+
+    procedure leerPrestamo(var p :prestamo);
+    begin
+        readln(p.isbn);
+        if (p.isbn <> -1) then begin
+            readln(p.numPrestamo);
+            readln(p.numSocio);
+            readln(p.dia);
+        end;
+    end;
+
+    procedure inicializarVector(var v:vector);
+    var
+        i:integer;
+    begin
+        for i := 1 to 31 do begin
+            v[i] := 0;
+        end;
+    end;
+
+    procedure agregarAdelante(var l : lista;isbn:integer;cant:integer);
+    var
+        nue:lista;
+    begin
+        new(nue);
+        nue^.dato.isbn := p.isbn;
+        nue^.dato.cant := cant;
+        nue^.sig := l;
+        l := nue;
+    end;
+
+    procedure procesarTodo(var l:lista;var v:vector);
+    var
+        p:prestamo;
+        cant,isbnActual,cantTotal,cumplen,min,minMes,i:integer;
+        porcentaje:real;
+    begin
+        leerPrestamo(p);
+        cantTotal := 0;
+        cumplen := 0;
+        while (p.isbn <> -1) do begin
+            cant := 0;
+            isbnActual := p.isbn;
+            while (p.isbn <> -1) AND (isbnActual = p.isbn)   do begin
+                // INCISO B
+                v[p.dia] := v[p.dia] + 1;
+                //INCISO C 
+                cantTotal := cantTotal + 1;
+                if (p.numSocio MOD 2 = 0) and (p.numPrestamo mod 2 <> 0) then 
+                    cumplen := cumplen + 1;
+                cant := cant + 1;
+                leerPrestamo(p);
+            end;
+            agregarAdelante(l,isbnActual,cant);
+        end;
+        porcentaje := (cumplen * 100) / cantTotal;
+        writeln('El porcentaje de los que cumplen con los numeros es del %', porcentaje);
+        min := 9999;
+        minMes v[1];
+        for i := 2 to 31 do begin
+            if (v[i] < min) then begin
+                min := v[i];
+                minMes := i;
+            end;
+        end;
+        writeln('El mes con menos cantidad de prestamos fue: ', minMes);
+    end;
+var
+    l:lista;
+    v:vector;
+begin
+    inicializarVector(v);
+    l := nil;
+    procesarTodo(l,v);
+end.
