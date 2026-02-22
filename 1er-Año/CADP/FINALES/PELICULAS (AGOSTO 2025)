@@ -1,0 +1,71 @@
+program gork;
+type
+    pelicula = record
+        numero: integer;
+        titulo:string;
+        nomGenero:string;
+        nomDirector:string;
+    end;
+
+    peliNodo = record
+        nomDirector:integer;
+        cantPeliculas:integer;
+    end;
+
+    lista = ^nodo;
+    nodo = record
+        dato:peliNodo;
+        sig:lista;
+    end;
+
+
+    procedure leerPelicula(var p : pelicula);
+    begin
+        readln(p.numero);
+        if ( p.numero <> 0) then begin
+            readln(titulo);
+            readln(p.nomGenero);
+            readln(p.nomDirector);
+        end;
+    end;
+
+    procedure agregarAdelante(var l:lista; p:pelicula);
+    var
+        nue:lista;
+    begin
+        new(nue);
+        nue^.dato.nomDirector := p.nomDirector;
+        nue^.dato.cantPeliculas := 1;
+        nue^.sig := l;
+        l := nue;
+    end;
+
+    procedure cargarLista(var l :lista);
+    var
+        p:pelicula;
+        pude:boolean;
+        aux:lista;
+    begin
+        leerPelicula(p);
+        while(p.numero <> 0) do begin
+            aux := l;
+            pude := false;
+            while (aux <> nil) AND (not pude) do begin
+                if (aux^.dato.nomDirector = p.nomDirector) then begin
+                    aux^.dato.cantPeliculas := aux^.dato.cantPeliculas + 1;
+                    pude := true;
+                end;
+                else
+                    aux := aux^.sig;
+            end;
+            if (not pude) then
+                agregarAdelante(l,p);
+            leerPelicula(p);
+        end;
+    end;    
+    
+var 
+    l:lista;
+begin
+    cargarLista(l);
+end.   
