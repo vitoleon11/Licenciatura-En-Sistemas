@@ -1,0 +1,57 @@
+program gork;
+type
+    prestamo = record
+        codTema:integer;
+        fecha:string;
+        codLibro:integer;
+    end;
+
+    lista = ^nodo;      //SE DISPONE
+    nodo = record
+        dato : prestamo;
+        sig:lista;
+    end;
+
+    vector = array [1..15] of integer;
+
+    procedure cargarLista(var l : lista);// SE DISPONE
+
+    procedure inicializarVector(var v: vector);
+    var
+        i:integer;
+    begin
+        for i := 1 to 15 do begin
+            v[i] := 0;
+        end;
+    end;
+
+    procedure cargarEInformarVector(l:lista;var v:vector);
+    var
+        aux:lista;
+        maxCod,max,i:integer;
+    begin
+        aux := l;
+        while (aux <> nil) do begin
+            v[aux^.dato.codTema] := v[aux^.dato.codTema] + 1;
+            aux := aux^.sig;
+        end;
+        max := -1;
+        maxCod := 1;
+        for i := 1 to 15 do begin
+            writeln('La cantidad total de prestamos para el codigo ',i,' fue ',v[i]);
+            if (v[i] > max) then begin
+                maxCod := i;
+                max := v[i];
+            end; 
+        end;
+    end;
+
+var 
+    l:lista;
+    v:vector;
+begin 
+    l:= nil;
+    cargarLista(l);
+    inicializarVector(v);
+    cargarEInformarVector(l,v);
+end.
