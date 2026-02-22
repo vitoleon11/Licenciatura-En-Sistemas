@@ -1,0 +1,72 @@
+{Se lee información de productos. De cada producto se lee código de producto, nombre del rubro y stock. 
+Se pide realizar un programa que genere una estructura donde se almacenen, para cada rubro leído, su nombre,
+cantidad de productos del rubro y stock total, para los productos con stock distinto de cero. La lectura finaliza
+cuando se lee el código -1 y la lectura viene ordenada por nombre de rubro.}
+program gork;
+type
+    producto = record
+        codProducto:integer;
+        nombreRubro:string;
+        stock:integer;
+    end;
+
+    rubro = record
+        nombre:string;
+        cantProductos:integer;
+        stockTotal:integer;
+    end;
+
+    lista = ^nodo
+    nodo = record
+        dato:rubro;
+        sig:lista;
+    end;
+
+    procedure leerProducto(var p:producto);
+    begin
+        readln(p.codProducto);
+        if(p.codProducto <> -1) then begin
+            readln(p.nombreRubro);
+            readln(p.stock);
+        end;
+    end;
+
+    procedure agregarAdelante(Var l : lista; nom:string;stock:integer;cant:integer);
+    var
+        nue:lista;
+    begin
+        new(nue);
+        nue^.dato.nombre := nom;
+        nue^.dato.stock := stock;
+        nue^.dato.cantProductos := cant;
+        nue^.sig := l;
+        l:=nue;
+    end;
+
+    procedure cargarLista(var l:lista);
+    var
+        p:producto;
+        nombreActual:string;
+        cant,stock:integer;
+    begin
+        leerProducto(p);
+        while (p.codProducto <> -1) do begin
+            nombreActual := p.nombreRubro;
+            cant:= 0;
+            stock := 0;
+            while (p.codProducto <> -1 ) AND (nombreActual = p.nombreRubro) do begin
+                cant := cant + 1;
+                stock := stock + p.stock;
+                leerProducto(p);
+            end;
+            if (stock <> 0) then 
+                agregarAdelante(l,nombreActual,stock,cant);
+        end;
+    end;
+
+var
+    l:lista;
+begin
+    l := nil;
+    cargarLista(l);
+end.
