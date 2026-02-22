@@ -1,0 +1,41 @@
+{Una empresa mantiene la información de sus empleados (a lo sumo 1000). De cada empleado conoce apellido, dni y sueldo.
+La estructura se encuentra ordenada por dni. Se pide realizar un programa que lea dni hasta leer el dni 0 y elimine de la 
+estructura de empleados aquel o aquellos empleado/s cuyo dni es mayor o igual al leído}
+program gork;
+const
+    dimF = 1000;
+type
+    empleado = record
+        apellido : string;
+        dni:integer;
+        sueldo:real;
+    end;
+
+    vector = array [1..dimF] of empleado; //se dispone
+
+    procedure cargarVector(var v:vector;var dimL:integer); //se dispone
+
+
+    procedure eliminarDni(var v : vector;var dimL:integer);
+    var
+        i,dni:integer;
+    begin
+        readln(dni);
+        while (dni <> 0) do begin
+            i := 1;
+            while (i <= dimL) AND (v[i].dni < dni) do begin
+                i:= i + 1;
+            end;
+            if (i <= dimL) then begin
+                dimL := i - 1;
+            end;
+            readln(dni);
+        end;
+    end;
+var 
+    v:vector;
+    dimL:integer;
+begin
+    cargarVector(v,dimL);
+    eliminarDni(v,dimL);
+end.
