@@ -1,0 +1,64 @@
+program gork;
+type
+    empleado = record
+        dni:integer;
+        apellido : string;
+        nombre: string;
+        codDepto:integer;
+        fecha:string;
+        presente:boolean;
+    end;
+
+    lista = ^nodo;  //SE DISPONE ORDENADA POR COD DEPARTAMENTO
+    nodo = record
+        dato:empleado;
+        sig:lista;
+    end;
+
+    vector = array [1..100] of integer;
+
+    procedure cargarLista(var l :lista);//SE DISPONE
+
+    procedure inicializarVector(var v :vector);
+    var
+        i:integer;
+    begin
+        for i:= 1 to 100 do begin
+            v[i] := 0;
+        end;
+    end;
+
+    procedure cargarVector(l:lista;var v :vector);
+    var
+        aux:lista;
+        codActual,i,maxCod,maxCant:integer;
+    begin
+        aux := l;
+        while (aux <> nil) do begin
+            codActual := aux^.dato.codDepto;
+            while (aux <> nil) and (codActual = aux^.dato.codDepto) do begin
+                if (aux^.dato.presente = true) then
+                    v[aux^.dato.codDepto] := v[aux^.dato.codDepto] + 1;
+                aux := aux^.sig;
+            end;
+        end;
+        maxCod := 0;
+        maxCant := -1;
+        for i := 1 to 100 do begin
+            if (v[i] > maxCant) then begin
+                maxCod := i;
+                maxCant:= v[i];
+            end;
+        end;
+        writeln('El codigo de departamento con mas empleados es ', maxCod)
+    end;
+
+var 
+    l:lista;
+    v:vector;
+begin
+    l := nil;
+    cargarLista(l);
+    inicializarVector(v);
+    cargarVector(l,v);
+end.
