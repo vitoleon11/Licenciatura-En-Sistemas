@@ -1,0 +1,83 @@
+program gork;
+type
+    producto = record
+        codProducto:integer;
+        precio:real;
+        stock:integer;
+        codFabricante:integer;
+    end;
+
+    prodCompra = record
+        codProducto:integer;
+        precio:real;
+        cantidad:integer;
+        codFabricante:integer;
+    end;
+
+    listaEmpresa = ^nodoE; //SE DISPONE
+    nodoE = record
+        dato:producto;
+        sig:listaEmpresa;
+    end;
+
+    listaCompra = ^nodoC; //SE DISPONE (ORDENADA POR COD FABRICANTE)
+    nodoC = record
+        dato:prodCompra;
+        sig:listaCompra;
+    end;
+
+    comprados = record
+        codFabricante :integer;
+        cant:integer;
+    end;
+
+    listaComprados = ^nodoComprados;
+    nodoComprados  = record
+        dato:comprados;
+        sig:listaComprados;
+    end;
+
+    procedure agregarAdelante(var l:listaComprados;cant:integer;cod:integer);
+    var
+        nue:listaComprados;
+    begin
+        new(nue);
+        nue^.dato.codFabricante := cod;
+        nue^.dato.cant := cant;
+        nue^.sig := l;
+        l := nue;
+    end;
+
+    procedure actualizarLista(lC:listaCompra;var lE:listaEmpresa;var lComprados:listaComprados;var porcentaje:integer);
+    var
+        auxC:listaCompra;
+        auxE:listaEmpresa;
+        cantAumentos,codActual,cantComprados,cantProductos: integer;
+    begin
+        auxC := lC;
+        cantAumentos := 0;
+        cantProductos := 0;
+        while (auxC <> nil) do begin
+            codActual := auxC^.dato.codFabricante;
+            cantComprados := 0;
+            while (auxC <> nil) and (codActual = auxC^.dato.codFabricante) do begin
+                auxE := lE;
+                while (auxE^.dato.codProducto <> auxC^.dato.codProducto) do begin
+                    auxE := auxE^.sig;
+                end;
+                if (auxC^.dato.precio > auxE^.dato.precio) then
+                    cantAumentos := cantAumentos + 1;
+                auxE^.dato.stock := auxE^.dato.stock + auxC^.dato.cantidad;
+                auxE^.dato.precio :=  auxC^.dato.precio;
+                cantComprados := cantComprados + 1;
+                auxC := auxC^.sig;
+                cantProductos := cantProductos + 1;
+            end;
+            agregarAdelante(lComprados,cantComprados,codActual);
+        end;
+        porcentaje := cantComprados / cantAumentos;
+    end;
+
+var
+begin 
+end.
