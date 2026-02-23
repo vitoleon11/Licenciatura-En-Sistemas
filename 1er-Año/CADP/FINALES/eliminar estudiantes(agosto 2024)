@@ -1,0 +1,56 @@
+program gork;
+type
+    estudiante = record
+        dni:integer;
+        apellido : string;
+        legajo:integer;
+    end;
+
+    vector = array [1..1000] of estudiante;  //SE DISPONE
+
+    lista = ^nodo;  //SE DISPONE
+    nodo = record
+        dato:estudiante;
+        sig:lista;
+    end;
+
+    procedure cargarVector(var v:vector;var dimL:integer);//SE DISPONE
+    procedure cargarLista(var l : lista); //SE DISPONE
+
+    procedure eliminar(var l:lista;dni:integer);
+    var
+        ant,act:lista;
+    begin
+        act := l;
+        while (act <> nil) and (act^.dato.dni < dni) do begin
+            ant := act;
+            act := act^.sig;
+        end;
+        if (act <> nil) then begin
+            if (act = l) then
+                l := l^.sig;
+            else 
+                ant :=act^.sig;
+            dispose(act);
+        end;
+    end;
+
+    procedure eliminarEstudiantes(var l:lista;v:vector;dimL:integer);
+    var
+        i:integer;
+    begin
+        for i := 1 to dimL do begin
+            eliminar(l,v[i].dni)
+        end;
+    end;
+
+var 
+    l:lista;
+    v:vector;
+    dimL:integer;
+begin
+    l:=nil;
+    cargarVector(v,dimL);
+    cargarLista(l);
+    eliminarEstudiantes(l,v,dimL)
+end.
