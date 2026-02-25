@@ -12,3 +12,50 @@ multiplicados por el peso de este según su categoría.
 b) Los códigos de las 15 categorías que representan el mayor gasto total para una familia.
 
 }
+program final;
+type 
+    item = record
+        descripcion: string;
+        costo:real;
+        tipo:string;
+        codigo:integer;
+    end;
+
+    lista = ^nodo;  //se dispone
+    nodo = record 
+        dato:item;
+        sig:lista;
+    end;
+
+    vectorCategorias = array [1..300] of real; //se dispone
+
+    vectorMax = array [1..15] of integer;
+    
+    procedure cargarLista(var l:lista); //se dispone
+
+    procedure inicializarVector(var v:vectorMax);
+    var
+        i:integer;
+    begin
+        for i := 1 to 15 do begin
+            v[i] := -1;
+        end;
+    end;
+
+    procedure informarTodo(l:lista;vC:vectorCategorias);
+    var
+        aux:lista;
+        costoTotal : real;
+    begin
+        aux := l;
+        costoTotal := 0;
+        while (aux <> nil) do begin
+            costoTotal := costoTotal + (vC[aux^.dato.codigo] * aux^.dato.costo);
+            aux := aux^.sig;
+        end;
+    end;
+
+var 
+begin
+    
+end.
