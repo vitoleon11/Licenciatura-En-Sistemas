@@ -1,0 +1,14 @@
+{ El INDEC está actualizando  el costo de vida para una familia. Para ello se dispone de una estructura
+de datos con información sobre los items de la canasta familiar, compuesta por productos y servicios,
+que consume una familia en un determinado período. De cada item se conoce su descripción, cuanto cuesta,
+el tipo (producto o servicio) y el código de categoría(1..300). Pueden existir muchos productos de la
+misma categoría. Además dispone de otra estructura de datos que posee el peso que representa (un valor
+real entre 0 y 1) en cada categoría de la canasta familiar. Realizar un programa que procese esta
+información e informe:
+
+a) El costo de vida total para una familia. Para ello, debe sumar los elementos de la canasta familiar,
+multiplicados por el peso de este según su categoría.
+
+b) Los códigos de las 15 categorías que representan el mayor gasto total para una familia.
+
+}
