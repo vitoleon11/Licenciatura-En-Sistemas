@@ -29,33 +29,59 @@ type
 
     vectorCategorias = array [1..300] of real; //se dispone
 
+    vectorGastos = array [1..300] of real;
+
     vectorMax = array [1..15] of integer;
     
     procedure cargarLista(var l:lista); //se dispone
 
-    procedure inicializarVector(var v:vectorMax);
+    procedure inicializarVector(var vM:vectorMax;var vG:vectorGastos);
     var
         i:integer;
     begin
         for i := 1 to 15 do begin
-            v[i] := -1;
+            vM[i] := -1;
+        end;
+        for i := 1 to 300 do begin
+            vG[i] := 0;
         end;
     end;
 
-    procedure informarTodo(l:lista;vC:vectorCategorias);
+    procedure informarTodo(l:lista;vC:vectorCategorias;var vG:vectorGastos;var vM:vectorMax);
     var
         aux:lista;
-        costoTotal : real;
+        costoTotal,max: real;
+        i,j,posMax:integer;
     begin
         aux := l;
         costoTotal := 0;
         while (aux <> nil) do begin
             costoTotal := costoTotal + (vC[aux^.dato.codigo] * aux^.dato.costo);
+            vG[aux^.dato.codigo] := vG[aux^.dato.codigo] + (aux^.dato.costo * vC[aux^.dato.codigo]);
             aux := aux^.sig;
+        end;
+        for i := 1 to 15 do begin
+            max := -1;
+            posMax := -1;
+            for j := 1 to 300 do begin
+                if (vG[j] > max) then begin
+                    max := vG[j];
+                    posMax := j;
+                end;
+            end;
+            vM[i] := posMax;
+            vG[posMax] := -1;
         end;
     end;
 
 var 
+    l:lista;
+    vM:vectorMax;
+    vG:vectorGastos;
+    vC:vectorCategorias;
 begin
-    
+    l := nil;
+    cargarLista(l);
+    inicializarVector(vM,vG);
+    informarTodo(l,vC,vG,vM)
 end.
