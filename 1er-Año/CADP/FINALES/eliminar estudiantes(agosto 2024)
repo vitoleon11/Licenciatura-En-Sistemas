@@ -30,7 +30,7 @@ type
             if (act = l) then
                 l := l^.sig;
             else 
-                ant :=act^.sig;
+                ant^.sig :=act^.sig;
             dispose(act);
         end;
     end;
