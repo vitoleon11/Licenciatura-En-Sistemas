@@ -1,0 +1,72 @@
+
+
+program final;
+type
+    cliente = record
+        dni:integer;
+        fecha:string;
+        monto:real;
+    end;
+
+    cliNuevo = record
+        dni:integer;
+        cantidad:integer;
+        montoTotal:real;
+    end;
+
+    lista = ^nodo; // SE DISPONE ORDENADA POR DNI
+    nodo = record
+        dato:cliente;
+        sig:lista;
+    end;
+
+    lista2 =  ^nodo2;
+    nodo2 = record
+        dato:cliNuevo;
+        sig:lista2;
+    end;
+    procedure cargarLista(var l:lista); //se dispone
+
+    procedure agregarAdelante(var l2:lista2;dni:integer;cantidad:integer;monto:real);
+    var
+        nue:lista2;
+    begin
+        new(nue);
+        nue^.dato.dni := c.dni;
+        nue^.dato.cantidad := cantidad;
+        nue^.dato.monto := monto;
+        nue^.sig := l;
+        l := nue;
+    end;
+
+    procedure cargarLista2(l:lista;var l2:lista2);
+    var
+        aux : lista;
+        montoTotal:real;
+        cantTotal:integer;
+    begin
+        aux := l;
+        while (aux <> nil) do begin
+            cantTotal := 0;
+            montoTotal := 0;
+            dniActual := aux^.dato.dni;
+            while (aux <> nil) AND (dniActual = aux^.dato.dni) do begin
+                montoTotal := montoTotal + aux^.dato.monto;
+                cantTotal := cantTotal + 1;
+                aux := aux^.sig;
+            end;
+            if (cantTotal > 5) then
+                agregarAdelante(l2,dniActual,cantTotal,montoTotal);
+        end;
+    end;
+
+
+var
+    l2:lista2;
+    l:lista;
+begin
+    l := nil;
+    l2:= nil;
+    cargarLista(l); //se DISPONE
+    cargarLista2(l,l2);
+end.
