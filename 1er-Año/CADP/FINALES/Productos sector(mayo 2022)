@@ -1,0 +1,71 @@
+{Realizar un programa que procese la información de productos de un supermercado. De cada producto se conoce: 
+código, sector (1: limpieza, 2: bebidas, …, 10: jardín), descripción, stock actual y precio.
+La información se encuentra almacenada en una estructura de datos adecuada sin ningún orden.
+Se pide informar los dos sectores con mayor cantidad de productos en stock.}
+
+program final;
+type
+    producto = record
+        codigo:integer;
+        sector: rangoSector;
+        descripcion:string;
+        stock:integer;
+        precio:real;
+    end;
+    
+    lista = ^nodo; //se dispone
+    nodo = record
+        dato:producto;
+        sig:lista;
+    end;
+
+    vector = array [1..10] of integer;
+
+    procedure cargarLista(var l:lista); // se dispone
+
+    procedure inicializarVector(var v : vector);
+    var 
+        i:integer;
+    begin
+        for i := 1 to 10 do begin
+            v[i] := 0;
+        end;
+    end;
+
+    procedure procesarVector(var v:vector;l:lista);
+    var
+        aux: lista;
+        maxS1,maxS2,max1,max2:integer;
+    begin
+        aux := l;
+        while (aux <> nil ) do begin
+            v[aux^.dato.sector] := v[aux^.dato.sector] + aux^.dato.stock;
+            aux := aux^.sig;
+        end;
+        max1 := v[1];
+        max2 := -1;
+        maxS1 := 1;
+        maxS2 := 1;
+        for i := 2 to 10 do begin
+            if (v[i] > max1) then begin
+                max2 := max1;
+                maxS2 := maxS1;
+                max1 := v[i];
+                maxS1 := i;
+            end
+            else if (v[i] > max2) then begin
+                    max2 := v[i];
+                    maxS2 := i;
+            end;
+        end;
+        writeln('Los sectores con mas productos son: ', maxS1, ' y ', maxS2)
+    end;
+
+var
+    l:lista;
+begin
+    l:= nil;
+    cargarLista(l); //se dispone
+    inicializarVector(v);
+    procesarVector(v,l);
+end.
