@@ -1,100 +1,75 @@
-{Práctica:
-Se dispone de la información de los productos de un supermercado.
-De cada producto se tiene:
-- Código
-- Nombre
-- Rubro (1..20)
-- Precio
+{Se dispone de la información de los productos de un supermercado. De cada producto se tiene Código, Nombre, Rubro (1..20) y precio.
 Se pide implementar un programa que guarde en una estructura adecuada los productos de los rubros que tengan 10 productos.}
 
-program gork;
+program final;
 type
-	rangoRubros = 1..20;
-	
-	producto = record
-		nombre:string;
-		rubro : rangoRubros;
-		precio : real;
-	end;
-	
-	lista = ^nodo;
-	nodo = record
-		dato:producto;
-		sig:lista;
-	end;
-	
-	listaDiez = ^nodo2;
-	nodo2 = record
-		dato:producto;
-		sig:lista;
-	end;
-	
-	vContador = array [1..20] of integer;
-	
-	vListas = array [1..20] of lista;
-	
-	procedure inicializarVector(var v:vContador);
-	var
-		i:integer
-	begin
-		for i := 1 to 20 do begin
-			v[i] := 0;
-		end;
-	end;
-	
-	procedure agregarAdelante(var l: lista; p: producto);
-	var
-	  nue: lista;
-	begin
-		new(nue);
-		nue^.dato := p;
-		nue^.sig := l;
-		l := nue;
-	end;
+    producto = record
+        codigo:integer;
+        nombre:string;
+        rubro:integer;
+        precio:real;
+    end;
 
-	procedure contarProductos(var vC: vContador; var vL: vListas; l: lista);
-	begin
-	  while l <> nil do begin
-		vC[l^.dato.rubro] := vC[l^.dato.rubro] + 1;
-		agregarAdelante(vL[l^.dato.rubro], l^.dato);
-		l := l^.sig;
-	  end;
-	end;
+    lista = ^nodo; // se dispone
+    nodo = record
+        dato:producto;
+        sig:lista;
+    end;
 
-	procedure agregarALaLista(var l :listaDiez;p:producto);
-	var
-	  nue: listaDiez;
-	begin
-			new(nue);
-			nue^.dato := p;
-			nue^.sig := l;
-			l := nue;
-	end;
-	
-	procedure procesarLista(var l :listaDiez; vL:vListas; vC:vContador);
-	var
-		i,j:integer;
-	begin
-		for i := 1 to 20 do begin
-			if (vC[i] = 10) then begin
-				for j := 1 to 10 do begin 
-					agregarALaLista(l,vL[i]^.dato);
-					vL[i] := vL[i]^.sig
-				end;
-			end;
-		end;
-	end;
-	
-var
-	vL:vListas;
-	vC:vContador;
-	l : lista;
-	lD:listaDiez;
+    lista2 = ^nodo2;
+    nodo2 = record 
+        dato:producto;
+        sig:lista2;
+    end;
+
+    vContador = array [1..20] of integer;
+
+    procedure cargarLista(var l:lista); //se dispone
+
+    procedure inicializarVector(Var v:vContador);
+    var
+        i:integer;
+    begin
+        for i := 1 to 20 do begin
+            v[i] := 0;
+        end;
+    end;
+
+    procedure agregarAdelante(var l2 : lista2;p:producto);
+    var
+        nue:lista2;
+    begin
+        new(nue);
+        nue^.dato := p;
+        nue^.sig := l2;
+        l2 := nue;
+    end;
+
+    procedure procesarLista(l:lista;var l2:lista2;var v:vContador);
+    var
+        aux:lista;
+    begin
+        aux := l;
+        while (aux <> nil) do begin
+            v[aux^.dato.rubro] := v[aux^.dato.rubro] + 1;
+            aux := aux^.sig;
+        end;
+        aux := l;
+        while (aux <> nil) do begin
+            if (v[aux^.dato.rubro] = 10) then
+                agregarAdelante(l2,aux^.dato);
+            aux := aux^.sig;
+        end;
+    end;
+
+var 
+    l:lista;
+    l2:lista2;
+    v:vContador;
 begin
-	l:=nil;
-	ld:=nil;
-	inicializarVector(vC);
-	contarProductos(vC,vL;l);
-	procesarLista(lD,vL,vC);
+    l := nil;
+    l2 := nil;
+    cargarLista(l); //Se dispone
+    inicializarVector(v);
+    procesarLista(l,l2,v);
 end.
-	
