@@ -1,0 +1,52 @@
+{Un comercio dispone de una estructura de datos con las facturas (como máximo 2000 facturas) realizadas durante marzo de 2023. 
+De cada factura se conoce el número de factura, código de cliente, código de sucursal y monto total. Las facturas se encuentran 
+ordenadas por código de sucursal.
+Se pide implementar un programa con un módulo que reciba la estructura que se dispone y devuelva el código de sucursal con mayor 
+cantidad de facturas. El programa debe informar el valor retornado por el módulo.}
+program final;
+type
+    factura = record
+        numero:integer;
+        codCliente:integer;
+        codSucursal:integer;
+        monto:real;
+    end;
+
+    lista = ^nodo;  //se dispone
+    nodo = record
+        dato:factura;
+        sig:lista;
+    end;
+
+    procedure cargarLista(var l : lista); //se dispone
+
+    function codigoMayor(l:lista):integer;
+    var
+        max,codActual,cant,maxCod:integer;
+        aux:lista;
+    begin
+        aux := l;
+        max := -1;
+        maxCod := 0;
+        while (aux <> nil) do begin
+            codActual := aux^.dato.codSucursal;
+            cant := 0;
+            while (aux <> nil) AND (codActual = aux^.dato.codSucursal) do begin
+                cant := cant + 1;
+                aux := aux^.sig;
+            end;
+            if (cant > max) then begin
+                max := cant;
+                maxCod := codActual;
+            end;
+        end;
+        codigoMayor := maxCod;
+    end;
+
+var 
+    l:lista;
+begin
+    l := nil;
+    cargarLista(l);
+    writeln('El codigo de sucursal con mayor cantidad de facturas fue ', codigoMayor(l));
+end.
