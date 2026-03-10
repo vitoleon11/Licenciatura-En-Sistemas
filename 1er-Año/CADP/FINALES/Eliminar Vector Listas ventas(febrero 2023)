@@ -1,0 +1,67 @@
+{- Un comercio dispone de una estructura de datos con las ventas (como máximo 500 ventas) realizadas durante el mes de enero.
+De cada venta se conoce:
+- el número de venta,
+- el monto total,
+- y una lista de los productos vendidos (de cada producto vendido se tiene código y cantidad).
+- Se pide implementar un programa que elimine de la estructura de datos todas las ventas cuya lista de productos contenga exactamente 5 productos.
+}
+
+program final;
+type
+
+    producto = record
+        codigo:integer;
+        cantidad:integer;
+    end;
+
+    lista = ^nodo;
+    nodo = record
+        dato:producto;
+        sig:lista;
+    end;
+
+    venta = record
+        numVenta:integer;
+        monto:real;
+        lProductos:lista;
+    end;
+
+    vector = array [1..500] of venta; // se dispone
+
+    procedure cargarVector(var v:vector;var dimL :integer); // se dispone
+
+    function tieneCinco(l:lProductos):boolean;
+    var
+        cant:integer;
+    begin
+        cant := 0;
+        while (l <> nil) do begin
+            cant := cant +1;
+            l := l^.sig;
+        end;
+        tieneCinco := (cant = 5);
+    end;
+
+    procedure eliminar(var v:vector;var dimL:integer);
+    var
+        i:integer;
+    begin
+        i := 1;
+        while (i <= dimL) do begin
+            if (tieneCinco(v[i].lProductos)) then begin
+                v[i] := v[dimL];
+                dimL := dimL - 1;
+            end
+            else
+                i := i + 1;
+        end;
+    end;
+
+var 
+    v:vector;
+    dimL :integer;
+begin
+    dimL := 0;
+    cargarVector(v,dimL);
+    eliminar(v,dimL);
+end.
