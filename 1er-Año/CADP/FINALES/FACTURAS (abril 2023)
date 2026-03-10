@@ -12,28 +12,22 @@ type
         monto:real;
     end;
 
-    lista = ^nodo;  //se dispone
-    nodo = record
-        dato:factura;
-        sig:lista;
-    end;
+    vector = array [1..2000] of factura; // se dispone
+    procedure cargarVector(var v : vector); 
 
-    procedure cargarLista(var l : lista); //se dispone
-
-    function codigoMayor(l:lista):integer;
+    function codigoMayor(v:vector ; dimL : integer):integer;
     var
-        max,codActual,cant,maxCod:integer;
-        aux:lista;
+        max,codActual,cant,maxCod,i:integer;
     begin
-        aux := l;
         max := -1;
         maxCod := 0;
-        while (aux <> nil) do begin
-            codActual := aux^.dato.codSucursal;
+        i := 0;
+        while (i < dimL) do begin
+            codActual := v[i].codSucursal;
             cant := 0;
-            while (aux <> nil) AND (codActual = aux^.dato.codSucursal) do begin
+            while (i < dimL) AND (codActual = v[i].codSucursal) do begin
                 cant := cant + 1;
-                aux := aux^.sig;
+                i := i + 1;
             end;
             if (cant > max) then begin
                 max := cant;
