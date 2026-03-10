@@ -1,64 +1,56 @@
-program gork;
+{- Una empresa dispone de la información de las asistencias de sus empleados durante un período de tiempo. De cada empleado se conoce: 
+DNI, apellido y nombre, código de departamento en el que trabaja (entre 1 y 100), fecha y si estuvo presente o no ese día (no todos los
+días se pasa asistencia y los empleados pueden haber estado trabajando o haber faltado).
+Esta estructura se encuentra ordenada por código de departamento.
+Se pide realizar un programa que informe el departamento con más empleados presentes durante el período evaluado por la empresa.}
+
+program final;
 type
     empleado = record
         dni:integer;
         apellido : string;
-        nombre: string;
-        codDepto:integer;
-        fecha:string;
+        nombre:string;
+        codigo:integer;
+        fecha : string;
         presente:boolean;
     end;
 
-    lista = ^nodo;  //SE DISPONE ORDENADA POR COD DEPARTAMENTO
+    lista = ^nodo; //se dispone
     nodo = record
         dato:empleado;
         sig:lista;
     end;
 
-    vector = array [1..100] of integer;
+    procedure cargarLista(var l : lista); //se dispone
 
-    procedure cargarLista(var l :lista);//SE DISPONE
-
-    procedure inicializarVector(var v :vector);
-    var
-        i:integer;
-    begin
-        for i:= 1 to 100 do begin
-            v[i] := 0;
-        end;
-    end;
-
-    procedure cargarVector(l:lista;var v :vector);
+    procedure procesarMaximo(l:lista);
     var
         aux:lista;
-        codActual,i,maxCod,maxCant:integer;
+        max,cant,codActual,maxCod:integer;
     begin
         aux := l;
+        max := -1;
+        codActual := -1;
+        maxCod := 0;
         while (aux <> nil) do begin
-            codActual := aux^.dato.codDepto;
-            while (aux <> nil) and (codActual = aux^.dato.codDepto) do begin
-                if (aux^.dato.presente = true) then
-                    v[aux^.dato.codDepto] := v[aux^.dato.codDepto] + 1;
+            codActual := aux^.dato.codigo;
+            cant := 0;
+            while (aux <> nil) AND (codActual = aux^.dato.codigo) do begin
+                cant := cant + 1;
                 aux := aux^.sig;
             end;
-        end;
-        maxCod := 0;
-        maxCant := -1;
-        for i := 1 to 100 do begin
-            if (v[i] > maxCant) then begin
-                maxCod := i;
-                maxCant:= v[i];
+            if (cant > max) then begin
+                max := cant;
+                maxCod := codActual;
             end;
         end;
-        writeln('El codigo de departamento con mas empleados es ', maxCod)
+        writeln('El departamento con mayor cantidad de empleados es ', maxCod);
     end;
 
-var 
+var
     l:lista;
-    v:vector;
 begin
     l := nil;
     cargarLista(l);
-    inicializarVector(v);
-    cargarVector(l,v);
+    procesarMaximo(l);
 end.
