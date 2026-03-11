@@ -1,0 +1,48 @@
+{Un comercio dispone de una estructura de datos con las facturas (como máximo 2000 facturas) realizadas durante enero de 2023. 
+De cada factura se conoce el número de factura, código de cliente y monto total.
+
+También dispone de otra estructura con las facturas realizadas durante febrero (como máximo 2000 facturas). En ambas estructuras, 
+las facturas se encuentran ordenadas por número de cliente.
+
+Se pide implementar un programa que incorpore las facturas del mes de febrero del cliente con código 444, de ser posible, 
+a la estructura con las facturas de enero. Dicha incorporación debe realizarse de la manera más eficiente con respecto al tiempo de ejecución.
+
+Un cliente puede tener varias facturas por mes.
+}
+
+program final;
+type
+    factura = record
+        num:integer;
+        codigo:integer;
+        montoTotal:real;
+    end;
+
+    vEnero = array [1..2000] of factura; //se dispone ordenada por codigo de cliente
+
+    vFebrero = array [1..2000] of factura; //se dispone ordenada por codigo de cliente
+
+    procedure agregarOrdenado(var vEnero;var dimLE:integer;c:cliente);
+    var
+        i:integer;
+    begin
+        i := dimLE;
+        if (i + 1 <= dimLE) then begin
+            
+        end;
+    end;
+
+    procedure actualizarVector(var vE:vEnero;vF:vFebrero;var dimLE:integer;dimLF:integer);
+    var
+        i:integer;
+    begin
+        i := 1;
+        while (i <= dimLF) AND (vF[i].codigo <= 444) do begin
+            
+        end;
+    end;
+
+var
+begin
+    
+end.
