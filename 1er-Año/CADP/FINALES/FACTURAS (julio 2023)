@@ -1,0 +1,57 @@
+{
+Un comercio dispone de una estructura de datos con las facturas realizadas durante junio de 2023.
+De cada factura se conoce: el número de factura, código de cliente, código de sucursal, monto total.
+Las facturas se encuentran ordenadas por código de sucursal.
+Se pide implementar un programa que informe: 
+el código de sucursal con menor recaudación, y el código de sucursal con mayor cantidad de facturas.
+}
+program parcial;
+type
+    factura = record
+        numFactura:integer;
+        codCliente:integer;
+        codSucursal:integer;
+        montoTotal:real;
+    end;
+
+    lista = ^nodo; // se dispone ordenada por codigo de sucursal
+    nodo = record
+        dato : factura;
+        sig:lista;
+    end;
+
+    procedure cargarLista(var l :lista); // se dispone
+
+    procedure informar(l:lista);
+    var
+        aux: lista;
+        min, minCod, max, maxCod, recaudacion,cant:integer;
+    begin
+        aux := l;
+        while (aux <> nil) do begin
+            codActual := aux^.dato.codSucursal;
+            cant := 0;
+            recaudacion := 0;
+            while (aux <> nil) and (codActual = aux^.dato.codSucursal) do begin
+                cant := cant + 1;
+                recaudacion := recaudacion + aux^.dato.montoTotal;
+            end;
+            if (recaudacion < min) then begin
+                min := recaudacion;
+                minCod := codActual;
+            end;
+            if (cant > max) then begin
+                max := cant;
+                maxCod := codActual;
+            end;
+        end;
+        writeln('Codigo menor recaudacion: ', minCod,' y codigo mayor cantidad: ', maxCod);
+    end;
+
+var 
+    l:lista;
+begin
+    l := nil;
+    cargarLista(l);
+    informar(l);
+end.
