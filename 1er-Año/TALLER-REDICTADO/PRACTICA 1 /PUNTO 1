@@ -1,0 +1,88 @@
+{
+Se desea procesar la información de las ventas de productos de un comercio (como
+máximo 50).
+Implementar un programa que invoque los siguientes módulos:
+a. Un módulo que retorne la información de las ventas en un vector. De cada venta se conoce
+el día de la venta, código del producto (entre 1 y 15) y cantidad vendida (como máximo 99
+unidades). El código y el día deben generarse automáticamente (random) y la cantidad se debe
+leer. El ingreso de las ventas finaliza con el día de venta 0 (no se procesa).
+* 
+b. Un módulo que muestre el contenido del vector resultante del punto a).
+c. Un módulo que ordene el vector de ventas por código.
+d. Un módulo que muestre el contenido del vector resultante del punto c).
+e. Un módulo que elimine, del vector ordenado, las ventas con código de producto entre dos
+valores que se ingresan como parámetros.
+f. Un módulo que muestre el contenido del vector resultante del punto e).
+g. Un módulo que retorne la información (ordenada por código de producto de menor a
+mayor) de cada código par de producto junto a la cantidad total de productos vendidos.
+h. Un módulo que muestre la información obtenida en el punto g)
+}
+program parcial;
+type
+	rangoProducto = 1..15;
+	rangoVendidos = 1..99;
+	
+	venta = record
+		dia:integer;
+		codProducto:rangoProducto;
+		cantVendida:rangoVendidos;
+	end;
+	
+	vector = array [1..50] of venta;
+	
+	procedure leerVenta(var v:venta);
+	begin
+		Randomize;
+		v.dia := Random(32);
+		if (v.dia <> 0) then begin
+			v.codProducto := Random(15) + 1;
+			readln(v.cantVendida);
+		end;
+	end;
+	
+	procedure agregarAlVector(var v:vector;vent:venta;var dimL:integer);
+	begin
+		dimL := dimL + 1;
+		v[dimL] := vent;
+	end;
+	//INCISO A 
+	procedure cargarVector(var v:vector;var dimL:integer);
+	var
+		vent:venta;
+	begin
+		leerVenta(vent);
+		while (vent.dia <> 0) do begin
+			agregarAlVector(v,vent,dimL);
+			leerVenta(vent);
+		end;
+	end;
+	
+	//INCISO B
+	procedure imprimirVector(v:vector;dimL:integer);
+	var
+		i:integer;
+	begin
+		for i := 1 to dimL do begin
+			writeln('Dia: ', v[i].dia, ' codigo: ', v[i].codProducto,' cantidad vendida: ', v[i].cantVendida);
+		end;
+	end;
+	
+	//INCISO C
+	procedure ordenarVector(var v:vector;dimL:integer);
+	var
+		i ,j, pos:integer;
+	begin
+		for i := 1 to dimL - 1 do begin
+			pos := i;
+			for j := i + 1 to dimL do 
+		end;
+	end;
+	
+var 
+    v:vector;
+    dimL:integer;
+begin
+	dimL := 0;
+	cargarVector(v,dimL);
+	imprimirVector(v,dimL);
+end.
