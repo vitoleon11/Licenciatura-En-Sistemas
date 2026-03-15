@@ -17,7 +17,10 @@ g. Un módulo que retorne la información (ordenada por código de producto de m
 mayor) de cada código par de producto junto a la cantidad total de productos vendidos.
 h. Un módulo que muestre la información obtenida en el punto g)
 }
+
 program parcial;
+const
+	dimF = 50;
 type
 	rangoProducto = 1..15;
 	rangoVendidos = 1..99;
@@ -28,7 +31,18 @@ type
 		cantVendida:rangoVendidos;
 	end;
 	
-	vector = array [1..50] of venta;
+	ventaLista = record
+		codigo:integer;
+		cant:integer;
+	end;
+	
+	lista = ^nodo;
+	nodo = record
+		dato:ventaLista;
+		sig:lista;
+	end;
+	
+	vector = array [1..dimF] of venta;
 	
 	procedure leerVenta(var v:venta);
 	begin
@@ -42,9 +56,12 @@ type
 	
 	procedure agregarAlVector(var v:vector;vent:venta;var dimL:integer);
 	begin
-		dimL := dimL + 1;
-		v[dimL] := vent;
+		if (dimL < dimF) then begin
+			dimL := dimL + 1;
+			v[dimL] := vent;
+		end;
 	end;
+	
 	//INCISO A 
 	procedure cargarVector(var v:vector;var dimL:integer);
 	var
@@ -57,7 +74,7 @@ type
 		end;
 	end;
 	
-	//INCISO B
+	//INCISO B Y D Y F
 	procedure imprimirVector(v:vector;dimL:integer);
 	var
 		i:integer;
@@ -71,18 +88,97 @@ type
 	procedure ordenarVector(var v:vector;dimL:integer);
 	var
 		i ,j, pos:integer;
+		item : venta;
 	begin
 		for i := 1 to dimL - 1 do begin
 			pos := i;
-			for j := i + 1 to dimL do 
+			for j := i + 1 to dimL do
+				if (v[j].codProducto < v[pos].codProducto) then pos := j;
+			item := v[pos];
+			v[pos] := v[i];
+			v[i] := item;
 		end;
 	end;
 	
+	//INCISO E
+	
+	procedure eliminarVentas(var v:vector; var dimL:integer; cod1:integer; cod2:integer);
+	var
+		posInicio, posFin, i, inicioOG: integer;
+	begin
+		posInicio := 1;
+		while (posInicio <= dimL) and (v[posInicio].codProducto < cod1) do
+			posInicio := posInicio + 1;
+
+		posFin := posInicio;
+		while (posFin <= dimL) and (v[posFin].codProducto <= cod2) do
+			posFin := posFin + 1;
+
+		inicioOG := posInicio;
+		i := posFin;
+		while (i <= dimL) do begin
+			v[posInicio] := v[i];
+			posInicio := posInicio + 1;
+			i := i + 1;
+		end;
+
+		dimL := dimL - (posFin - inicioOG);
+	end;
+	
+	//INCISO G
+	procedure agregarAdelante(var l:lista;v:ventaLista);
+	var
+		nue:lista;
+	begin
+		new(nue);
+		nue^.dato := v;
+		nue^.sig := l;
+		l := nue;
+	end;
+	
+	procedure retornarInfo(var l:lista;v:vector;dimL:integer);
+	var
+		i,codActual,cantTotal:integer;
+		vL:ventaLista;
+	begin
+		i := 1;
+		while (i <= dimL) do begin
+			if (v[i].codProducto mod 2 = 0) then begin
+				codActual := v[i].codProducto;
+				cantTotal := 0;
+				while (i <= dimL) and (v[i].codProducto = codActual) do begin
+					cantTotal := cantTotal + v[i].cantVendida;
+					i := i + 1;
+				end;
+				vL.codigo := codActual;
+				vL.cant := cantTotal;
+				agregarAdelante(l,vL);
+			end
+			else
+				i := i + 1; 
+		end;
+	end;
+	// inciso H
+	procedure imprimirLista(l:lista);
+	begin
+		while (l <> nil) do begin
+			writeln('Cod producto: ',l^.dato.codigo, ' cantidad de ventas: ', l^.dato.cant);
+		end;
+	end;
 var 
     v:vector;
-    dimL:integer;
+    dimL,cod1,cod2:integer;
+    l :lista;
 begin
 	dimL := 0;
 	cargarVector(v,dimL);
 	imprimirVector(v,dimL);
+	ordenarVector(v,dimL);
+	imprimirVector(v,dimL);
+	writeln('Ingrese 2 codigos');
+	readln(cod1);
+	readln(cod2);
+	eliminarVentas(v,dimL,cod1,cod2);
+	l := nil;
+	retornarInfo(l,v,dimL);
 end.
