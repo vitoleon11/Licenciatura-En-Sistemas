@@ -113,16 +113,15 @@ type
 		posFin := posInicio;
 		while (posFin <= dimL) and (v[posFin].codProducto <= cod2) do
 			posFin := posFin + 1;
-
-		inicioOG := posInicio;
-		i := posFin;
-		while (i <= dimL) do begin
-			v[posInicio] := v[i];
-			posInicio := posInicio + 1;
-			i := i + 1;
+		aBorrar := posFin - posInicio;
+		if (aBorrar > 0) then begin
+			for i := fin to dimL do begin
+				v[ini] := v[i];
+				posInicio := posInicio + 1;
+			end;
+			dimL := dimL - aBorrar;
 		end;
 
-		dimL := dimL - (posFin - inicioOG);
 	end;
 	
 	//INCISO G
