@@ -1,0 +1,165 @@
+{3.- Netflix ha publicado la lista de películas que estarán disponibles durante el mes de
+septiembre de 2025. De cada película se conoce: código de película, código de género (1:
+acción, 2: aventura, 3: drama, 4: suspenso, 5: comedia, 6: bélico, 7: documental y 8: terror) y
+puntaje promedio otorgado por las críticas.
+Implementar un programa que invoque a módulos para cada uno de los siguientes puntos:
+a. Lea los datos de películas, los almacene por orden de llegada y agrupados por código de
+género, y retorne en una estructura de datos adecuada. La lectura finaliza cuando se lee el
+código de la película -1.
+b. Genere y retorne en un vector, para cada género, el código de película con mayor puntaje
+obtenido entre todas las críticas, a partir de la estructura generada en a)..
+c. Ordene los elementos del vector generado en b) por puntaje utilizando alguno de los dos
+métodos vistos en la teoría.
+d. Muestre el código de película con mayor puntaje y el código de película con menor puntaje,
+del vector obtenido en el punto c}
+
+program taller;
+type
+	rangoGeneros = 1..8;
+	
+	pelicula = record
+		codP:integer;
+		codG:rangoGeneros;
+		puntaje:real;
+	end;
+	
+	lista = ^nodo;
+	nodo = record
+		dato:pelicula;
+		sig:lista;
+	end;
+	
+	vListas = array [1..8] of lista;
+	
+	vMaximos = array [1..8] of pelicula;
+	
+	//INCISO A
+	
+	procedure inicializarVector(var v:vListas);
+	var
+		i:integer;
+	begin
+		for i := 1 to 8 do begin
+			v[i] := nil;
+		end;
+	end;
+	
+	
+	procedure agregarAdelante(var l : lista;p:pelicula);
+	var
+		nue:lista;
+	begin
+		new(nue);
+		nue^.dato := p;
+		nue^.sig := l;
+		l := nue;
+	end;
+	
+	procedure leerPelicula(var p : pelicula);
+	begin
+		writeln('Ingrese codigo pelicula');
+		readln(p.codP);
+		if (p.codP <> -1) then begin
+			writeln('Ingrese codigo genero');
+			readln(p.codG);
+			writeln('Ingrese puntaje');
+			readln(p.puntaje);
+		end;
+	end;
+	
+	procedure cargarVector(var v:vListas);
+	var
+		p:pelicula;
+	begin
+		leerPelicula(p);
+		while (p.codP <> -1) do begin
+			agregarAdelante(v[p.codG],p);
+			leerPelicula(p);
+		end;
+	end;
+	
+	//INCISO B
+	
+	procedure devolverPelicula(l:lista;var pMax :pelicula);
+	var
+		max:real;
+	begin
+		max := -1;
+		while (l <> nil) do begin
+			if (l^.dato.puntaje > max) then begin
+				max := l^.dato.puntaje;
+				pMax := l^.dato;
+			end;
+			l := l^.sig;
+		end;
+	end;
+	
+	procedure retornarMaximos(var vM:vMaximos;vL:vListas);
+	var
+		i:integer;
+		pMax:pelicula;
+	begin
+		for i := 1 to 8 do begin
+			pMax.codP := -1;
+			pMax.puntaje := -1;
+			devolverPelicula(vL[i],pMax);
+			vM[i] := pMax;
+		end;
+	end;
+	
+	//INCISO C
+	procedure ordenarSeleccion(var v:vMaximos);
+	var
+		pos,i,j:integer;
+		item :pelicula;
+	begin
+		for i := 1 to 7 do begin
+			pos := i;
+			for j := i+1 to 8 do
+				if (v[j].puntaje < v[pos].puntaje) then pos := j;
+				
+			item := v[pos];
+			v[pos] := v[i];
+			v[i] := item;
+		end;
+	end;
+	
+	//INCISO D
+	
+	procedure imprimir(v:vMaximos);
+	var
+		max,min :real;
+		i,codMin,codMax:integer;
+	begin
+		min := 9999;
+		max := -1;
+		codMin := 0;
+		codMax := 0;
+		for i := 1 to 8 do begin
+			if (v[i].codP <> -1) then begin
+				if (v[i].puntaje < min) then begin
+					min := v[i].puntaje;
+					codMin := v[i].codP;
+				end;
+				if (v[i].puntaje > max) then begin
+					max := v[i].puntaje;
+					codMax := v[i].codP;
+				end;
+			end;
+		end;
+		writeln('El codigo de pelicula con mayor puntaje es: ', codMax);
+		writeln('El codigo de pelicula con menor puntaje es: ', codMin);
+	end;
+	
+	
+var
+	vM:vMaximos;
+	vL:vListas;
+begin
+	Randomize;
+	inicializarVector(vL);
+	cargarVector(vL);
+	retornarMaximos(vM,vL);
+	ordenarSeleccion(vM);
+	imprimir(vM);
+end.
