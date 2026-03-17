@@ -1,0 +1,129 @@
+{ 1.- Implementar un programa que invoque a los siguientes módulos.
+a. Un módulo recursivo que retorne un vector de a lo sumo 15 números enteros “random”
+mayores a 10 y menores a 155 (incluidos ambos). La carga finaliza con el valor 20.
+b. Un módulo no recursivo que reciba el vector generado en a) e imprima el contenido del
+vector.
+c. Un módulo recursivo que reciba el vector generado en a) e imprima el contenido del vector.
+
+d. Un módulo recursivo que reciba el vector generado en a) y devuelva la suma de los valores
+pares contenidos en el vector.
+
+e. Un módulo recursivo que reciba el vector generado en a) y devuelva el máximo valor del
+vector.
+
+f. Un módulo recursivo que reciba el vector generado en a) y un valor y devuelva verdadero si
+dicho valor se encuentra en el vector o falso en caso contrario.
+ 
+g. Un módulo que reciba el vector generado en a) e imprima, para cada número contenido en
+el vector, sus dígitos en el orden en que aparecen en el número.
+*
+Debe implementarse un módulo recursivo que reciba el número e imprima lo pedido. Ejemplo
+si se lee el valor 142, se debe imprimir 1 4 2
+}
+
+program practica;
+type
+	vector = array [1..15] of integer;
+	
+	//INCISO A
+	procedure cargarVectorRecursivo(var v:vector;var dimL:integer);
+	var
+		num:integer;
+	begin
+		num := Random(155-10+1) + 10;
+		if (dimL < 15) and (num <> 20) then begin
+			dimL := dimL + 1;
+			v[dimL] := num;
+			cargarVectorRecursivo(v,dimL);
+		end;
+	end;
+	
+	//INCISO B
+	procedure imprimirNormal(v:vector;dimL:integer);
+	var
+		i:integer;
+	begin
+		for i := 1 to dimL do begin
+			writeln(v[i]);
+		end;
+	end;
+	
+	//INCISO C
+	procedure imprimirRecursivo(v:vector;i:integer;dimL:integer);
+	begin
+		if (i <= dimL) then begin
+			writeln(v[i]);
+			imprimirRecursivo(v,i+1,dimL);
+		end;
+	end;
+
+	//INCISO D
+	procedure sumarRecursivo(v:vector;i:integer;dimL:integer;var suma:integer);
+	begin
+		if (i <= dimL) then begin
+			if (v[i] mod 2 = 0) then begin
+				suma := suma + v[i];
+				sumarRecursivo(v,i+1,dimL,suma);
+			end
+			else
+				sumarRecursivo(v,i+1,dimL,suma);
+		end;
+	end;
+	
+	//INCISO E 
+	function maximo(v:vector; dimL:integer):integer;
+	begin
+		if (dimL = 1) then
+			maximo := v[1]
+		else if (v[dimL] > maximo(v, dimL - 1)) then
+			maximo := v[dimL]
+		else
+			maximo := maximo(v, dimL - 1);
+	end;
+	
+	//INCISO F
+	function devolverSiEsta(v:vector;dimL:integer;valor:integer):boolean;
+	begin
+		if (dimL = 1) then 
+			devolverSiEsta := (v[1] = valor)
+		else if (v[dimL] = valor) then
+				devolverSiEsta := true
+		else
+			devolverSiEsta := devolverSiEsta(v,dimL-1,valor);
+	end;
+	
+	//INCISO G
+	procedure imprimirDigRecursivo(num:integer);
+	begin
+		if (num <> 0) then begin
+			imprimirDigRecursivo(num div 10);
+			write(num mod 10,' ');
+		end;
+	end;	
+	
+	procedure imprimirDigitos(v:vector;dimL:integer);
+	begin
+		if (dimL <> 0) then begin
+			imprimirDigRecursivo(v[dimL]);
+			writeln;
+			imprimirDigitos(v,dimL - 1);
+		end;
+	end;
+	
+var
+	v:vector;
+	dimL,suma,valor:integer;
+begin
+	Randomize;
+	dimL := 0;
+	cargarVectorRecursivo(v,dimL);
+	imprimirNormal(v,dimL);
+	imprimirRecursivo(v,1,dimL);
+	suma := 0;
+	sumarRecursivo(v,1,dimL,suma);
+	writeln('Suma : ', suma);
+	valor := Random(155-10+1) +10;
+	writeln('Valor : ',valor );
+	writeln('Se encuentra el valor? ', devolverSiEsta(v,dimL,valor));
+	imprimirDigitos(v,dimL);
+end.
