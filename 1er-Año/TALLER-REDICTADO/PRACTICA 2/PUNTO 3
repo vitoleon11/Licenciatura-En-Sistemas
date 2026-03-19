@@ -57,7 +57,7 @@ type
 			else if (dato < v[medio]) then
 					busquedaDicotomica(v,ini,medio -1,dato,pos)
 				else
-					busquedaDicotomica(v,medio +1,medio,dato,pos);
+					busquedaDicotomica(v,medio +1,fin,dato,pos);
 			end;
 	end;
 	
@@ -68,4 +68,6 @@ var
 begin
 	dimL := 0;
 	cargarVector(v,dimL);
+	ordenarSeleccion(v,dimL);
+	busquedaDicotomica(v,ini,dimL,num,pos);
 end.
