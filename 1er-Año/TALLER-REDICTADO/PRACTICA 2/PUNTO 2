@@ -60,22 +60,45 @@ type
 	
 	//INCISO D 
 	function devolverMinimo(l:lista):integer;
+	var
+		minR:integer;
 	begin
-		if (l^.sig = nil) then
-			devolverMinimo := l^.dato
+		if (l = nil) then
+			devolverMinimo := 9999
 		else begin
-			
+			minR := devolverMinimo(l^.sig);
+			if (l^.dato < minR) then
+				devolverMinimo := l^.dato
+			else
+				devolverMinimo := minR;
 		end;
 	end;
 	
 	//INCISO E
 	
+	function devolverSiEsta(l:lista;num:integer):boolean;
+	begin
+		if (l = nil) then
+			devolverSiEsta := false
+		else begin
+			if (l^.dato = num) then
+				devolverSiEsta := true
+			else
+				devolverSiEsta := devolverSiEsta(l^.sig,num);
+ 			end;
+	end;
+	
+	
 	
 var
 	l:lista;
+	num:integer;
 begin
 	l := nil;
 	cargarLista(l);
 	imprimirRecursivo(l);
 	imprimirInverso(l);
+	devolverMinimo(l);
+	readln(num);
+	devolverSiEsta(l,num);
 end.
