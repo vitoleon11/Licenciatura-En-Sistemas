@@ -98,7 +98,9 @@ begin
 	cargarLista(l);
 	imprimirRecursivo(l);
 	imprimirInverso(l);
-	devolverMinimo(l);
+	writeln('El valor minimo es: ',devolverMinimo(l));
+	writeln;
+	writeln('Ingrese un numero para ver si se encuentra: ');
 	readln(num);
-	devolverSiEsta(l,num);
+	writeln('Se encontro? ', devolverSiEsta(l,num));
 end.
