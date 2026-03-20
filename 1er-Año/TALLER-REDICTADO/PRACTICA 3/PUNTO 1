@@ -1,0 +1,160 @@
+{1. Escribir un programa que:
+a. Implemente un módulo que almacene información de socios de un club en un árbol binario
+de búsqueda. De cada socio se debe almacenar número de socio, nombre y edad. La carga
+finaliza con el número de socio 0 y el árbol debe quedar ordenado por número de socio. La
+información de cada socio debe generarse aleatoriamente.
+b. Una vez generado el árbol, realice módulos independientes que reciban el árbol como
+parámetro para:
+i. Informar los datos de los socios en orden creciente por número de socio.
+ii. Informar los datos de los socios en orden decreciente por número de socio.
+iii. Informar el número de socio con mayor edad. Debe invocar a un módulo recursivo que
+retorne dicho valor.
+iv. Aumentar en 1 la edad de los socios con edad impar e informar la cantidad de socios
+que se les aumentó la edad.
+vi. Leer un nombre e informar si existe o no existe un socio con ese nombre. Debe invocar
+a un módulo recursivo que reciba el nombre leído y retorne verdadero o falso.
+vii. Informar la cantidad de socios. Debe invocar a un módulo recursivo que retorne dicha
+cantidad.
+viii. Informar el promedio de edad de los socios. Debe invocar al módulo recursivo del
+inciso vii e invocar a un módulo recursivo que retorne la suma de las edades de los socios }
+
+program practica;
+type
+	socio = record
+		numSocio :integer;
+		nombre:string;
+		edad:integer;
+	end;
+	
+	arbol = ^nodo;
+	nodo = record
+		dato:socio;
+		hi:arbol;
+		hd:arbol;
+	end;
+
+	//INCISO A
+	procedure leerSocio(var s:socio);
+	begin
+		s.numSocio := Random(100);
+		if (s.numSocio <> 0) then begin
+			readln(s.nombre);
+			s.edad := Random(100);
+		end;
+	end;
+	
+	procedure insertarAlArbol(var a : arbol;s:socio);
+	begin
+		if (a = nil) then begin
+			new(a);
+			a^.dato := s;
+			a^.hi := nil;
+			a^.hd := nil;
+		end
+		else if (s.numSocio < a^.dato.numSocio) then
+				insertarAlArbol(a^.hi,s)
+			else
+				insertarAlArbol(a^.hd,s);
+	end;
+	
+	procedure cargarArbol(var a:arbol);
+	var
+		s:socio;
+	begin
+		leerSocio(s);
+		while (s.numSocio <> 0) do begin
+			insertarAlArbol(a,s);
+			leerSocio(s);
+		end;
+	end;
+	
+	//INCISO B i 
+	
+	procedure imprimir(s:socio);
+	begin
+		writeln('Numero de socio: ', s.numSocio,' Nombre: ', s.nombre,' Edad: ', s.edad);
+	end;
+	
+	procedure informarCreciente(a:arbol);
+	begin
+		if (a <> nil) then begin
+			informarCreciente(a^.hi);
+			imprimir(a^.dato);
+			informarCreciente(a^.hd);
+		end;
+	end;
+	
+	//INCISO B ii
+	procedure informarDecreciente(a:arbol);
+	begin
+		if (a <> nil) then begin
+			informarDecreciente(a^.hd);
+			imprimir(a^.dato);
+			informarDecreciente(a^.hi);
+		end;
+	end;
+	
+	//INCISO B iii 
+	
+	procedure actualizarMaximo(var valorMax:integer;var maxSocio:integer;valor:integer;socioNue:integer);
+	begin
+		if (valor > valorMax) then begin
+			valorMax := valor;
+			maxSocio := socioNue;
+		end;
+	end;
+	
+	procedure mayorEdad(a:arbol;var maxEdad:integer;var maxSocio:integer);
+	begin
+		if (a <> nil) then begin
+			actualizarMaximo(maxEdad,maxSocio,a^.dato.edad,a^.dato.numSocio);
+			mayorEdad(a^.hd,maxEdad,maxSocio);
+			mayorEdad(a^.hi,maxEdad,maxSocio);
+		end;
+	end;
+	
+	//INCISO B iv
+	
+	procedure aumentarEdad(a:arbol;var cantAumentos:integer);
+	begin
+		if (a <> nil) then begin
+			if (a^.dato.edad mod 2 = 1) then begin
+				a^.dato.edad := a^.dato.edad + 1;
+				cantAumentos := cantAumentos + 1;
+			end;
+			aumentarEdad(a^.hi,cantAumentos);
+			aumentarEdad(a^.hd,cantAumentos);
+		end;
+	end;
+	
+	//INCISO B vi
+	
+	function buscarNombre(a :arbol;nom:string):boolean;
+	begin
+		if (a = nil) then
+			buscarNombre := false
+		else if (a^.dato.nombre = nom) then
+				buscarNombre := true
+			else begin
+				buscarNombre := buscarNombre(a^.hi,nom);
+				buscarNombre := buscarNombre(a^.hd,nom);
+				end;
+	end;
+	
+var
+	a:arbol;
+	maxSocio,maxEdad,cantAumentos:integer;
+	nombre:string;
+begin
+	a := nil;
+	cargarArbol(a);
+	informarCreciente(a);
+	informarDecreciente(a);
+	maxEdad := -1;
+	maxSocio := -1;
+	mayorEdad(a,maxEdad,maxSocio);
+	cantAumentos := 0;
+	aumentarEdad(a,cantAumentos);
+	readln(nombre);
+	buscarNombre(a,nombre);
+end.
