@@ -1,22 +1,3 @@
-{1. Escribir un programa que:
-a. Implemente un módulo que almacene información de socios de un club en un árbol binario
-de búsqueda. De cada socio se debe almacenar número de socio, nombre y edad. La carga
-finaliza con el número de socio 0 y el árbol debe quedar ordenado por número de socio. La
-información de cada socio debe generarse aleatoriamente.
-b. Una vez generado el árbol, realice módulos independientes que reciban el árbol como
-parámetro para:
-i. Informar los datos de los socios en orden creciente por número de socio.
-ii. Informar los datos de los socios en orden decreciente por número de socio.
-iii. Informar el número de socio con mayor edad. Debe invocar a un módulo recursivo que
-retorne dicho valor.
-iv. Aumentar en 1 la edad de los socios con edad impar e informar la cantidad de socios
-que se les aumentó la edad.
-vi. Leer un nombre e informar si existe o no existe un socio con ese nombre. Debe invocar
-a un módulo recursivo que reciba el nombre leído y retorne verdadero o falso.
-vii. Informar la cantidad de socios. Debe invocar a un módulo recursivo que retorne dicha
-cantidad.
-viii. Informar el promedio de edad de los socios. Debe invocar al módulo recursivo del
-inciso vii e invocar a un módulo recursivo que retorne la suma de las edades de los socios }
 
 program practica;
 type
@@ -36,7 +17,7 @@ type
 	//INCISO A
 	procedure leerSocio(var s:socio);
 	begin
-		s.numSocio := Random(100);
+		readln(s.numSocio);
 		if (s.numSocio <> 0) then begin
 			readln(s.nombre);
 			s.edad := Random(100);
@@ -127,7 +108,7 @@ type
 		end;
 	end;
 	
-	//INCISO B vi
+	//INCISO B vi COMPLETAS
 	
 	function buscarNombre(a :arbol;nom:string):boolean;
 	begin
@@ -140,6 +121,27 @@ type
 				buscarNombre := buscarNombre(a^.hd,nom);
 				end;
 	end;
+	
+	//INCISO B vii
+	
+	function cantSocios(a:arbol):integer;
+	begin
+		if (a = nil) then
+			cantSocios := 0
+		else
+			cantSocios := 1 + cantSocios(a^.hi) + cantSocios(a^.hd);
+	end; 
+	
+	//INCISO B viii
+	
+	function sumaEdades(a:arbol):integer;
+	begin
+		if (a = nil) then
+			sumaEdades := 0
+		else
+			sumaEdades := a^.dato.edad + sumaEdades(a^.hi) + sumaEdades(a^.hd);
+	end;
+	
 	
 var
 	a:arbol;
@@ -157,4 +159,7 @@ begin
 	aumentarEdad(a,cantAumentos);
 	readln(nombre);
 	buscarNombre(a,nombre);
+	writeln('La cantidad de socios es: ', cantSocios(a));
+	writeln('El promedio de edad de los socios es de: ', sumaEdades(a) / cantSocios(a));
 end.
+
