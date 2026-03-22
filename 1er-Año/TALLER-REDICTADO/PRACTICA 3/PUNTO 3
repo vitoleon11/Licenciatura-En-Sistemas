@@ -1,0 +1,190 @@
+{3.Implementar un programa que contenga:
+a. Un módulo que lea información de los finales rendidos por los alumnos de la Facultad de
+Informática y los almacene en una estructura de datos. La información que se lee es legajo,
+código de materia, fecha y nota. La lectura de los alumnos finaliza con legajo 0. La estructura
+generada debe ser eficiente para la búsqueda por número de legajo y para cada alumno deben
+guardarse los finales que rindió en una lista.
+b. Un módulo que reciba la estructura generada en a. y retorne la cantidad de alumnos con
+legajo impar.
+c. Un módulo que reciba la estructura generada en a. e informe, para cada alumno, su legajo y
+su cantidad de finales aprobados (nota mayor o igual a 4).
+c. Un módulo que reciba la estructura generada en a. y un valor real. Este módulo debe
+retornar los legajos y promedios de los alumnos cuyo promedio supera el valor ingresado.}
+
+program practica;
+type
+	alumno = record
+		legajo:integer;
+		codMateria:integer;
+		fecha:string;
+		nota:real;
+	end;
+	
+	fin = record
+		codMateria:integer;
+		fecha:string;
+		nota:real;
+	end;
+	
+	
+	lista = ^nodoLista;
+	nodoLista = record
+		dato:fin;
+		sig:lista
+	end;
+	
+	arbol = ^nodoArbol;
+	nodoArbol = record
+		legajo:integer;
+		l:lista;
+		hi:arbol;
+		hd:arbol;
+	end;
+	
+	regLista = record
+		legajo:integer;
+		promedio:real;
+	end;
+	
+	lista2 = ^nodoLista2;
+	nodoLista2 = record
+		dato:regLista;
+		sig:lista2;
+	end;
+	
+	
+	//INCISO A
+	
+	procedure leerAlumno(var a:alumno);
+	begin
+		readln(a.legajo);
+		if (a.legajo <> 0) then begin
+			readln(a.codMateria);
+			readln(a.fecha);
+			readln(a.nota);
+		end;
+	end;
+	
+	procedure agregarAdelante(var l : lista;a:alumno);
+	var
+		nue:lista;
+	begin
+		new(nue);
+		nue^.dato.codMateria := a.codMateria;
+		nue^.dato.fecha := a.fecha;
+		nue^.dato.nota := a.nota;
+		nue^.sig := l;
+		l := nue;
+	end;
+	
+	procedure insertarAlArbol(var ar:arbol;al:alumno);
+	begin
+		if (ar = nil) then begin
+			new(ar);
+			ar^.l := nil;
+			ar^.legajo := al.legajo;
+			agregarAdelante(ar^.l,al);
+			ar^.hi := nil;
+			ar^.hd := nil;
+		end
+		else if (al.legajo = ar^.legajo) then
+				agregarAdelante(ar^.l,al)
+			else if (al.legajo < ar^.legajo) then
+					insertarAlArbol(ar^.hi,al)
+				else
+					insertarAlArbol(ar^.hd,al);
+	end;
+	
+	procedure cargarArbol(var ar:arbol);
+	var
+		al:alumno;
+	begin
+		leerAlumno(al);
+		while (al.legajo <> 0) do begin
+			insertarAlArbol(ar,al);
+			leerAlumno(al);
+		end;
+	end;
+	
+	// INCISO B	
+	
+	function cantLegajoImpar(a:arbol):integer;
+	begin
+		if (a = nil) then
+			cantLegajoImpar := 0
+		else if (a^.legajo mod 2 = 1) then
+				cantLegajoImpar := 1 + cantLegajoImpar(a^.hi) + cantLegajoImpar(a^.hd)
+			else
+				cantLegajoImpar := cantLegajoImpar(a^.hi) + cantLegajoImpar(a^.hd);
+	end;
+	
+	//INCISO C
+	function contarAprobados(l:lista):integer;
+	var
+		cant : integer;
+	begin
+		cant := 0;
+		while (l <> nil) do begin
+			if (l^.dato.nota >= 4) then
+				cant := cant +1;
+			l := l^.sig;
+		end;
+		contarAprobados := cant;
+	end;
+	
+	procedure informarAlumnos(a:arbol);
+	begin
+		if (a <> nil) then begin
+			informarAlumnos(a^.hi);
+			writeln('El alumno de legajo ', a^.legajo, ', aprobó ', contarAprobados(a^.l),' finales.');
+			informarAlumnos(a^.hd);
+		end;
+	end;
+	
+	// INCISO D
+	
+	function promedioAlumno(l:lista):real;
+	var
+		notaTotal:real;
+		cantFinales:integer;
+	begin
+		notaTotal := 0;
+		cantFinales := 0;
+		while (l <> nil) do begin
+			notaTotal := l^.dato.nota + notaTotal;
+			cantFinales := cantFinales + 1;
+			l := l^.sig;
+		end;
+		promedioAlumno := notaTotal / cantFinales;
+	end;
+	
+	procedure agregarLista2(var l2 :lista2;legajo:integer;promedio:real);
+	var
+		nue:lista2;
+	begin
+		new(nue);
+		nue^.dato.legajo := legajo;
+		nue^.dato.promedio := promedio;
+		nue^.sig := l2;
+		l2 := nue;
+	end;
+	
+	procedure generarLista2(a:arbol;var l2:lista2;valor:real);
+	var
+		prom:real;
+	begin
+		if (a <> nil) then begin
+			generarLista2(a^.hi,l2,valor);
+			prom := promedioAlumno(a^.l);
+			if (prom > valor) then
+				agregarLista2(l2,a^.legajo,prom);
+			generarLista2(a^.hd,l2,valor);
+		end;
+	end;
+	
+var
+	a:arbol;
+begin
+	cargarArbol(a);
+end.
+
