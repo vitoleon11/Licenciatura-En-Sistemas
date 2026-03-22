@@ -160,17 +160,70 @@ type
 		if (a = nil) then
 			devolverFecha := 0
 		else if (fecha = a^.dato.fecha) then
-				devolverFecha := 1 + devolverFecha(a^.hi,fecha) + devolverFecha(a^.hd,fecha)
-			else if (fecha <> a^.dato.fecha) then
-					devolverFecha := devolverFecha(a^.hi,fecha) + devolverFecha(a^.hd,fecha);
+				devolverFecha := a^.dato.cantVendidas + devolverFecha(a^.hi,fecha) + devolverFecha(a^.hd,fecha)
+			else
+				devolverFecha := devolverFecha(a^.hi,fecha) + devolverFecha(a^.hd,fecha);
 	end; 
+	
+	//INCISO C i
+	
+	procedure actualizarMaximo(var max:integer;var maxCod:integer;cant,cod:integer);
+	begin
+		if (cant > max) then begin
+			max := cant;
+			maxCod := cod;
+		end;
+	end;
+	
+	procedure maxCodigo(a:arbol2;var max:integer;var maxCod:integer);
+	begin
+		if (a <> nil) then begin
+			actualizarMaximo(max,maxCod,a^.dato.cantVendidas,a^.dato.codProducto);
+			maxCodigo(a^.hi,max,maxCod);
+			maxCodigo(a^.hd,max,maxCod);
+		end;
+	end;
+	
+	//INCISO C ii
+	procedure actualizarMaximoLista(l:lista; var max:integer; var maxCod:integer;cod:integer);
+	var
+		cant:integer;
+	begin
+		cant := 0;
+		while (l <> nil) do begin
+			cant := cant + 1;
+			l := l^.sig;
+		end;
+		if (cant > max) then begin
+			max := cant;
+			maxCod := cod;
+		end;
+	end;
+	
+	procedure maxCodigoArbol3(a:arbol3;var max:integer;var maxCod:integer);
+	begin
+		if (a <> nil) then begin
+			actualizarMaximoLista(a^.l,max,maxCod,a^.codProducto);
+			maxCodigoArbol3(a^.hi,max,maxCod);
+			maxCodigoArbol3(a^.hd,max,maxCod);
+		end;
+	end;
+	
 var
 	a1:arbol1;
 	a2:arbol2;
 	a3:arbol3;
+	fecha:string;
+	max,maxCod:integer;
 begin
 	a1 := nil;
 	a2 := nil;
 	a3 := nil;
 	cargarArboles(a1,a2,a3);
+	readln(fecha);
+	devolverFecha(a1,fecha);
+	max := -1; maxCod := -1;
+	maxCodigo(a2,max,maxCod);
+	max := -1; maxCod := -1;
+	maxCodigoArbol3(a,max,maxCod);
 end.
