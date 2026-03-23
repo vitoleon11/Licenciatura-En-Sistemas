@@ -108,18 +108,16 @@ type
 		end;
 	end;
 	
-	//INCISO B vi COMPLETAS
+	//INCISO B vi 
 	
-	function buscarNombre(a :arbol;nom:string):boolean;
+	procedure buscarNombre(a :arbol;nom:string;var ok:boolean);
 	begin
-		if (a = nil) then
-			buscarNombre := false
-		else if (a^.dato.nombre = nom) then
-				buscarNombre := true
-			else begin
-				buscarNombre := buscarNombre(a^.hi,nom);
-				buscarNombre := buscarNombre(a^.hd,nom);
-				end;
+		if (a <> nil) then begin
+			buscarNombre(a^.hi,nom,ok);
+			if (a^.dato.nombre = nom) then
+				ok := true;
+			buscarNombre := buscarNombre(a^.hd,nom,ok);
+		end;
 	end;
 	
 	//INCISO B vii
@@ -147,6 +145,7 @@ var
 	a:arbol;
 	maxSocio,maxEdad,cantAumentos:integer;
 	nombre:string;
+	ok:boolean;
 begin
 	a := nil;
 	cargarArbol(a);
@@ -158,7 +157,8 @@ begin
 	cantAumentos := 0;
 	aumentarEdad(a,cantAumentos);
 	readln(nombre);
-	buscarNombre(a,nombre);
+	ok := false;
+	buscarNombre(a,nombre,ok);
 	writeln('La cantidad de socios es: ', cantSocios(a));
 	writeln('El promedio de edad de los socios es de: ', sumaEdades(a) / cantSocios(a));
 end.
