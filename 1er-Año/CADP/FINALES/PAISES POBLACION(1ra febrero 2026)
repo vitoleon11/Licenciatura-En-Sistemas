@@ -1,0 +1,105 @@
+{ Se dispone de una lista con población de paises ordenada por código de país.
+ De cada país se tiene el código del pais, provincia y población.
+A-Realizar un módulo que devuelva la población total de un país.
+B-Realizar un módulo que reciba la lista de paises y almacene en una estructura de datos los 100 paises con mayor cantidad de habitantes.
+C-Obtener el total de habitantes de los 100 paises con mayor cantidad de habitantes.}
+program practica;
+const
+	dimF = 100;
+type
+	pais = record
+		codigo:integer;
+		provincia:string;
+		poblacion :integer;
+	end;
+	
+	paisNue = record
+		codigo:integer;
+		poblacion:integer;
+	end;
+	
+	lista = ^nodo;
+	nodo = record
+		dato:pais;
+		sig:lista;
+	end;
+	
+	vector = array [1..dimF] of paisNue;
+	
+	procedure cargarLista(var l:lista); // se dispone
+	
+	//INCISO A 
+	function devolverPoblacion(l:lista;codPais:integer):integer;
+	var
+		total:integer;
+	begin
+		total := 0;
+		while (l <> nil) and (l^.dato.codigo <> codPais) do begin
+			l := l^.sig;
+		end;
+		while (l <> nil) and (l^.dato.codigo = codPais) do begin
+			total := total + l^.dato.poblacion;
+			l := l^.sig;
+		end;
+		devolverPoblacion := total;
+	end;
+	
+	procedure eliminarPrimero(var v:vector;var dimL:integer);
+	var
+		i:integer;
+	begin
+		for i := 1 to dimL -1 do begin
+			v[i] := v[i+1];
+		end;
+		dimL := dimL -1;
+	end;
+	
+	procedure insertarOrdenado(var v:vector;var dimL:integer;p :paisNue);
+	var 
+		i:integer;
+	begin
+		i := dimL;
+		while (i >= 1) and (v[i].poblacion > p.poblacion) do begin
+			v[i+1] := v[i];
+			i := i - 1;
+		end;
+		v[i+1] := p;
+		dimL := dimL +1;
+	end;
+	
+	procedure cienPaises(l:lista;var v : vector;var dimL:integer);
+	var
+		codActual,cantTotal:integer;
+		p:paisNue;
+	begin
+		while (l <> nil) do begin
+			codActual := l^.dato.codigo;
+			cantTotal := 0;
+			while (l <> nil) and (l^.dato.codigo = codActual) do begin
+				cantTotal := cantTotal + l^.dato.poblacion;
+				l := l^.sig
+			end;
+			p.codigo := codActual;
+			p.poblacion := cantTotal;
+			if (dimL < dimF) then
+				insertarOrdenado(v,dimL,p)
+			else if (p.poblacion > v[1].poblacion) then begin
+					eliminarPrimero(v,dimL);
+					insertarOrdenado(v,dimL,p);
+				end;
+		end;
+	end;
+	
+
+var
+	l:lista;
+	cod,dimL:integer;
+	v:vector;
+begin
+	l := nil;
+	cargarLista(l);
+	readln(cod);
+	devolverPoblacion(l,cod);
+	dimL := 0;
+	cienPaises(l,v,dimL);
+end.
