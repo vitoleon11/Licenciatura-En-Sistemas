@@ -1,57 +1,57 @@
-program gork;
+{La biblioteca de la Facultad dispone de sus préstamos ordenados por código de tema (1…15). De cada préstamo se conoce:
+código de tema,,
+fecha,,
+código del libro prestado.,
+Se pide realizar un programa que informe:
+El código de tema con más cantidad de préstamos.,
+La cantidad total de préstamos para cada tema.,
+Declare todas las estructuras utilizadas para resolver el programa.
+Considerar: que la solución propuesta debe optimizar el tiempo de ejecución y la memoria estática.}
+
+program practica;
 type
-    prestamo = record
-        codTema:integer;
-        fecha:string;
-        codLibro:integer;
-    end;
-
-    lista = ^nodo;      //SE DISPONE
-    nodo = record
-        dato : prestamo;
-        sig:lista;
-    end;
-
-    vector = array [1..15] of integer;
-
-    procedure cargarLista(var l : lista);// SE DISPONE
-
-    procedure inicializarVector(var v: vector);
-    var
-        i:integer;
-    begin
-        for i := 1 to 15 do begin
-            v[i] := 0;
-        end;
-    end;
-
-    procedure cargarEInformarVector(l:lista;var v:vector);
-    var
-        aux:lista;
-        maxCod,max,i:integer;
-    begin
-        aux := l;
-        while (aux <> nil) do begin
-            v[aux^.dato.codTema] := v[aux^.dato.codTema] + 1;
-            aux := aux^.sig;
-        end;
-        max := -1;
-        maxCod := 1;
-        for i := 1 to 15 do begin
-            writeln('La cantidad total de prestamos para el codigo ',i,' fue ',v[i]);
-            if (v[i] > max) then begin
-                maxCod := i;
-                max := v[i];
-            end; 
-        end;
-    end;
-
-var 
-    l:lista;
-    v:vector;
-begin 
-    l:= nil;
-    cargarLista(l);
-    inicializarVector(v);
-    cargarEInformarVector(l,v);
+	prestamo = record
+		codTema:integer;
+		fecha:string;
+		codLibro:integer;
+	end;
+	
+	lista = ^nodo; // se dispone ordenada por codTema
+	nodo = record
+		dato:prestamo;
+		sig:lista;
+	end;
+	
+	
+	procedure cargarLista(var l:lista); //se dispone
+	
+	procedure informarTodo(l:lista);
+	var
+		maxCod,cantTotal,maxCant,codActual:integer;
+	begin
+		maxCant := -1;
+		maxCod := -1;
+		while (l <> nil) do begin
+			codActual := l^.dato.codTema;
+			cantTotal := 0;
+			while (l <> nil) and (codActual = l^.dato.codTema) do begin
+				cantTotal := cantTotal + 1;
+				l := l^.sig;
+			end;
+			writeln('La cantidad de este cod de tema es: ', cantTotal);
+			if (cantTotal > maxCant) then begin
+				maxCant := cantTotal;
+				maxCod := codActual;
+			end;
+		end;
+		WRITELN('El codigo con mas prestamos es: ', maxCod);
+	end;
+	
+	
+var
+	l:lista;
+begin
+	l := nil;
+	cargarLista(l);
+	informarTodo(l);
 end.
