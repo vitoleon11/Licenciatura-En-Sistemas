@@ -107,6 +107,18 @@ type
 			aumentarEdad(a^.hd,cantAumentos);
 		end;
 	end;
+
+function aumentarEdad(a:arbol):integer;
+var
+	resto:integer
+if (a = nil) then
+	aumentarEdad := 0
+else begin
+		resto := a^.dato.edad mod 2;
+		if (resto = 1) then a^.dato.edad := a^.dato.edad + 1;
+		aumentarEdad := resto + aumentarEdad(a^.hi) + AumentarEdad(a^.hd);
+	end;
+end;
 	
 	//INCISO B vi 
 	
