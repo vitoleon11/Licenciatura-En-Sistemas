@@ -13,7 +13,7 @@ public class Punto2Practica5 {
     public static void main(String[] args) {
         Estacionamiento e1 = new Estacionamiento("Polla","Negra","8:00","15:00",3,3);
         Auto a1 = new Auto("Emiliano","AC200CJ");
-        Auto a2 = new Auto("Matias","OVF345");
+        Auto a2 = new Auto("Matias","OVF969");
         Auto a3 = new Auto("Vito", "NIV231");
         Auto a4 = new Auto("Alan","MAL066");
         Auto a5 = new Auto("Hector","AD137QF");
