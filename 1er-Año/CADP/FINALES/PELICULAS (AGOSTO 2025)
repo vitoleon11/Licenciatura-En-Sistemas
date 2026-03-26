@@ -1,71 +1,83 @@
-program gork;
+{Se lee información de películas.
+De cada película se lee número, título de la película, nombre del género y nombre del director.
+Se pide realizar un programa que genere una estructura de datos adecuada para almacenar 
+cada nombre de director y la cantidad de películas dirigidas por el director.
+La lectura finaliza cuando se lee el número 0.
+La información se lee ordenada por el nombre del género.
+}
+program final;
 type
-    pelicula = record
-        numero: integer;
-        titulo:string;
-        nomGenero:string;
-        nomDirector:string;
-    end;
-
-    peliNodo = record
-        nomDirector:integer;
-        cantPeliculas:integer;
-    end;
-
-    lista = ^nodo;
-    nodo = record
-        dato:peliNodo;
-        sig:lista;
-    end;
-
-
-    procedure leerPelicula(var p : pelicula);
-    begin
-        readln(p.numero);
-        if ( p.numero <> 0) then begin
-            readln(titulo);
-            readln(p.nomGenero);
-            readln(p.nomDirector);
-        end;
-    end;
-
-    procedure agregarAdelante(var l:lista; p:pelicula);
-    var
-        nue:lista;
-    begin
-        new(nue);
-        nue^.dato.nomDirector := p.nomDirector;
-        nue^.dato.cantPeliculas := 1;
-        nue^.sig := l;
-        l := nue;
-    end;
-
-    procedure cargarLista(var l :lista);
-    var
-        p:pelicula;
-        pude:boolean;
-        aux:lista;
-    begin
-        leerPelicula(p);
-        while(p.numero <> 0) do begin
-            aux := l;
-            pude := false;
-            while (aux <> nil) AND (not pude) do begin
-                if (aux^.dato.nomDirector = p.nomDirector) then begin
-                    aux^.dato.cantPeliculas := aux^.dato.cantPeliculas + 1;
-                    pude := true;
-                end;
-                else
-                    aux := aux^.sig;
-            end;
-            if (not pude) then
-                agregarAdelante(l,p);
-            leerPelicula(p);
-        end;
-    end;    
-    
-var 
-    l:lista;
+	pelicula = record
+		numero:integer;
+		titulo:string;
+		nomGenero:string;
+		nomDirector:string;
+	end;
+	
+	regLista = record
+		nombre:string;
+		cant:integer;
+	end;
+	
+	lista = ^nodo;
+	nodo = record
+		dato:regLista;
+		sig:lista;
+	end;
+	
+	procedure leerPelicula(var p :pelicula);
+	begin
+		readln(p.numero);
+		if (p.numero <> 0) then begin
+			readln(p.titulo);
+			readln(p.nomGenero);
+			readln(p.nomDirector);
+		end;
+	end;
+	
+	
+	procedure agregarAdelante(var l :lista;p:pelicula);
+	var
+		nue:lista;
+	begin
+		new(nue);
+		nue^.dato.nombre := p.nomDirector;
+		nue^.dato.cant := 1;
+		nue^.sig := l;
+		l := nue;
+	end;
+	
+	function recorrer(l : lista;nom:string):lista;
+	begin
+		while (l <> nil) and (l^.dato.nombre <> nom) do 
+			l := l^.sig;
+		recorrer := l;
+	end;
+	
+	
+	procedure cargarLista(var l :lista);
+	var
+		p:pelicula;
+		aux:lista;
+	begin
+		leerPelicula(p);
+		while (p.numero <> 0) do begin
+			aux := recorrer(l,p.nomDirector);
+			if (aux = nil) then 
+				agregarAdelante(l,p)
+			else
+				aux^.dato.cant := aux^.dato.cant + 1;
+			leerPelicula(p);
+		end;
+	end;
+	
+	
+	
+	
+var
+	l:lista;
 begin
-    cargarLista(l);
-end.   
+	l := nil;
+	cargarLista(l);
+end.
+
