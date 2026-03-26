@@ -108,7 +108,7 @@ type
 		end;
 	end;
 
-function aumentarEdad(a:arbol):integer;
+function aumentarEdad(var a:arbol):integer;
 var
 	resto:integer
 if (a = nil) then
