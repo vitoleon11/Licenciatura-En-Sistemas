@@ -1,0 +1,112 @@
+{1. Un comercio desea generar una estructura con información de los productos vendidos a
+partir de la información de ventas tiene en papel. Se pide:
+a. Almacenar los productos vendidos en una estructura eficiente para la búsqueda por
+código de producto. De cada producto deben quedar almacenados su código, la
+cantidad total de unidades vendidas y el monto total. De cada venta se cargan código
+de venta, código del producto vendido, cantidad de unidades vendidas y precio
+unitario. El ingreso de las ventas finaliza cuando se lee el código de venta 0.
+b. Imprimir el contenido del árbol ordenado por código de producto.
+c. Retornar el menor código de producto.
+d. Retornar la cantidad de códigos que existen en el árbol que son menores que un valor
+que se recibe como parámetro.
+e. Retornar el monto total entre todos los códigos de productos comprendidos entre dos
+valores recibidos (sin incluir) como parámetros.
+}
+
+program practica;
+type
+	producto = record
+		codigo:integer;
+		cantUnidades:integer;
+		montoTotal:real;
+	end;
+	
+	venta = record
+		codProducto:integer;
+		cantUnidades:integer;
+		precio:real;
+	end;
+	
+	arbol = ^nodo;
+	nodo = record
+		dato:producto;
+		hi:arbol;
+		hd:arbol;
+	end;
+	
+	procedure leerVenta(var v:venta);
+	begin
+		readln(v.codProducto);
+		if (v.codProducto <> 0) then begin
+			readln(v.cantUnidades);
+			readln(v.precio);
+		end;
+	end;
+	
+	procedure insertarArbol(var a:arbol; v:venta);
+	begin
+		if (a = nil) then begin
+			new(a);
+			a^.dato.codigo := v.codProducto;
+			a^.dato.cantUnidades := v.cantUnidades;
+			a^.dato.montoTotal := v.precio;
+			a^.hi := nil;
+			a^.hd := nil;
+		end
+		else if (v.codProducto = a^.dato.codigo) then begin
+				a^.dato.cantUnidades := a^.dato.cantUnidades + v.cantUnidades;
+				a^.dato.montoTotal := a^.dato.montoTotal + v.precio;
+			end
+			else if (v.codProducto < a^.dato.codigo) then
+					insertarArbol(a^.hi,v)
+				else
+					insertarArbol(a^.hd,v);
+	end;
+	
+	procedure cargarArbol(var a:arbol);
+	var
+		v:venta;
+	begin
+		leerVenta(v);
+		while (v.codProducto <> 0) do begin
+			insertarArbol(a,v);
+			leerVenta(v);
+		end;
+	end;
+
+	//INCISO B
+	procedure imprimirOrdenado(a:arbol);
+	begin
+		if (a <> nil) then begin
+			imprimirOrdenado(a^.hi);
+			writeln('Codigo: ', a^.dato.codigo,' Unidades: ',a^.dato.cantUnidades,' Monto: ', a^.dato.montoTotal);
+			imprimirOrdenado(a^.hd);
+		end;
+	end;
+	
+	//INCISO C
+	function devolverMenor(a:arbol):integer;
+	begin
+		if (a^.hi = nil) then	
+			devolverMenor := a^.dato.codigo
+		else
+			devolverMenor := devolverMenor(a^.hi);
+	end; 
+	
+	// INCISO D
+	function cantCodigos(a:arbol;valor:integer):integer;
+	begin
+		if (a = nil) then
+			cantCodigos := 0
+		else if (a^.dato.codigo < valor) then 
+				cantCodigos := 1 + cantCodigos(a^.hi,valor) + cantCodigos(a^.hd,valor)
+			else 
+				cantCodigos := cantCodigos(a^.hi,valor);
+	end;
+	
+var
+	a:arbol;
+begin
+	a := nil;
+	cargarArbol(a);
+end.
