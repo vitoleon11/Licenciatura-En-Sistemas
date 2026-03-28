@@ -103,10 +103,20 @@ type
 			else 
 				cantCodigos := cantCodigos(a^.hi,valor);
 	end;
+	//INCISO E
 	
 var
 	a:arbol;
+	cod,valor1,valor2:integer;
 begin
 	a := nil;
 	cargarArbol(a);
+	imprimirOrdenado(a);
+	devolverMenor(a);
+	readln(cod);
+	cantCodigos(a,cod);
+	readln(valor1);
+	readln(valor2);
+	
 end.
+
