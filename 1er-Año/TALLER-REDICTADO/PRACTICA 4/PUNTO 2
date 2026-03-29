@@ -1,0 +1,233 @@
+{En el programa del Ejercicio 1 - Clase 3, incorporar lo necesario para:
+i. Informar el número de socio más grande. Debe invocar a un módulo recursivo que
+retorne dicho valor.
+ii. Informar los datos del socio con el número de socio más chico. Debe invocar a un
+módulo recursivo que retorne dicho socio.
+iii. Leer un valor entero e informar si existe o no existe un socio con ese valor. Debe
+invocar a un módulo recursivo que reciba el valor leído y retornar verdadero o falso.
+iv. Leer dos valores e informar la cantidad de socios cuyos códigos se encuentran
+comprendidos entre los valores leídos. Debe invocar a un módulo recursivo que reciba
+los valores leídos y retorne la cantidad solicitada.}
+
+program practica;
+type
+	socio = record
+		numSocio :integer;
+		nombre:string;
+		edad:integer;
+	end;
+	
+	arbol = ^nodo;
+	nodo = record
+		dato:socio;
+		hi:arbol;
+		hd:arbol;
+	end;
+
+	//INCISO A
+	procedure leerSocio(var s:socio);
+	begin
+		readln(s.numSocio);
+		if (s.numSocio <> 0) then begin
+			readln(s.nombre);
+			s.edad := Random(100);
+		end;
+	end;
+	
+	procedure insertarAlArbol(var a : arbol;s:socio);
+	begin
+		if (a = nil) then begin
+			new(a);
+			a^.dato := s;
+			a^.hi := nil;
+			a^.hd := nil;
+		end
+		else if (s.numSocio < a^.dato.numSocio) then
+				insertarAlArbol(a^.hi,s)
+			else
+				insertarAlArbol(a^.hd,s);
+	end;
+	
+	procedure cargarArbol(var a:arbol);
+	var
+		s:socio;
+	begin
+		leerSocio(s);
+		while (s.numSocio <> 0) do begin
+			insertarAlArbol(a,s);
+			leerSocio(s);
+		end;
+	end;
+	
+	//INCISO B i 
+	
+	procedure imprimir(s:socio);
+	begin
+		writeln('Numero de socio: ', s.numSocio,' Nombre: ', s.nombre,' Edad: ', s.edad);
+	end;
+	
+	procedure informarCreciente(a:arbol);
+	begin
+		if (a <> nil) then begin
+			informarCreciente(a^.hi);
+			imprimir(a^.dato);
+			informarCreciente(a^.hd);
+		end;
+	end;
+	
+	//INCISO B ii
+	procedure informarDecreciente(a:arbol);
+	begin
+		if (a <> nil) then begin
+			informarDecreciente(a^.hd);
+			imprimir(a^.dato);
+			informarDecreciente(a^.hi);
+		end;
+	end;
+	
+	//INCISO B iii 
+	
+	procedure actualizarMaximo(var valorMax:integer;var maxSocio:integer;valor:integer;socioNue:integer);
+	begin
+		if (valor > valorMax) then begin
+			valorMax := valor;
+			maxSocio := socioNue;
+		end;
+	end;
+	
+	procedure mayorEdad(a:arbol;var maxEdad:integer;var maxSocio:integer);
+	begin
+		if (a <> nil) then begin
+			actualizarMaximo(maxEdad,maxSocio,a^.dato.edad,a^.dato.numSocio);
+			mayorEdad(a^.hd,maxEdad,maxSocio);
+			mayorEdad(a^.hi,maxEdad,maxSocio);
+		end;
+	end;
+	
+	//INCISO B iv
+	
+	procedure aumentarEdad(a:arbol;var cantAumentos:integer);
+	begin
+		if (a <> nil) then begin
+			if (a^.dato.edad mod 2 = 1) then begin
+				a^.dato.edad := a^.dato.edad + 1;
+				cantAumentos := cantAumentos + 1;
+			end;
+			aumentarEdad(a^.hi,cantAumentos);
+			aumentarEdad(a^.hd,cantAumentos);
+		end;
+	end;
+
+{	function aumentarEdad(var a:arbol):integer;
+	var
+		resto:integer
+	if (a = nil) then
+		aumentarEdad := 0
+	else begin
+			resto := a^.dato.edad mod 2;
+			if (resto = 1) then a^.dato.edad := a^.dato.edad + 1;
+			aumentarEdad := resto + aumentarEdad(a^.hi) + AumentarEdad(a^.hd);
+		end;
+	end;
+	}
+	//INCISO B vi 
+	
+	procedure buscarNombre(a :arbol;nom:string;var ok:boolean);
+	begin
+		if (a <> nil) then begin
+			buscarNombre(a^.hi,nom,ok);
+			if (a^.dato.nombre = nom) then
+				ok := true;
+			buscarNombre(a^.hd,nom,ok);
+		end;
+	end;
+	
+	//INCISO B vii
+	
+	function cantSocios(a:arbol):integer;
+	begin
+		if (a = nil) then
+			cantSocios := 0
+		else
+			cantSocios := 1 + cantSocios(a^.hi) + cantSocios(a^.hd);
+	end; 
+	
+	//INCISO B viii
+	
+	function sumaEdades(a:arbol):integer;
+	begin
+		if (a = nil) then
+			sumaEdades := 0
+		else
+			sumaEdades := a^.dato.edad + sumaEdades(a^.hi) + sumaEdades(a^.hd);
+	end;
+	
+	//INCISO i 
+	function devolverMaxSocio(a:arbol):integer;
+	begin
+		if (a = nil) then
+			devolverMaxSocio := -1
+		else if (a^.hd = nil) then
+			devolverMaxSocio := a^.dato.numSocio
+			else
+				devolverMaxSocio := devolverMaxSocio(a^.hd);
+	end;
+	
+	//INCISO ii
+	function devolverMinNodo(a:arbol):arbol;
+	begin
+		if (a = nil) then
+			devolverMinNodo := nil
+		else if (a^.hi = nil) then
+				devolverMinNodo := a
+			else
+				devolverMinNodo := devolverMinNodo(a^.hi);
+	end;
+	
+	//INCISO iii
+	function devolverSiExiste(a:arbol;num:integer):boolean;
+	begin
+		if (a = nil) then
+			devolverSiExiste := false
+		else if (a^.dato.numSocio = num) then
+				devolverSiExiste := true
+			else if (a^.dato.numSocio < num) then
+					devolverSiExiste := devolverSiExiste(a^.hd,num)
+				else
+					devolverSiExiste := devolverSiExiste(a^.hi,num);
+	end;
+	
+	//INCISO iv
+	function devolverEntreValores(a:arbol;valor1,valor2:integer):integer;
+	begin
+		if (a = nil) then
+			devolverEntreValores := 0
+		else if (a^.dato.numSocio >= valor1) and (a^.dato.numSocio <= valor2) then
+				devolverEntreValores := 1 + devolverEntreValores(a^.hi,valor1,valor2) + devolverEntreValores(a^.hd,valor1,valor2)
+			else if (a^.dato.numSocio < valor1) then
+					devolverEntreValores := devolverEntreValores(a^.hd,valor1,valor2)
+				else if (a^.dato.numSocio > valor2) then
+						devolverEntreValores := devolverEntreValores(a^.hi,valor1,valor2);
+	end;
+	
+var
+	a:arbol;
+	maxSocio,maxEdad,cantAumentos:integer;
+	nombre:string;
+	ok:boolean;
+begin
+	a := nil;
+	cargarArbol(a);
+	informarCreciente(a);
+	informarDecreciente(a);
+	maxEdad := -1;
+	maxSocio := -1;
+	mayorEdad(a,maxEdad,maxSocio);
+	cantAumentos := 0;
+	aumentarEdad(a,cantAumentos);
+	readln(nombre);
+	ok := false;
+	buscarNombre(a,nombre,ok);
+	writeln('La cantidad de socios es: ', cantSocios(a));
+	writeln('El promedio de edad de los socios es de: ', sumaEdades(a) / cantSocios(a));
+end.
