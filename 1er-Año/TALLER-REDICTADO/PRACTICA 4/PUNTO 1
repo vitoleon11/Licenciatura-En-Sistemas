@@ -104,6 +104,17 @@ type
 				cantCodigos := cantCodigos(a^.hi,valor);
 	end;
 	//INCISO E
+	function retornarMonto(a:arbol;valor1,valor2:integer):real;
+	begin
+		if (a = nil) then
+			retornarMonto := 0
+		else if (a^.dato.codigo > valor1) and (a^.dato.codigo < valor2) then
+				retornarMonto := a^.dato.montoTotal + retornarMonto(a^.hi,valor1,valor2) + retornarMonto(a^.hd,valor1,valor2)
+			else if (a^.dato.codigo <= valor1) then
+					retornarMonto := retornarMonto(a^.hd,valor1,valor2)
+				else if (a^.dato.codigo >= valor2) then
+						retornarMonto := retornarMonto(a^.hi,valor1,valor2);
+	end;
 	
 var
 	a:arbol;
@@ -117,6 +128,5 @@ begin
 	cantCodigos(a,cod);
 	readln(valor1);
 	readln(valor2);
-	
+	retornarMonto(a,valor1,valor2);
 end.
-
