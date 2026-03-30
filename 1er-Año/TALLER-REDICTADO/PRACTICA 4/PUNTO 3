@@ -1,0 +1,136 @@
+{3. Implementar un programa modularizado para una librería. Implementar módulos para:
+a. Almacenar los productos vendidos en una estructura eficiente para la búsqueda por
+código de producto. De cada producto deben quedar almacenados su código, la
+cantidad total de unidades vendidas y el monto total. De cada venta se lee código de
+venta, código del producto vendido, cantidad de unidades vendidas y precio unitario.
+El ingreso de las ventas finaliza cuando se lee el código de venta -1.
+b. Imprimir el contenido del árbol ordenado por código de producto.
+c. Retornar el código de producto con mayor cantidad de unidades vendidas.
+d. Retornar la cantidad de códigos que existen en el árbol que son menores que un valor
+que se recibe como parámetro.
+e. Retornar el monto total entre todos los códigos de productos comprendidos entre dos
+valores recibidos (sin incluir) como parámetros.
+}
+program practicark;
+type
+	producto = record
+		codProducto:integer;
+		cantUnidades:integer;
+		montoTotal:real;
+	end;
+	
+	venta = record
+		codVenta : integer;
+		codProducto:integer;
+		cantUnidades:integer;
+		precio:real;
+	end;
+	
+	arbol = ^nodo;
+	nodo = record
+		dato:producto;
+		hi:arbol;
+		hd:arbol;
+	end;
+	
+	procedure leerVenta(var v:venta);
+	begin
+		readln(v.codVenta);
+		if (v.codVenta <> -1) then begin
+			readln(v.codProducto);
+			readln(v.cantUnidades);
+			readln(v.precio);
+		end;
+	end;
+
+	procedure insertarArbol(var a:arbol;v:venta);
+	begin
+		if (a = nil) then begin
+			new(a);
+			a^.dato.codProducto := v.codProducto;
+			a^.dato.cantUnidades := v.cantUnidades;
+			a^.dato.montoTotal := v.cantUnidades * v.precio;
+			a^.hi := nil;
+			a^.hd := nil;
+		end
+		else if (a^.dato.codProducto = v.codProducto) then begin
+				a^.dato.cantUnidades := a^.dato.cantUnidades + v.cantUnidades;
+				a^.dato.montoTotal := a^.dato.montoTotal + (v.cantUnidades * v.precio);
+			end
+			else if (a^.dato.codProducto < v.codProducto) then
+					insertarArbol(a^.hi,v)
+				else
+					insertarArbol(a^.hd,v);
+	end;
+	
+	procedure cargarArbol(var a:arbol);
+	var
+		v:venta;
+	begin
+		leerVenta(v);
+		while(v.codVenta <> -1) do begin
+			insertarArbol(a,v);
+			leerVenta(v);
+		end;
+	end;
+	
+	//INCISO B
+	procedure imprimirOrdenado(a:arbol);
+	begin
+		if (a <> nil) then begin
+			imprimirOrdenado(a^.hi);
+			writeln('Cod: ', a^.dato.codProducto,' Cantidad unidades: ', a^.dato.cantUnidades,' Monto total: ', a^.dato.montoTotal);
+			imprimirOrdenado(a^.hd);
+		end;
+	end;
+
+	//INCISO C
+	function devolverMaxCod(a:arbol):integer;
+	begin
+		if (a = nil) then
+			devolverMaxCod := -1
+		else if (a^.hd = nil) then
+				devolverMaxCod := a^.dato.codProducto
+			else
+				devolverMaxCod := devolverMaxCod(a^.hd);
+	end;
+	
+	//INCISO D
+	function devolverMenores(a:arbol;valor:integer):integer;
+	begin
+		if (a = nil) then
+			devolverMenores := 0
+		else if (a^.dato.codProducto < valor) then
+				devolverMenores := 1 + devolverMenores(a^.hi,valor) + devolverMenores(a^.hd,valor)
+			else
+				devolverMenores := devolverMenores(a^.hi,valor);
+	end;
+	
+	//INCISO E
+	function devolverEntreDos(a:arbol;valor1,valor2:integer):real;
+	begin
+		if (a = nil) then
+			devolverEntreDos := 0
+		else if (a^.dato.codProducto > valor1) and (a^.dato.codProducto < valor2) then
+				devolverEntreDos := a^.dato.montoTotal + devolverEntreDos(a^.hi,valor1,valor2) + devolverEntreDos(a^.hd,valor1,valor2)
+			else if (a^.dato.codProducto <= valor1) then
+					devolverEntreDos := devolverEntreDos(a^.hd,valor1,valor2)
+				else
+					devolverEntreDos := devolverEntreDos(a^.hi,valor1,valor2);
+	end;
+	
+var
+	a:arbol;
+	valor,valor1,valor2:integer;
+begin
+	a := nil;
+	cargarArbol(a);
+	imprimirOrdenado(a);
+	devolverMaxCod(a);
+	readln(valor);
+	devolverMenores(a,valor);
+	readln(valor1);
+	readln(valor2);
+	devolverEntreDos(a,valor1,valor2)
+end.
+ 
