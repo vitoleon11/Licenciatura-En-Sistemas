@@ -1,0 +1,91 @@
+{"Una empresa dispone de una estructura de datos con información de sus empleados. De cada empleado conoce su nombre, año de nacimiento y salario,
+y la información se encuentra ordenada por año de nacimiento. Realizar un programa que informe los 10 años en los que nacieron más empleados,
+ el monto total destinado al pago de salarios de dichos empleados nacidos en esos 10 años."}
+program gork;
+const
+	dimF = 10;
+type
+	empleado = record
+		nombre:string;
+		anio:integer;
+		salario:real;
+	end;
+	
+	regVector = record
+		anio:integer;
+		cantE:integer;
+		monto:real;
+	end;
+	
+	lista = ^nodo; //ordenada por año
+	nodo = record
+		dato:empleado;
+		sig:lista;
+	end;
+	
+	vector = array [1..dimF] of empleado;
+	
+	procedure cargarLista(var l : lista); //se dispone
+	
+	procedure insertarOrdenado(var v:vector; var dimL:integer; e:regVector);
+	var
+		i:integer;
+	begin
+		i := dimL;
+		while (i >= 1) and (e.cantE < v[i].cantE) do begin
+			v[i+1] := v[i];
+			i := i - 1;
+		end;
+		v[i+1] := e;
+		dimL := dimL + 1;
+	end;
+	
+	procedure eliminarPrimero(var v:vector;var dimL:integer);
+	var
+		i:integer;
+	begin
+		for i := 1 to dimL - 1do begin
+			v[i] := v[i+1];
+		end;
+		dimL := dimL - 1;
+	end;
+
+	procedure procesar(l:lista; var v:vector; var dimL:integer);
+	var
+		cantE,anioActual:integer;
+		montoTotal:real;
+		e:regVector;
+	begin
+		while (l <> nil) do begin
+			anioActual := l^.dato.anioActual;
+			cantE := 0;
+			montoTotal := 0;
+			while (l <> nil) and (anioActual <> l^.dato.anio) do begin
+				cantE := cantE + 1;
+				montoTotal := montoTotal + l^.dato.salario;
+				l := l^.sig;
+			end;
+			e.anio := anioActual;
+			e.cantE := cantE;
+			e.monto := montoTotal;
+			if (dimL < dimF) then
+				insertarOrdenado(v,dimL,e)
+			else if (e.cantE > v[1].cantE) then begin
+					eliminarPrimero(v,dimL);
+					insertarOrdenado(v,dimL,e);
+				end;
+		end;
+	end;
+var
+	dimL,i:integer;
+	l:lista;
+	v:vector;
+begin
+	l := nil;
+	cargarLista(l);
+	dimL := 0;
+	procesar(l,v,dimL);
+	for i := 1 to dimL do begin
+		writeln('Anio: ', v[i].anio,' Cantidad: ', v[i].cantE,' Monto total: ', v[i].montoTotal);
+	end;
+end.
