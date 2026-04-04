@@ -1,0 +1,133 @@
+{3. Un supermercado requiere el procesamiento de sus productos. De cada producto se
+conoce código, rubro (1..10), stock y precio unitario. Se pide:
+a) Generar una estructura adecuada que permita agrupar los productos por rubro. A su
+vez, para cada rubro, se requiere que la búsqueda de un producto por código sea lo
+más eficiente posible. El ingreso finaliza con el código de producto igual a 0.
+b) Implementar un módulo que reciba la estructura generada en a), un rubro y un código
+de producto y retorne si dicho código existe o no para ese rubro.
+c) Implementar un módulo que reciba la estructura generada en a), y retorne, para cada
+rubro, el código y stock del producto con mayor código.
+d) Implementar un módulo que reciba la estructura generada en a), dos códigos y
+retorne, para cada rubro, la cantidad de productos con códigos entre los dos valores
+ingresados. }
+
+program practica;
+type 
+	producto = record
+		codProducto:integer;
+		codRubro:integer;
+		stock:integer;
+		precio:real;
+	end;
+	
+	arbol = ^nodoArbol;
+	nodoArbol = record
+		dato:producto;
+		hi:arbol;
+		hd:arbol;
+	end;
+	
+	regVector = record
+		codigo:integer;
+		stock:integer;
+	end;
+	
+	vector = array [1..10] of arbol;
+	
+	vectorMaximos = array [1..10] of regVector;
+	
+	procedure inicializarVector(var v:vector);
+	var
+		i:integer;
+	begin
+		for i := 1 to 10 do begin
+			v[i] := nil;
+		end;
+	end;
+	
+	procedure leerProducto(var p:producto);
+	begin
+		readln(p.codProducto);
+		if (p.codProducto <> 0) then begin
+			readln(p.codRubro);
+			readln(p.stock);
+			readln(p.precio);
+		end;
+	end;
+	
+	procedure insertarArbol(var a:arbol;p:producto);
+	begin
+		if (a = nil) then begin
+			new(a);
+			a^.dato := p;
+			a^.hi := nil;
+			a^.hd := nil;
+		end
+		else if (p.codProducto < a^.dato.codProducto) then
+				insertarArbol(a^.hi,p)
+			else
+				insertarArbol(a^.hd,p);
+	end;
+
+	procedure cargarVector(var v:vector);
+	var
+		p:producto;
+	begin
+		leerProducto(p);
+		while (p.codProducto <> 0) do begin
+			insertarArbol(v[p.codRubro],p);
+			leerProducto(p);
+		end;
+	end;
+
+	// INCISO B
+	function existe(a:arbol;codigo:integer):boolean;
+	begin
+		if (a = nil) then
+			existe := false
+		else if (a^.dato.codProducto = codigo) then
+				existe := true
+			else if (codigo < a^.dato.codProducto) then
+					existe := existe(a^.hi,codigo)
+				else
+					existe := existe(a^.hd,codigo);
+	end;
+	
+	//INCISO C
+	procedure maximo(a:arbol;var cod:integer;var stock:integer);
+	begin
+		if (a <> nil) then begin
+			if (a^.hd = nil) then begin
+				cod := a^.dato.codProducto;
+				stock := a^.dato.stock;
+			end
+			else
+				maximo(a^.hd,cod,stock);
+		end;
+	end;
+	
+	procedure retornarVector2(vP:vector;var vM:vectorMaximos);
+	var
+		i:integer;
+	begin
+		for i := 1 to 10 do begin
+			if (vP[i] <> nil ) then
+				maximo(vP[i],vM[i].codigo,vM[i].stock)
+			else
+				vM[i].codigo := -1;
+				vM[i].stock := 0;
+		end;
+	end;
+	
+var
+	vP:vector;
+	vM:vectorMaximos;
+	codigo,rubro:integer;
+begin
+	inicializarVector(vP);
+	cargarVector(vP);
+	readln(codigo);
+	readln(rubro);
+	existe(vP[rubro],codigo);
+	retornarVector2(vP,vM);
+end.
