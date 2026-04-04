@@ -263,6 +263,21 @@ type
 			cargarArbol4(a2^.hd,a4)
 		end;
 	end;
+	
+	// INCISO H
+	procedure imprimirArbol4(a:arbol4);
+	begin
+		if (a <> nil ) then begin
+			imprimirArbol4(a^.hi);
+			writeln('ISBN: ', a^.dato.isbn,' Cantidad: ', a^.dato.cant);
+			imprimirArbol4(a^.hd);
+		end;
+	end;
+	
+	//INCISO I
+	procedure
+	
+	
 var
 	a1:arbol1;
 	a2:arbol2;
