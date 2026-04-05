@@ -1,0 +1,180 @@
+{4. Una oficina requiere el procesamiento de los reclamos de las personas. De cada reclamo
+se ingresa código, DNI de la persona, año y tipo de reclamo. El ingreso finaliza con el
+código de igual a 0. Se pide:
+a) Un módulo que retorne estructura adecuada para la búsqueda por DNI. Para cada DNI
+se deben tener almacenados cada reclamo y la cantidad total de reclamos que realizó.
+b) Un módulo que reciba la estructura generada en a) y un DNI y retorne la cantidad de
+reclamos efectuados por ese DNI.
+c) Un módulo que reciba la estructura generada en a) y dos DNI y retorne la cantidad de
+reclamos efectuados por todos los DNI comprendidos entre los dos DNI recibidos.
+d) Un módulo que reciba la estructura generada en a) y un año y retorne los códigos de
+los reclamos realizados en el año recibido. 
+}
+program practica;
+type
+	reclamo = record
+		codigo:integer;
+		dni:integer;
+		anio:integer;
+		tipo:string;
+	end;
+	
+	regLista = record
+		codigo:integer;
+		anio:integer;
+		tipo:string;
+	end;
+	
+	lista = ^nodoLista;
+	nodoLista = record
+		dato:regLista;
+		sig:lista;
+	end;
+		
+	arbol = ^nodoArbol;
+	nodoArbol = record
+		dni:integer;
+		cant:integer;
+		l:lista;
+		hi:arbol;
+		hd:arbol;
+	end;
+	
+	lista2 = ^nodoLista2;
+	nodoLista2 = record
+		dato:integer;
+		sig:lista2;
+	end;
+	
+	procedure leerReclamo(var r:reclamo);
+	begin
+		readln(r.codigo);
+		if (r.codigo <> 0) then begin
+			readln(r.dni);
+			readln(r.anio);
+			readln(r.tipo);
+		end;
+	end;
+	
+	procedure agregarAdelante(var l:lista;r:reclamo);
+	var
+		nue:lista;
+	begin
+		new(nue);
+		nue^.dato.codigo := r.codigo;
+		nue^.dato.anio := r.anio;
+		nue^.dato.tipo := r.tipo;
+		nue^.sig := l;
+		l := nue;
+	end;
+	
+	procedure insertarArbol(var a:arbol;r:reclamo);
+	begin
+		if (a = nil) then begin
+			new(a);
+			a^.dni := r.dni;
+			a^.cant := 1;
+			a^.l := nil;
+			agregarAdelante(a^.l,r);
+			a^.hi := nil;
+			a^.hd := nil;
+		end
+		else if (r.dni = a^.dni) then begin
+				a^.cant := a^.cant + 1;
+				agregarAdelante(a^.l,r);
+			end
+			else if (r.dni < a^.dni) then
+					insertarArbol(a^.hi,r)
+				else
+					insertarArbol(a^.hd,r);
+	end;
+
+	procedure cargarArbol(var a :arbol);
+	var
+		r:reclamo;
+	begin
+		leerReclamo(r);
+		while(r.codigo <> 0) do begin
+			insertarArbol(a,r);
+			leerReclamo(r);
+		end;
+	end;
+
+	function contarEnLista(l:lista):integer;
+	begin
+		contarEnLista := 0;
+		while (l <> nil) do begin
+			contarEnLista := contarEnLista + 1;
+			l := l^.sig;
+		end;
+	end;
+	//INCISO B
+	function devolverCantDni(a:arbol;dni:integer):integer;
+	begin
+		if (a = nil) then
+			devolverCantDni := 0
+		else if (dni = a^.dni) then
+				devolverCantDni := a^.cant
+			else if (dni < a^.dni) then
+					devolverCantDni := devolverCantDni(a^.hi,dni)
+				else
+					devolverCantDni := devolverCantDni(a^.hd,dni);
+	end;
+
+	
+	//INCISO C
+	function devolverEntreDni(a:arbol;dni1,dni2:integer):integer;
+	begin
+		if (a = nil) then
+			devolverEntreDni := 0
+		else if (a^.dni >= dni1) and (a^.dni <= dni2) then 
+				devolverEntreDni := a^.cant + devolverEntreDni(a^.hi,dni1,dni2) + devolverEntreDni(a^.hd,dni1,dni2)
+			else if (a^.dni < dni1) then
+					devolverEntreDni := devolverEntreDni(a^.hd,dni1,dni2)
+				else if (a^.dni > dni2) then
+						devolverEntreDni := devolverEntreDni(a^.hi,dni1,dni2);
+	end;
+	
+	//INCISO D
+	procedure agregarAlista2(var l:lista2;cod:integer);
+	var
+		nue:lista2;
+	begin
+		new(nue);
+		nue^.dato := cod;
+		nue^.sig := l;
+		l := nue;
+	end;
+
+	procedure insertarEnLista(var l2:lista2;l:lista;anio:integer);
+	begin
+		while (l <> nil) do begin
+			if (l^.dato.anio = anio) then
+				agregarAlista2(l2,l^.dato.codigo);
+			l := l^.sig;
+		end;
+	end;
+
+	procedure cargarLista2(var l2:lista2;a:arbol;anio:integer);
+	begin
+		if (a <> nil) then begin
+			cargarLista2(l2,a^.hi,anio);
+			insertarEnLista(l2,a^.l,anio);
+			cargarLista2(l2,a^.hd,anio);
+		end;
+	end;
+var
+	a:arbol;
+	dni,dni1,dni2,anio:integer;
+	l2:lista2;
+begin
+	a := nil;
+	cargarArbol(a);
+	readln(dni);
+	devolverCantDni(a,dni);
+	readln(dni1);
+	readln(dni2);
+	devolverEntreDni(a,dni1,dni2);
+	readln(anio);
+	cargarLista2(l2,a,anio);
+end.
