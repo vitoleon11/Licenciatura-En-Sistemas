@@ -1,0 +1,126 @@
+{5. PlayStation Store requiere procesar las compras realizadas por sus clientes durante el año
+2023.
+a) Implementar un módulo que lea compras de videojuegos. De cada compra se lee
+código del videojuego, código de cliente y mes. La lectura finaliza con el código de
+cliente 0. Se sugiere utilizar el módulo leerCompra(). El módulo debe retornar un árbol
+binario de búsqueda ordenado por código de videojuego. En el árbol, para cada código
+de videojuego debe almacenarse una lista con código de cliente y mes perteneciente a
+cada compra.
+b) Implementar un módulo que reciba el árbol generado en a) y un código de videojuego.
+El módulo debe retornar la lista de las compras de ese videojuego.
+c) Implementar un módulo recursivo que reciba la lista generada en b) y un mes. El
+módulo debe retorne la cantidad de clientes que compraron en el mes ingresado.}
+program practica;
+type
+	compra = record
+		codJuego : integer;
+		codCliente : integer;
+		mes : integer;
+	end;
+
+	regLista = record
+		codCliente:integer;
+		mes:integer;
+	end;
+
+	lista = ^nodoLista;
+	nodoLista = record
+		dato:regLista;
+		sig:lista;
+	end;
+	
+	arbol = ^nodoArbol;
+	nodoArbol = record	
+		codJuego:integer;
+		l:lista;
+		hi:arbol;
+		hd:arbol;
+	end;
+
+
+	procedure leerCompra(var c:compra);
+	begin
+		readln(c.codCliente);
+		if (c.codCliente <> 0) then begin
+			readln(c.codJuego);
+			readln(c.mes)
+		end;
+	end;
+
+	procedure agregarAdelante(var l :lista;c:compra);
+	var
+		nue:lista;
+	begin
+		new(nue);
+		nue^.dato.codCliente := c.codCliente;
+		nue^.dato.mes := c.mes;
+		nue^.sig := l;
+		l := nue;
+	end;
+	
+	procedure insertarArbol(var a:arbol;c:compra);
+	begin
+		if (a = nil) then begin
+			new(a);
+			a^.codJuego := c.codJuego;
+			a^.l := nil;
+			agregarAdelante(a^.l,c);
+			a^.hi := nil;
+			a^.hd := nil;
+		end
+		else if (c.codJuego = a^.codJuego) then
+				agregarAdelante(a^.l,c)
+			else if (c.codJuego < a^.codJuego) then
+					insertarArbol(a^.hi,c)
+				else
+					insertarArbol(a^.hd,c);
+	end;
+	
+	procedure cargarArbol(var a:arbol);
+	var
+		c:compra;
+	begin
+		leerCompra(c);
+		while (c.codCliente <> 0) do begin
+			insertarArbol(a,c);
+			leerCompra(c);
+		end;
+	end;
+
+	//INCISO B
+	function devolverLista(a:arbol;cod:integer):lista;
+	begin
+		if (a = nil) then 
+			devolverLista := nil
+		else if (cod = a^.codJuego) then
+				devolverLista := a^.l
+			else if (cod < a^.codJuego) then
+					devolverLista := devolverLista(a^.hi,cod)
+				else 
+					devolverLista := devolverLista(a^.hd,cod);
+	end;
+
+	//INCISO C
+	function devolverCantidad(l:lista;mes:integer):integer;
+	begin
+		if (l = nil ) then 
+			devolverCantidad := 0
+		else if (l^.dato.mes = mes) then 
+				devolverCantidad := 1 + devolverCantidad(l^.sig,mes)
+			else
+				devolverCantidad := devolverCantidad(l^.sig,mes);
+	end;
+
+
+
+var
+	a:arbol;
+	cod,mes:integer;
+begin
+	a := nil;
+	cargarArbol(a);
+	readln(cod);
+	devolverLista(a,cod);
+	readln(mes);
+	devolverCantidad(devolverLista(a,cod),mes);
+end.
