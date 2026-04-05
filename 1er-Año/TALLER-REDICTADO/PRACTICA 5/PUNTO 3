@@ -9,7 +9,7 @@ c) Implementar un módulo que reciba la estructura generada en a), y retorne, pa
 rubro, el código y stock del producto con mayor código.
 d) Implementar un módulo que reciba la estructura generada en a), dos códigos y
 retorne, para cada rubro, la cantidad de productos con códigos entre los dos valores
-ingresados. }
+ingresados.}
 
 program practica;
 type 
@@ -35,6 +35,8 @@ type
 	vector = array [1..10] of arbol;
 	
 	vectorMaximos = array [1..10] of regVector;
+	
+	vector3 = array [1..10] of integer;
 	
 	procedure inicializarVector(var v:vector);
 	var
@@ -119,10 +121,33 @@ type
 		end;
 	end;
 	
+	//INCISO D
+	function contarRango(a:arbol;cod1,cod2:integer):integer;
+	begin
+		if (a = nil) then
+			contarRango := 0
+		else if (a^.dato.codProducto > cod1) and (a^.dato.codProducto < cod2) then
+				contarRango := 1 + contarRango(a^.hi,cod1,cod2) + contarRango(a^.hd,cod1,cod2)
+			else if (a^.dato.codProducto <= cod1) then
+					contarRango := contarRango(a^.hd,cod1,cod2)
+				else if (a^.dato.codProducto >= cod2) then
+						contarRango := contarRango(a^.hi,cod1,cod2);
+	end;
+	
+	procedure cargarVector3(v:vector;var v3:vector3;cod1,cod2:integer);
+	var
+		i:integer;
+	begin
+		for i := 1 to 10 do begin
+			v3[i] := contarRango(v[i],cod1,cod2);
+		end;
+	end;
+	
 var
 	vP:vector;
 	vM:vectorMaximos;
-	codigo,rubro:integer;
+	v3:vector3;
+	codigo,rubro,cod1,cod2:integer;
 begin
 	inicializarVector(vP);
 	cargarVector(vP);
@@ -130,4 +155,7 @@ begin
 	readln(rubro);
 	existe(vP[rubro],codigo);
 	retornarVector2(vP,vM);
+	readln(cod1);
+	readln(cod2);
+	cargarVector3(vP,v3,cod1,cod2);
 end.
