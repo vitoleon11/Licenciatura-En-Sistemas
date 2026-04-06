@@ -1,0 +1,126 @@
+{Se desea analizar los exámenes finales de una cátedra.
+De cada final se conoce:
+- legajo del alumno
+- nota (un real entre 0 y 100)
+- fecha del examen
+Un mismo alumno puede haber rendido más de un final.
+Los exámenes a analizar son todos los que se tomaron entre 2011 y 2024, ambos inclusive.
+Realice un programa que contenga:
+a) Un módulo que lea exámenes, hasta leer un examen con legajo -1, y los almacene en una estructura eficiente para la búsqueda por nota.
+b) Un módulo que reciba la estructura generada en a) y devuelva otra estructura con los exámenes cuya nota sea menor a un valor recibido por parámetro.
+ Esta estructura debe estar agrupada por año y ordenada por legajo.
+c) Un módulo que reciba la estructura generada en b) y devuelva la cantidad de exámenes que rindió un alumno cuyo legajo se recibe por parámetro.
+}
+program practica;
+type
+	rango_anios = 2011..2024;
+	fecha = record
+		dia,mes,anio:integer;
+	end;
+	
+	final = record
+		legajo:integer;
+		nota:real;
+		fecha:fecha;
+	end;
+	
+	arbol = ^nodoArbol;
+	nodoArbol = record
+		dato:final;
+		hi:arbol;
+		hd:arbol;
+	end;
+	
+	lista = ^nodoLista;
+	nodoLista = record
+		dato:final;
+		sig:lista;
+	end;
+	
+	vector = array [2011..2024] of lista;
+	
+	procedure leerFinal(var f:final);
+	begin
+		readln(f.legajo);
+		if (f.legajo <> -1) then begin
+			readln(f.nota);
+			readln(f.fecha.dia);
+			readln(f.fecha.mes);
+			readln(f.fecha.anio);
+		end;
+	end;
+	
+	procedure insertarArbol(var a:arbol;f:final);
+	begin
+		if (a = nil) then begin
+			new(a);
+			a^.dato := f;
+			a^.hi := nil;
+			a^.hd := nil;
+		end
+		else if (f.nota <= a^.dato.nota) then
+				insertarArbol(a^.hi,f)
+			else if (f.nota > a^.dato.nota) then
+					insertarArbol(a^.hd,f);
+	end;
+	
+	procedure cargarArbol(var a:arbol);
+	var
+		f:final;
+	begin
+		leerFinal(f);
+		while (f.legajo <> -1) do begin
+			insertarArbol(a,f);
+			leerFinal(f);
+		end;
+	end;
+	
+	//INCISO B
+	procedure inicializarVector(var v:vector);
+	var
+		i:integer;
+	begin
+		for i := 2011 to 2024 do begin
+			v[i] := nil;
+		end;
+	end;
+	
+	procedure insertarOrdenado(var l :lista;f:final);
+	var
+		nue,ant,act:lista;
+	begin
+		new(nue);
+		nue^.dato := f;
+		act := l;
+		ant := l;
+		while (act <> nil) and (f.legajo > act^.dato.legajo) do begin
+			ant := act;
+			act := act^.sig;
+		end;
+		if (act = ant) then
+			l := nue
+		else
+			ant^.sig := nue;
+		nue^.sig := act;
+	end;
+	
+	procedure cargarVector(var v:vector;a:arbol;valor:real);
+	begin
+		if (a <> nil) then begin
+			cargarVector(v,a^.hi,valor);
+			if (a^.dato.nota < valor) then
+				insertarOrdenado(v[a^.dato.fecha.anio],a^.dato);
+			cargarVector(v,a^.hd,valor);
+		end
+	end;
+	//INCISO C
+	function devolverCant(v:vector;legajo:integer):integer;
+	begin
+		
+	end;
+	
+var
+	a:arbol;
+begin
+	cargarArbol(a);
+end.
