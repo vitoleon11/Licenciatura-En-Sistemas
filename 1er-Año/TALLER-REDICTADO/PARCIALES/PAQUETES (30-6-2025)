@@ -1,0 +1,116 @@
+{Correo Argentino desea analizar la información de los paquetes enviados durante 2024.
+
+De cada paquete enviado se conoce: código de envío, tipo de envío (1..4), DNI del emisor, DNI del receptor y peso en gramos.
+Realice un programa que contenga e invoque a:
+
+a) Un módulo que lea la información de paquetes enviados y retorne una estructura que agrupe los paquetes enviados según el tipo de envío. 
+Para cada tipo de envío, se requiere que la búsqueda por peso en gramos sea lo más eficiente posible.
+La lectura finaliza al leer un paquete con código de envío 0.
+
+b) Un módulo que reciba la estructura generada en a) y un tipo de envío X, y retorne toda la información del paquete con mayor peso del tipo de envío X.
+
+c) Un módulo que reciba la estructura generada en a), un tipo de envío X y un DNI D, y retorne la cantidad total de paquetes enviados por el emisor con DNI D, bajo el tipo de envío X.}
+
+program practica;
+type
+	rangoTipos = 1..4;
+	
+	paquete = record
+		codEnvio:integer;
+		tipo: rangoTipos;
+		dniE:integer;
+		dniR:integer;
+		peso:real;
+	end;
+	
+	arbol = ^nodoArbol;
+	nodoArbol = record
+		dato:paquete;
+		hi:arbol;
+		hd:arbol;
+	end;
+	
+	vector = array [1..4] of arbol;
+	
+	procedure inicializarVector(var v:vector);
+	var
+		i:integer;
+	begin
+		for i := 1 to 4 do begin
+			v[i] := nil;
+ 		end;
+	end;
+	
+	procedure leerPaquete(var p:paquete);
+	begin
+		readln(p.codEnvio);
+		if (p.codEnvio <> 0) then begin
+			readln(p.tipo);
+			readln(p.dniE);
+			readln(p.dniR);
+			readln(p.peso);
+		end;
+	end;
+
+	procedure insertarArbol(var a:arbol;p:paquete);
+	begin
+		if (a = nil) then begin
+			new(a);
+			a^.dato := p;
+			a^.hi := nil;
+			a^.hd := nil;
+		end
+		else if (p.peso <= a^.dato.peso) then
+				insertarArbol(a^.hi,p)
+			else
+				insertarArbol(a^.hd,p);
+	end;
+	
+	procedure cargarVector(var v:vector);
+	var
+		p:paquete;
+	begin
+		leerPaquete(p);
+		while (p.codEnvio <> 0) do begin
+			insertarArbol(v[p.tipo],p);
+			leerPaquete(p);
+		end;
+	end;
+
+	//INCISO B
+	procedure devolverPaquete(a:arbol;var p:paquete);
+	begin
+		if (a = nil) then
+			writeln('El arbol esta vacio')
+		else if (a^.hd = nil) then
+				p := a^.dato
+			else
+				devolverPaquete(a^.hd,p);
+	end;
+	
+	//INCISO C
+	
+	function devolverPorDNI(a:arbol;dni:integer):integer;
+	begin
+		if (a = nil) then
+			devolverPorDNI := 0
+		else if (a^.dato.dniE = dni) then
+				devolverPorDNI := 1 + devolverPorDNI(a^.hi,dni) + devolverPorDNI(a^.hd,dni)
+			else
+				devolverPorDNI := devolverPorDNI(a^.hi,dni) + devolverPorDNI(a^.hd,dni);
+	end;
+	
+var
+	v:vector;
+	tipo:rangoTipos;
+	p:paquete;
+	dni:integer;
+begin
+	inicializarVector(v);
+	cargarVector(v);
+	readln(tipo);
+	devolverPaquete(v[tipo],p);
+	readln(tipo);
+	readln(dni);
+	writeln('La cantidad de paquetes con este DNI es de: ',devolverPorDNI(v[tipo],dni));
+end.
