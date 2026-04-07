@@ -1,0 +1,141 @@
+{El supermercado Consumo necesita un sistema para procesar la información de sus ventas. De cada venta se conoce:
+DNI de cliente, código de sucursal (1 a 10), número de factura y monto.
+
+a) Implementar un módulo que lea información de las ventas (la lectura finaliza al ingresar código de cliente 0) y retorne:
+i) Una estructura de datos eficiente para la búsqueda por DNI de cliente. Para cada DNI debe almacenarse una lista de todas sus compras 
+(número de factura y monto).
+ii) Una estructura de datos que almacene la cantidad de ventas de cada sucursal.
+
+b) Realizar un módulo que reciba la estructura generada en el inciso a) i, un monto y un DNI. El módulo debe retornar
+la cantidad de facturas cuyo monto es inferior al monto ingresado para el DNI ingresado.
+
+c) Realizar un módulo recursivo que reciba la estructura generada en inciso a) ii y un valor entero y retorne si existe
+o no una sucursal con cantidad de ventas igual al valor recibido.}
+
+program practica;
+type
+	venta = record
+		dni:integer;
+		codCliente:integer;
+		codSucursal:integer;
+		numFactura:integer;
+		monto:real;
+	end;
+	
+	compra = record
+		numFactura:integer;
+		monto:real;
+	end;
+	
+	lista = ^nodoLista;
+	nodoLista = record
+		dato:compra;
+		sig:lista;
+	end;
+	
+	arbol = ^nodoArbol;
+	nodoArbol = record
+		dni:integer;
+		l:lista;
+		hi:arbol;
+		hd:arbol;
+	end;
+	
+	vector = array [1..10] of integer;
+	
+	procedure inicializarVector(var v:vector);
+	var
+		i:integer;
+	begin
+		for i := 1 to 10 do begin
+			v[i] := 0;
+		end;
+	end;
+	
+	procedure leerVenta(var v:venta);
+	begin
+		readln(v.codCliente);
+		if (v.codCliente <> 0) then begin
+			readln(v.codSucursal);
+			readln(v.dni);
+			readln(v.numFactura);
+			readln(v.monto);
+		end;
+	end;
+	
+	
+	procedure agregarAdelante(var l :lista;v:venta);
+	var
+		nue:lista;
+	begin
+		new(nue);
+		nue^.dato.monto := v.monto;
+		nue^.dato.numFactura := v.numFactura;
+		nue^.sig := l;
+		l := nue;
+	end;
+	
+	
+	procedure insertarArbol(var a:arbol;v:venta);
+	begin
+		if (a = nil) then begin
+			new(a);
+			a^.dni := v.dni;
+			a^.l := nil;
+			agregarAdelante(a^.l,v);
+			a^.hi := nil;
+			a^.hd := nil;
+		end
+		else if (a^.dni = v.dni) then
+				agregarAdelante(a^.l,v)
+			else if (v.dni < a^.dni) then
+					insertarArbol(a^.hi,v)
+				else
+					insertarArbol(a^.hd,v);
+	end;
+
+	procedure cargarArbolYVector(var v:vector;var a:arbol);
+	var
+		ve:venta;
+	begin
+		leerVenta(ve);
+		while (ve.codCliente <> 0) do begin
+			insertarArbol(a,ve);
+			v[ve.codSucursal] := v[ve.codSucursal] + 1;
+			leerVenta(ve);
+		end;
+	end;
+
+	//INCISO B
+	
+	function contarEnLista(l:lista;monto:real):integer;
+	begin
+		contarEnLista := 0;
+		while (l <> nil) do begin
+			if (l^.dato.monto < monto) then
+				contarEnLista := contarEnLista + 1;
+		end;
+	end;
+	
+	function devolverCantidad(a:arbol;dni:integer;monto:real):integer;
+	begin
+		if (a = nil) then 
+			devolverCantidad := 0
+		else if (a^.dni = dni) then
+				devolverCantidad := contarEnLista(a^.l,monto)
+			else if (dni < a^.dni) then
+					devolverCantidad(a^.hi,dni,monto)
+				else
+					devolverCantidad(a^.hd,dni,monto);
+	end;
+
+	//INCISO C
+	
+	
+var
+	a:arbol;
+	v:vector;
+begin
+	a := nil;
+	cargarArbolYVector(v,a);
+end.
