@@ -114,6 +114,7 @@ type
 		while (l <> nil) do begin
 			if (l^.dato.monto < monto) then
 				contarEnLista := contarEnLista + 1;
+			l := l^.sig;
 		end;
 	end;
 	
@@ -124,18 +125,34 @@ type
 		else if (a^.dni = dni) then
 				devolverCantidad := contarEnLista(a^.l,monto)
 			else if (dni < a^.dni) then
-					devolverCantidad(a^.hi,dni,monto)
+					devolverCantidad := devolverCantidad(a^.hi,dni,monto)
 				else
-					devolverCantidad(a^.hd,dni,monto);
+					devolverCantidad := devolverCantidad(a^.hd,dni,monto);
 	end;
 
 	//INCISO C
 	
+	function devolverSiEsta(v:vector; valor:integer;i:integer):boolean;
+	begin
+		if (i > 10) then
+			devolverSiEsta := false
+		else if (v[i] = valor) then
+				devolverSiEsta := true
+			else
+				devolverSiEsta := devolverSiEsta(v,valor,i+1);
+	end;
 	
 var
 	a:arbol;
 	v:vector;
+	monto:real;
+	valor,dni:integer;
 begin
 	a := nil;
 	cargarArbolYVector(v,a);
+	readln(monto);
+	readln(dni);
+	devolverCantidad(a,dni,monto);
+	readln(valor);
+	devolverSiEsta(v,valor,1);
 end.
