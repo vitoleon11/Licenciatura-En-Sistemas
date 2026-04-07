@@ -1,0 +1,169 @@
+{Una biblioteca necesita un sistema para procesar la información de los libros.
+De cada libro se conoce: ISBN, año de edición, código del autor y código de género (1 a 15).
+
+a) Implementar un módulo que lea información de los libros y retorne una estructura de datos eficiente para 
+la búsqueda por código de autor que contenga código de autor y una lista de todos sus libros. La lectura finaliza al ingresar el valor 0 para un ISBN.
+
+b) Realizar un módulo que reciba la estructura generada en el inciso a) y un código. El módulo debe retornar una lista 
+con código de autor y su cantidad de libros, para cada autor con código superior al código ingresado.
+
+c) Realizar un módulo recursivo que reciba la estructura generada en inciso b) y retorne cantidad y código de autor con mayor cantidad de libros.}
+
+program practica;
+type
+	rangoGeneros = 1..15;
+
+	libro = record
+		isbn:integer;
+		anio:integer;
+		codAutor:integer;
+		codGenero:rangoGeneros;
+	end;
+
+	regLista = record
+		isbn:integer;
+		anio:integer;
+		codGenero:rangoGeneros;
+	end;
+
+	lista = ^nodoLista;
+	nodoLista = record
+		dato:regLista;
+		sig:lista;
+	end;
+	
+	arbol = ^nodoArbol;
+	nodoArbol = record
+		codAutor:integer;
+		l:lista;
+		hi:arbol;
+		hd:arbol;
+	end;
+	
+	regLista2 = record
+		cant:integer;
+		codAutor:integer;
+	end;
+	
+	lista2 = ^nodoLista2;
+	nodoLista2 = record
+		dato:regLista2;
+		sig:lista2;
+	end;
+	
+	procedure leerLibro(var l :libro);
+	begin
+		readln(l.isbn);
+		if (l.isbn <> 0) then begin
+			readln(l.codAutor);
+			readln(l.anio);
+			readln(l.codGenero);
+		end;
+	end;
+	
+	procedure agregarAdelante(var l :lista;li:libro);
+	var
+		nue:lista;
+	begin
+		new(nue);
+		nue^.dato.isbn := li.isbn;
+		nue^.dato.anio := li.anio;
+		nue^.dato.codGenero := li.codGenero;
+		nue^.sig := l;
+		l := nue;
+	end;
+
+	procedure insertarArbol(var a:arbol;l:libro);
+	begin
+		if (a = nil) then begin
+			new(a);
+			a^.codAutor := l.codAutor;
+			a^.l := nil;
+			agregarAdelante(a^.l,l);
+			a^.hi := nil;
+			a^.hd := nil;
+		end
+		else if (a^.codAutor = l.codAutor) then
+				agregarAdelante(a^.l,l)
+			else if (l.codAutor < a^.codAutor) then
+					insertarArbol(a^.hi,l)
+				else
+					insertarArbol(a^.hd,l);
+	end;
+
+	procedure cargarArbol(var a:arbol);
+	var
+		l:libro;
+	begin
+		leerLibro(l);
+		while (l.isbn <> 0) do begin
+			insertarArbol(a,l);
+			leerLibro(l);
+		end;
+	end;
+	
+	//INCISO B
+	procedure agregarAdelante2(var l2:lista2; l:regLista2);
+	var
+		nue:lista2;
+	begin
+		new(nue);
+		nue^.dato := l;
+		nue^.sig := l2;
+		l2 := nue;
+	end;
+	
+	function contarEnLista(l:lista):integer;
+	begin
+		contarEnLista := 0;
+		while (l <> nil) do begin
+			contarEnLista := contarEnLista + 1;
+			l := l^.sig;
+		end;
+	end;
+	
+	procedure cargarLista2(a:arbol;var l2:lista2;cod:integer);
+	var
+		l:regLista2;
+	begin
+		if (a <> nil) then begin
+			if (a^.codAutor > cod) then begin
+				cargarLista2(a^.hi,l2,cod);  
+				l.cant := contarEnLista(a^.l);
+				l.codAutor := a^.codAutor;
+				agregarAdelante2(l2,l);
+				cargarLista2(a^.hd,l2,cod);
+			end
+			else
+				cargarLista2(a^.hd,l2,cod);
+		end;
+	end;
+	
+	//INCISO C
+	procedure devolverMayorCantidad(l:lista2;var cantMax:integer;var codMax:integer);
+	begin
+		if (l = nil) then begin
+			cantMax := -1;
+			codMax := -1;
+		end 
+		else begin
+				devolverMayorCantidad(l^.sig,cantMax,codMax);
+				if (l^.dato.cant > cantMax) then begin
+					cantMax := l^.dato.cant;
+					codMax := l^.dato.codAutor;
+				end;
+		end;
+	end;
+	
+var
+	a:arbol;
+	l2:lista2;
+	cantMax,codMax,cod:integer;
+begin
+	a := nil;
+	cargarArbol(a);
+	l2 := nil;
+	readln(cod);
+	cargarLista2(a,l2,cod);
+	devolverMayorCantidad(l2,cantMax,codMax);
+end.
