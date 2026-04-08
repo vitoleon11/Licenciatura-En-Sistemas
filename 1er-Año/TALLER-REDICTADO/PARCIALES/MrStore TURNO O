@@ -1,0 +1,133 @@
+{MrStore requiere procesar las compras realizadas por sus clientes durante el año 2024.
+
+a) Implementar un módulo que lea compras de productos. De cada compra se lee código del producto, código de cliente, día y mes. 
+La lectura finaliza con el código de cliente 0. Se sugiere utilizar el módulo leerCompra(). El módulo debe retornar un vector
+donde se almacenen las compras agrupadas por mes. Las compras de cada mes deben quedar almacenadas en un árbol binario de búsqueda ordenado 
+por código de producto.
+
+b) Implementar un módulo recursivo que reciba el vector generado en a) y retorne el mes con mayor cantidad de compras.
+
+c) Implementar un módulo que reciba el vector generado en a), un número de mes y un código de producto, 
+y retorne si fue comprado o no el producto ingresado en el mes recibido.}
+
+program practica;
+type
+	compra = record
+		codProducto:integer;
+		codCliente:integer;
+		dia:integer;
+		mes:integer;
+	end;
+	 
+	arbol = ^nodoArbol;
+	nodoArbol = record
+		dato:compra;
+		hi:arbol;
+		hd:arbol;
+	end;
+	
+	vector = array [1..12] of arbol;
+
+	procedure leerCompra(var c:compra);
+	begin
+		readln(c.codCliente);
+		if (c.codCliente <> 0) then begin
+			readln(c.dia);
+			readln(c.mes);
+			readln(c.codProducto);
+		end;
+	end;
+
+	procedure inicializarVector(var v:vector);
+	var
+		i:integer;
+	begin
+		for i := 1 to 12 do begin
+			v[i] := nil;
+		end;
+	end;
+
+	procedure insertarArbol(var a:arbol;c:compra);
+	begin
+		if (a = nil) then begin
+			new(a);
+			a^.dato := c;
+			a^.hi := nil;
+			a^.hd := nil;
+		end
+		else if (c.codProducto <= a^.dato.codProducto) then
+				insertarArbol(a^.hi,c)
+			else
+				insertarArbol(a^.hd,c);
+	end;
+
+
+	procedure cargarVector(var v:vector);
+	var
+		c:compra;
+	begin
+		leerCompra(c);
+		while (c.codCliente <> 0) do begin
+			insertarArbol(v[c.mes],c);
+			leerCompra(c);
+		end;
+	end;
+
+	//INCISO B
+
+	function devolverCantArbol(a:arbol):integer;
+	begin
+		if (a = nil) then
+			devolverCantArbol := 0
+		else 
+			devolverCantArbol := 1 + devolverCantArbol(a^.hi) + devolverCantArbol(a^.hd);
+	end;
+
+	procedure devolverMaxMes(v:vector;var maxMes:integer;var maxCant:integer;i:integer);
+	var
+		aux:integer;
+	begin
+		if (i > 12) then begin
+			maxCant := -1;
+			maxMes := 0;
+		end
+		else begin
+			devolverMaxMes(v,maxMes,maxCant,i+1);
+			aux := devolverCantArbol(v[i]);
+			if (aux > maxCant) then begin
+				maxCant := aux;
+				maxMes := i;
+			end;	
+		end;
+	end;
+
+	//INCISO C
+	function buscarEnArbol(a:arbol;mes:integer;codProducto:integer):boolean;
+	begin
+		if (a = nil) then 
+			buscarEnArbol := false
+		else if (a^.dato.codProducto = codProducto) then
+				buscarEnArbol := true
+			else if (codProducto < a^.dato.codProducto) then
+					buscarEnArbol := buscarEnArbol(a^.hi,mes,codProducto)
+				else
+					buscarEnArbol := buscarEnArbol(a^.hd,mes,codProducto);
+	end;
+	
+	function devolverSiEsta(v:vector;mes:integer;codProducto:integer):boolean;
+	begin
+		devolverSiEsta := buscarEnArbol(v[mes],mes,codProducto);
+	end;
+	
+var
+	v:vector;
+	maxMes,maxCant,mes,cod:integer;
+begin
+	inicializarVector(v);
+	cargarVector(v);
+	devolverMaxMes(v,maxMes,maxCant,1);
+	writeln('El mes donde mas se vendio fue: ',maxMes );
+	readln(mes);
+	readln(cod);
+	writeln('Se encuentra?', devolverSiEsta(v,mes,cod));
+end.
