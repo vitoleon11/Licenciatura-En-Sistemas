@@ -41,12 +41,27 @@ type
 		hd:arbol;
 	end;
 	
+	vector = array [rangoDiag] of integer;
+	
+	procedure inicializarVector(Var v:vector);
+	var
+		i:integer;
+	begin
+		for i := 1 to 10 do begin
+			v[i] := 0;
+		end;
+	end;
+	
 	procedure leerAtencion(var a:atencion);
 	begin
+		writeln('Ingrese dni');
 		readln(a.dni);
 		if (a.dni <> 0) then begin
+			writeln('Ingrese matr');
 			readln(a.matricula);
+			writeln('Ingrese dia');
 			readln(a.dia);
+			writeln('Ingrese diag');
 			readln(a.diagnostico);
 		end;
 	end;
@@ -92,13 +107,59 @@ type
 		end;
 	end;
 
+	//INCISO B
+	
+	function contarEnListaDNI(l:lista;dni:integer):integer;
+	begin
+		contarEnListaDNI := 0;
+		while (l <> nil) do begin
+			if (l^.dato.dni = dni) then
+				contarEnListaDNI := contarEnListaDNI + 1;
+			l := l^.sig;
+		end;
+	end;
+	
+	function devolverCant(a:arbol;m1,m2:integer;valor:integer):integer;
+	begin
+		if (a = nil) then
+			devolverCant := 0
+		else if (a^.matricula > m1) and (a^.matricula < m2) then
+				devolverCant := contarEnListaDNI(a^.l,valor) + devolverCant(a^.hi,m1,m2,valor) + devolverCant(a^.hd,m1,m2,valor)
+			else if (a^.matricula <= m1) then
+					devolverCant := devolverCant(a^.hd,m1,m2,valor)
+				else if (a^.matricula >= m2) then
+						devolverCant := devolverCant(a^.hi,m1,m2,valor);
+	end;
 
+	//INCISO C
 
+	procedure cargarEnNodo(var v:vector; l:lista);
+	begin
+		while (l <> nil) do begin
+			v[l^.dato.diagnostico] := v[l^.dato.diagnostico] + 1;
+			l := l^.sig;
+		end;
+	end;
+	procedure cargarVector(var v:vector;a:arbol);
+	begin
+		if (a <> nil) then begin
+			cargarVector(v,a^.hi);
+			cargarEnNodo(v,a^.l);
+			cargarVector(v,a^.hd);
+		end;
+	end;
 
 var
 	a:arbol;
+	m1,m2,dni:integer;
+	v:vector;
 begin
 	a := nil;
 	cargarArbol(a);
-	
+	readln(m1);
+	readln(m2);
+	readln(dni);
+	writeln('La cantidad entre estas dos matriculas y este dni es: ', devolverCant(a,m1,m2,dni));
+	inicializarVector(v);
+	cargarVector(v,a);
 end.
