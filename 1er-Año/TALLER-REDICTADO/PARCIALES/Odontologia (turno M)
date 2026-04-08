@@ -1,0 +1,104 @@
+{Una clínica odontológica necesita un sistema para el procesamiento de las atenciones realizadas a los pacientes en julio de 2025.
+
+a) Implementar un módulo que lea información de las atenciones. 
+De cada atención se lee: matrícula del odontólogo, DNI del paciente, día y diagnóstico (valor entre 1 y 10). La lectura finaliza con el DNI 0.
+Se sugiere utilizar el módulo leerAtencion(). El módulo debe retornar un árbol binario de búsqueda ordenado por matrícula del odontólogo.
+Para cada matrícula de odontólogo deben almacenarse las atenciones realizadas.
+
+b) Implementar un módulo que reciba el árbol generado en a), dos matrículas y un valor entero. 
+El módulo debe retornar la cantidad total de atenciones realizadas al paciente con DNI igual al valor ingresado por odontólogos con matrículas 
+entre las dos matrículas ingresadas (sin incluir).
+
+c) Realizar un módulo que reciba el árbol generado en a), y retorne, para cada diagnóstico, la cantidad de atenciones realizadas.}
+program practica;
+type
+	rangoDiag = 1..10;
+	
+	atencion = record
+		matricula:integer;
+		dni:integer;
+		dia:integer;
+		diagnostico:rangoDiag;
+	end;
+	
+	regLista = record
+		dni:integer;
+		dia:integer;
+		diagnostico:rangoDiag;
+	end;
+	
+	lista = ^nodoLista;
+	nodoLista = record
+		dato:regLista;
+		sig:lista;
+	end;
+	
+	arbol = ^nodoArbol;
+	nodoArbol = record
+		matricula:integer;
+		l:lista;
+		hi:arbol;
+		hd:arbol;
+	end;
+	
+	procedure leerAtencion(var a:atencion);
+	begin
+		readln(a.dni);
+		if (a.dni <> 0) then begin
+			readln(a.matricula);
+			readln(a.dia);
+			readln(a.diagnostico);
+		end;
+	end;
+	
+	procedure agregarAdelante(var l :lista;a:atencion);
+	var
+		nue:lista;
+	begin
+		new(nue);
+		nue^.dato.dni := a.dni;
+		nue^.dato.dia := a.dia;
+		nue^.dato.diagnostico := a.diagnostico;
+		nue^.sig := l;
+		l := nue;
+	end;
+	
+	procedure insertarArbol(var a:arbol;at:atencion);
+	begin
+		if (a = nil) then begin
+			new(a);
+			a^.matricula := at.matricula;
+			a^.l := nil;
+			agregarAdelante(a^.l,at);
+			a^.hi := nil;
+			a^.hd := nil;
+		end
+		else if (at.matricula = a^.matricula) then
+				agregarAdelante(a^.l,at)
+			else if (at.matricula < a^.matricula) then
+					insertarArbol(a^.hi,at)
+				else
+					insertarArbol(a^.hd,at);
+	end;
+
+	procedure cargarArbol(var a:arbol);
+	var
+		at:atencion;
+	begin
+		leerAtencion(at);
+		while (at.dni <> 0) do begin
+			insertarArbol(a,at);
+			leerAtencion(at);
+		end;
+	end;
+
+
+
+
+var
+	a:arbol;
+begin
+	a := nil;
+	cargarArbol(a);
+	
+end.
