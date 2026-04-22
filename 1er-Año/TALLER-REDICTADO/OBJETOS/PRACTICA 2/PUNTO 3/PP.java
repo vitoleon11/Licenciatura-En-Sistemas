@@ -22,7 +22,7 @@ public class Prac2Punto3 {
         int edad;
         int dimL = 0;
         nombre = Lector.leerString();
-        while (!nombre.equals("ZZZ")) {
+        while (!nombre.equals("ZZZ") && dimL < 40) {
             DNI = Lector.leerInt();
             edad = Lector.leerInt();
             mCasting[dimL / 8][dimL % 8] = new Persona(nombre,DNI,edad);
