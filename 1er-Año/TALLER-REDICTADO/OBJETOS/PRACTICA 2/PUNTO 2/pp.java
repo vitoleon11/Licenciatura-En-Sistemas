@@ -12,20 +12,23 @@ public class Prac2Punto2 {
         int cant65 = 0;
         int menorDNI = 999;
         Persona pMenor = new Persona();
+        pMenor = null;
         edad = GeneradorAleatorio.generarInt(101);
         while (edad != 0 && dimL < 15) {
             nombre = GeneradorAleatorio.generarString(4);
             DNI = GeneradorAleatorio.generarInt(100);
             vPersonas[dimL] = new Persona(nombre,DNI,edad);
-            if (edad > 65) {
-                cant65++;
-            }
-            if (DNI < menorDNI) {
-                menorDNI = DNI;
-                pMenor = vPersonas[dimL];
-            }
             dimL++;
             edad = GeneradorAleatorio.generarInt(101);
+        }
+        for (int i = 0;i < dimL;i++) {
+            if (vPersonas[i].getEdad() > 65) {
+                cant65++;
+            }
+            if (vPersonas[i].getDNI < menorDNI) {
+                menorDNI = vPersonas[i].getDNI();
+                pMenor = vPersonas[i];
+            }
         }
     }
     
