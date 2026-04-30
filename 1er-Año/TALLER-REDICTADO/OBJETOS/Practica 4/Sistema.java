@@ -1,5 +1,5 @@
 package tema4;
-public class Sistema {
+public abstract class Sistema {
     private Estacion est;
     private int anioInicio;
     private int cantAnios;
@@ -45,3 +45,5 @@ public class Sistema {
     
     
 }
+
+
