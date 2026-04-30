@@ -5,6 +5,8 @@ public abstract class Sistema {
     private int cantAnios;
     private double [][] mTemperaturas;
 
+    
+    
     public Sistema(Estacion est, int anioInicio, int cantAnios) {
         this.est = est;
         this.anioInicio = anioInicio;
@@ -42,8 +44,25 @@ public abstract class Sistema {
         return "La mayor temperatura se registro en el año: " + maxAnio + " en el mes " + maxMes + ".";
     }
     
+    public int getCantAnios() {
+        return this.cantAnios;
+    }
+    
+    public double getTemperaturaMatriz(int i, int j) {
+        return this.mTemperaturas[i][j];
+    }
+
+    public Estacion getEstacion() {
+        return est;
+    }
+
+    public int getAnioInicio() {
+        return anioInicio;
+    }
+    
+    
+    
+    public abstract String toString();
     
     
 }
-
-
