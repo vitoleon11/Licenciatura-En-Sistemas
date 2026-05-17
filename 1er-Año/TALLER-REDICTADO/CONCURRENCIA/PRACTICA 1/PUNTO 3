@@ -5,53 +5,67 @@ procesos
     repetir 3 
       derecha
   fin
-  proceso limpiarEsquina(ES p :numero; ES f:numero)
+  
+  proceso tomarPapeles(ES p:numero)
   comenzar
     mientras HayPapelEnLaEsquina
       tomarPapel
-      p := p + 1
+      p := p + 1 
+  fin
+  
+  proceso tomarFlores(ES f:numero)
+  comenzar
     mientras HayFlorEnLaEsquina
       tomarFlor
-      f := f + 1
   fin
   
-  proceso limpiarBolsa
+  proceso limpiarEsquina(ES p :numero; ES f:numero)
   comenzar
-    repetir p
+    tomarPapeles(p)
+    tomarFlores(f)
+  fin
+  
+  proceso limpiarBolsa(E p:numero; E f:numero)
+  comenzar
+    mientras HayPapelEnLaBolsa
       depositarPapel
+    mientras HayFlorEnLaBolsa
+      depositarFlor
   fin
   
-  proceso hacerEscalon(E t:numero;ES p:numero; ES f:numero)
+  proceso hacerEscalon(E esc:numero;ES p:numero; ES f:numero)
   comenzar
-    repetir t
+    repetir esc
       limpiarEsquina(p,f)
-      limpiarBolsa
+      limpiarBolsa(p,f)
       mover
     derecha
-    repetir t
+    repetir esc
       limpiarEsquina(p,f)
-      limpiarBolsa
+      limpiarBolsa(p,f)
       mover
-    izquierda
+    limpiarEsquina(p,f)
+    limpiarBolsa(p,f)
   fin
+  
 areas
   ciudad: AreaC (1,1,100,100)
 robots
   robot robot1
   variables
-    f,p,esc,masP:numero
+    esc,p,masP,f:numero
   comenzar
     esc := 1
     masP := 0
     repetir 4
-      f := 0
       p := 0
-      hacerEscalon(esc,f,p)
-      limpiarEsquina(p,f)
-      limpiarBolsa
-      si (p > f + 1)
-        masP := masP + 1
-      esc := esc +1
+      f := 0
+      hacerEscalon(esc,p,f)
+      si p > (f + 1)
+        masP := masP +1
+      izquierda
+      esc := esc + 1 
+    Informar(masP)
   fin
   
 variables
