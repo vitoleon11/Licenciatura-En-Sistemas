@@ -7,16 +7,29 @@ procesos
   fin
   
   proceso tomarPapeles(ES p:numero)
+  variables
+    pE:numero
   comenzar
+    pE := 0
     mientras HayPapelEnLaEsquina
       tomarPapel
-      p := p + 1 
+      p := p + 1
+      pE := pE + 1
+    repetir pE
+      depositarPapel
   fin
   
   proceso tomarFlores(ES f:numero)
+  variables
+    fE:numero
   comenzar
+    fE := 0
     mientras HayFlorEnLaEsquina
       tomarFlor
+      f := f + 1
+      fE := fE + 1
+    repetir fE
+      depositarFlor
   fin
   
   proceso limpiarEsquina(ES p :numero; ES f:numero)
@@ -25,27 +38,17 @@ procesos
     tomarFlores(f)
   fin
   
-  proceso limpiarBolsa(E p:numero; E f:numero)
-  comenzar
-    mientras HayPapelEnLaBolsa
-      depositarPapel
-    mientras HayFlorEnLaBolsa
-      depositarFlor
-  fin
   
   proceso hacerEscalon(E esc:numero;ES p:numero; ES f:numero)
   comenzar
     repetir esc
       limpiarEsquina(p,f)
-      limpiarBolsa(p,f)
       mover
     derecha
     repetir esc
       limpiarEsquina(p,f)
-      limpiarBolsa(p,f)
       mover
     limpiarEsquina(p,f)
-    limpiarBolsa(p,f)
   fin
   
 areas
@@ -61,7 +64,7 @@ robots
       p := 0
       f := 0
       hacerEscalon(esc,p,f)
-      si p > (f + 1)
+      si p = (f + 1)
         masP := masP +1
       izquierda
       esc := esc + 1 
