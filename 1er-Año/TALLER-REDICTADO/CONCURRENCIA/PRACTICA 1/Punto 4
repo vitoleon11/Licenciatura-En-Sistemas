@@ -39,6 +39,12 @@ robots
     repetir 24
       recorrerAvenidaImpar
       Pos(PosAv + 1, 1)
+    recorrerAvenidaImpar
+    Pos(51,1)
+    repetir 24
+      recorrerAvenidaImpar
+      Pos(PosAv +1,1)
+    recorrerAvenidaImpar
   fin
   
   robot robot2
@@ -46,6 +52,12 @@ robots
     repetir 24
       recorrerAvenidaPar
       Pos(PosAv +1,1)
+    recorrerAvenidaPar
+    Pos(76,1)
+    repetir 24
+      recorrerAvenidaPar
+      Pos(PosAv+1,1)
+    recorrerAvenidaPar
   fin
   
 variables
