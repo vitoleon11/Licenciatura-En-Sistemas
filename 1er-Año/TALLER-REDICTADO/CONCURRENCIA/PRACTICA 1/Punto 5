@@ -1,0 +1,125 @@
+programa ejemplo
+procesos
+  proceso tomarFlores(ES f:numero)
+  comenzar
+    mientras HayFlorEnLaEsquina
+      tomarFlor
+      f := f +1
+  fin
+  
+  proceso tomarPapeles(ES p:numero)
+  comenzar
+    mientras HayPapelEnLaEsquina
+      tomarPapel
+      p := p + 1
+  fin
+  
+  proceso limpiarEsquinasRobot1
+  variables
+    f:numero
+  comenzar
+    f := 0
+    repetir 14
+      tomarFlores(f)
+      mover
+    tomarFlores(f)
+    repetir f
+      depositarFlor
+  fin
+  
+  proceso limpiarEsquinasRobot2(ES p:numero)
+  comenzar
+    p:= 0
+    repetir 19
+      tomarPapeles(p)
+      mover
+    tomarPapeles(p)      
+  fin
+  
+  
+  proceso limpiarEsquinasRobot3
+  variables
+    f:numero
+  comenzar
+    f := 0
+    repetir 29
+      tomarFlores(f)
+      mover
+    tomarFlores(f)
+    repetir f
+      depositarFlor
+  fin
+  
+  proceso limpiarEsquinasRobot4(ES p:numero)
+  comenzar
+    p:= 0
+    repetir 9
+      tomarPapeles(p)
+      mover
+    tomarPapeles(p)
+  fin
+  
+areas
+  ciudad: AreaC (1,1,100,100)
+robots
+  robot robot1
+  comenzar
+    derecha
+    limpiarEsquinasRobot1
+    Pos(1,80)
+    limpiarEsquinasRobot1
+  fin
+  
+  robot robot2
+  variables
+    p:numero
+  comenzar
+    limpiarEsquinasRobot2(p)
+    Pos(75,80)
+    repetir p
+      depositarPapel
+    Pos(80,80)
+    limpiarEsquinasRobot2(p)
+    Pos(80,80)
+    repetir p
+      depositarPapel
+  fin
+  
+  robot robot3
+  comenzar
+    derecha
+    limpiarEsquinasRobot3
+    Pos(70,15)
+    limpiarEsquinasRobot3
+  fin
+  
+  robot robot4
+  variables
+    p:numero
+  comenzar
+    limpiarEsquinasRobot4(p)
+    Pos(10,1)
+    repetir p
+      depositarPapel
+    Pos(15,1)
+    limpiarEsquinasRobot4(p)
+    Pos(15,1)
+    repetir p
+      depositarPapel
+  fin
+  
+variables
+  r1: robot1
+  r2: robot2
+  r3:robot3
+  r4:robot4
+comenzar
+  AsignarArea(r1, ciudad)
+  AsignarArea(r2, ciudad)
+  AsignarArea(r3, ciudad)
+  AsignarArea(r4, ciudad)
+  Iniciar(r1, 1,75)
+  Iniciar(r2, 75,80)
+  Iniciar(r3, 70,10)
+  Iniciar(r4, 10,1)
+fin
