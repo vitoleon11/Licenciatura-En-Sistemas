@@ -1,0 +1,105 @@
+programa ejemplo
+procesos
+  proceso tomarPapeles(ES p:numero)
+  comenzar
+    mientras HayPapelEnLaEsquina
+      tomarPapel
+      p := p + 1
+  fin
+  
+  proceso tomarFlores(ES f:numero)
+  comenzar
+    mientras HayFlorEnLaEsquina
+      tomarFlor
+      f := f + 1
+  fin
+  
+  proceso recorrerFlores(ES f:numero)
+  comenzar
+    repetir 9
+      tomarFlores(f)
+      mover
+    tomarFlores(f)
+  fin
+  
+  proceso recorrerPapeles(ES p:numero)
+  comenzar
+    repetir 9
+      tomarPapeles(p)
+      mover
+    tomarPapeles(p)
+  fin
+  
+areas
+  ciudad: AreaC (1,1,100,100)
+robots
+  robot robotA1
+  variables
+    p:numero
+  comenzar
+    derecha
+    p := 0
+    recorrerPapeles(p)
+    EnviarMensaje(p,A2)
+    Pos(PosAv +11,PosCa)
+    RecibirMensaje(p,A2)
+    recorrerPapeles(p)
+    EnviarMensaje(p,A2)
+  fin
+  
+  robot robotA2
+  variables
+    p:numero
+  comenzar
+    derecha
+    RecibirMensaje(p,A1)
+    recorrerPapeles(p)
+    Pos(PosAv +11,PosCa)
+    EnviarMensaje(p,A1)
+    RecibirMensaje(p,A1)
+    recorrerPapeles(p)
+    Informar(p)
+  fin
+  
+  robot robotB1
+  variables
+    f:numero
+  comenzar
+    derecha
+    f := 0
+    recorrerFlores(f)
+    EnviarMensaje(f,B2)
+    Pos(PosAv +11,PosCa)
+    RecibirMensaje(f,B2)
+    recorrerPapeles(f)
+    EnviarMensaje(f,B2)
+  fin
+  
+  robot robotB2
+  variables
+    f:numero
+  comenzar
+    derecha
+    RecibirMensaje(f,B1)
+    recorrerPapeles(f)
+    Pos(PosAv +11,PosCa)
+    EnviarMensaje(f,B1)
+    RecibirMensaje(f,B1)
+    recorrerPapeles(f)
+    Informar(f)
+  fin
+variables
+  A1: robotA1
+  A2: robotA2
+  B1 : robotB1
+  B2: robotB2
+comenzar
+  AsignarArea(A1, ciudad)
+  AsignarArea(A2, ciudad)
+  AsignarArea(B1, ciudad)
+  AsignarArea(B2, ciudad)
+  Iniciar(A1, 1,1)
+  Iniciar(A2, 11,1)
+  Iniciar(B1, 1,5)
+  Iniciar(B2, 11,5)
+fin
