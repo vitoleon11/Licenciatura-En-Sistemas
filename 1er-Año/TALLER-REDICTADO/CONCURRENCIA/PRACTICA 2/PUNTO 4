@@ -1,0 +1,146 @@
+programa ejemplo
+procesos
+  proceso izquierda
+  comenzar
+    repetir 3
+      derecha
+  fin
+  
+  proceso limpiarEsquina(ES objetos:numero)
+  comenzar
+    mientras HayFlorEnLaEsquina
+      tomarFlor
+      objetos := objetos + 1
+    mientras HayPapelEnLaEsquina
+      tomarPapel
+      objetos := objetos + 1
+  fin
+
+areas
+  cuadrante: AreaPC (25,25,75,75)
+  area1: AreaP (25,1,25,1)
+  area2: AreaP (30,1,30,1)
+  area3: AreaP (35,1,35,1)
+  area4: AreaP (40,1,40,1)
+  areaJefe: AreaP(1,1,1,1)
+robots
+  robot recolector
+  variables
+    av,ca,avInicial,caInicial,id,objetos:numero
+    aux :boolean
+  comenzar
+    avInicial := PosAv
+    caInicial := PosCa
+    RecibirMensaje(id,jefe)
+    RecibirMensaje(aux,jefe)
+    
+    mientras (aux = V)
+      Random(av,25,75)
+      Random(ca,25,75)
+      Pos(av,ca)
+      limpiarEsquina(objetos)
+      Pos(avInicial,caInicial)
+      EnviarMensaje(objetos,jefe)
+      RecibirMensaje(aux,jefe)
+      
+    RecibirMensaje(aux,jefe)
+    si (aux = V)
+      Pos(50,50)
+  fin
+  
+  robot fiscalizador
+  variables  
+    cant1,cant2,cant3,cant4,objetos,maxID,id,max:numero
+  comenzar
+    EnviarMensaje(1,r1)
+    EnviarMensaje(2,r2)
+    EnviarMensaje(3,r3)
+    EnviarMensaje(4,r4)
+    cant1 := 0
+    cant2 := 0
+    cant3 := 0 
+    cant4 := 0
+    repetir 10
+      Random(id,1,4)
+      si (id = 1)
+        EnviarMensaje(V,r1)
+        RecibirMensaje(objetos,r1)
+        cant1 := cant1 + objetos
+      sino 
+        si (id = 2)
+          EnviarMensaje(V,r2)
+          RecibirMensaje(objetos,r2)
+          cant2 := cant2 + objetos
+        sino
+          si (id = 3)
+            EnviarMensaje(V,r3)
+            RecibirMensaje(objetos,r3)
+            cant3 := cant3 + objetos
+          sino
+            EnviarMensaje(V,r4)
+            RecibirMensaje(objetos,r4)
+            cant4 := cant4 + objetos
+    
+    max := cant1
+    maxID := 1
+    si (cant2 > max)
+      max := cant2
+      maxID := 2
+    si (cant3 > max)
+      max := cant3
+      maxID := 3
+    si (cant4 > max)
+      max := cant4
+      maxID := 4 
+      
+    EnviarMensaje(F,r1)
+    EnviarMensaje(F,r2)
+    EnviarMensaje(F,r3)
+    EnviarMensaje(F,r4)
+    
+    si (maxID = 1)
+      EnviarMensaje(V,r1)
+      EnviarMensaje(F,r2)
+      EnviarMensaje(F,r3)
+      EnviarMensaje(F,r4)
+    sino
+      si (maxID = 2)
+        EnviarMensaje(V,r2)
+        EnviarMensaje(F,r1)
+        EnviarMensaje(F,r3)
+        EnviarMensaje(F,r4)
+      sino 
+        si (maxID = 3)
+          EnviarMensaje(V,r3)
+          EnviarMensaje(F,r4)
+          EnviarMensaje(F,r1)
+          EnviarMensaje(F,r2)
+        sino
+          EnviarMensaje(V,r4)
+          EnviarMensaje(F,r2)
+          EnviarMensaje(F,r1)
+          EnviarMensaje(F,r3)
+    Informar(maxID)
+  fin
+variables
+  r1: recolector
+  r2: recolector
+  r3:recolector
+  r4:recolector
+  jefe: fiscalizador
+comenzar
+  AsignarArea(r1, cuadrante)
+  AsignarArea(r2, cuadrante)
+  AsignarArea(r3, cuadrante)
+  AsignarArea(r4, cuadrante)
+  AsignarArea(r1, area1)
+  AsignarArea(r2, area2)
+  AsignarArea(r3, area3)
+  AsignarArea(r4, area4)
+  AsignarArea(jefe, areaJefe)
+  Iniciar(r1, 25,1)
+  Iniciar(r2, 30,1)
+  Iniciar(r3, 35,1)
+  Iniciar(r4, 40,1)
+  Iniciar(jefe, 1,1)
+fin
