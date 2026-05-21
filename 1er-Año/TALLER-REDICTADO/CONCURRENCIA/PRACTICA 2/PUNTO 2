@@ -1,0 +1,70 @@
+programa ejemplo
+procesos
+  proceso izquierda
+  comenzar
+    repetir 3
+      derecha
+  fin
+  
+  proceso limpiarEsquina(ES f:numero; ES p:numero)
+  comenzar
+    mientras HayFlorEnLaEsquina
+      tomarFlor
+      f := f + 1
+    mientras HayPapelEnLaEsquina
+      tomarPapel
+      p := p + 1
+  fin
+  
+  proceso hacerEscalon(E alto:numero; ES f:numero; ES p:numero)
+  comenzar
+    repetir alto
+      limpiarEsquina(f,p)
+      mover
+    derecha
+    limpiarEsquina(f,p)
+    mover
+    
+  fin
+areas
+  ciudad: AreaC (1,1,100,100)
+robots
+  robot recolector
+  variables
+    f,p,alto,masF  :numero
+  comenzar
+    masF := 0
+    repetir 4
+      f := 0
+      p := 0    
+      Random(alto,1,5)
+      hacerEscalon(alto,f,p)
+      si f > p
+        masF := masF + 1
+      izquierda
+    EnviarMensaje(masF,jefe)
+  fin
+  robot fiscalizador
+  variables  
+    cant1,cant2,cant3:numero
+  comenzar
+    RecibirMensaje(cant1,*)
+    RecibirMensaje(cant2,*)
+    RecibirMensaje(cant3,*)
+    Informar(cant1+cant2+cant3)
+  fin
+variables
+  r1: recolector
+  r2: recolector
+  r3:recolector
+  jefe: fiscalizador
+comenzar
+  AsignarArea(r1, ciudad)
+  AsignarArea(r2, ciudad)
+  AsignarArea(r3, ciudad)
+  AsignarArea(jefe, ciudad)
+  Iniciar(r1, 2,1)
+  Iniciar(r2, 7,1)
+  Iniciar(r3, 12,1)
+  Iniciar(jefe, 1,1)
+fin
