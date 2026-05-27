@@ -1,0 +1,40 @@
+programa ejemplo
+procesos
+  proceso tomarFlores(ES f: numero)
+  comenzar
+    mientras HayFlorEnLaEsquina
+      tomarFlor
+      f := f + 1
+  fin
+  
+  proceso tomarPapeles(ES p :numero)
+  comenzar
+    mientras HayPapelEnLaEsquina
+      tomarPapel
+      p := p + 1
+  fin
+  
+areas
+  
+robots
+  robot florero
+  variables
+    f:numero
+  comenzar
+  fin
+  
+  robot papelero
+  variables
+    p:numero
+  comenzar
+  fin
+  
+variables
+  rFlores: florero
+  rPapeles: papelero
+comenzar
+  AsignarArea(rFlores, florero)
+  AsignarArea(rPapeles, papelero)
+  Iniciar(rFlores,1,1)
+  Iniciar(rPapeles, 31,1)
+fin
