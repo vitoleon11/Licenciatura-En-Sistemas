@@ -1,0 +1,93 @@
+programa ejemplo
+procesos
+  proceso tomarFlores(ES f: numero)
+  comenzar
+    mientras HayFlorEnLaEsquina
+      tomarFlor
+      f := f + 1
+  fin
+  
+  proceso tomarPapeles(ES p :numero)
+  comenzar
+    mientras HayPapelEnLaEsquina
+      tomarPapel
+      p := p + 1
+  fin
+  
+areas
+  areaFlores: AreaPC (1,1,5,10)
+  areaPapeles: AreaPC(6,1,10,9)
+  inicialf1: AreaP(6,10,6,10)
+  inicialf2: AreaP(7,10,7,10)
+  inicialp1: AreaP(8,10,8,10)
+  inicialp2: AreaP(9,10,9,10)
+  area10 : AreaC(10,10,10,10)
+robots
+  robot florero
+  variables
+    av,ca,avInicial,caInicial,f:numero
+  comenzar
+    avInicial := PosAv
+    caInicial := PosCa
+    f := 0
+    repetir 5
+      Random(av,1,5)
+      Random(ca,1,10)
+      BloquearEsquina(av,ca)
+      Pos(av,ca)
+      tomarFlores(f)
+      Pos(avInicial,caInicial)
+      LiberarEsquina(av,ca)
+    repetir f
+      BloquearEsquina(10,10)
+      Pos(10,10)
+      depositarFlor
+      Pos(avInicial,caInicial)
+      LiberarEsquina(10,10)
+  fin
+  
+  robot papelero
+  variables
+    av,ca,avInicial,caInicial,p:numero
+  comenzar
+    avInicial :=PosAv
+    caInicial := PosCa
+    repetir 3
+      Random(av,6,10)
+      Random(ca,1,9)
+      BloquearEsquina(av,ca)
+      Pos(av,ca)
+      tomarPapeles(p)
+      Pos(avInicial,caInicial)
+      LiberarEsquina(av,ca)
+    repetir p
+      BloquearEsquina(10,10)
+      Pos(10,10)
+      depositarPapel
+      Pos(avInicial,caInicial)
+      LiberarEsquina(10,10)  
+  fin
+  
+variables
+  f1: florero
+  f2:florero
+  p1: papelero
+  p2: papelero
+comenzar
+  AsignarArea(f1, areaFlores)
+  AsignarArea(f2, areaFlores)
+  AsignarArea(p1, areaPapeles)
+  AsignarArea(p2, areaPapeles)
+  AsignarArea(f1, inicialf1)
+  AsignarArea(f2, inicialf2)
+  AsignarArea(p1, inicialp1)
+  AsignarArea(p2, inicialp2)
+  AsignarArea(f1, area10)
+  AsignarArea(f2, area10)
+  AsignarArea(p1, area10)
+  AsignarArea(p2, area10)
+  Iniciar(f1, 6,10)
+  Iniciar(f2, 7,10)
+  Iniciar(p1, 8,10)
+  Iniciar(p2, 9,10)
+fin
