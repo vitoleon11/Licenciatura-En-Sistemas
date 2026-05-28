@@ -1,5 +1,11 @@
 programa ejemplo
 procesos
+  proceso izquierda
+  comenzar
+    repetir 3 
+      derecha
+  fin
+  
   proceso tomarFlores(ES f: numero)
   comenzar
     mientras HayFlorEnLaEsquina
@@ -14,27 +20,108 @@ procesos
       p := p + 1
   fin
   
-areas
+  proceso escalonFlores(E esc:numero;ES f:numero)
+  comenzar
+    tomarFlores(f)
+    repetir esc
+      mover
+    tomarFlores(f)
+    derecha
+    repetir esc
+      mover
+  fin
   
+  proceso escaleraDerechaFlores(E esc:numero; ES f:numero)
+  comenzar
+    repetir 4
+      escalonFlores(esc,f)
+      izquierda
+      esc := esc - 1
+  fin
+  
+  proceso escaleraIzquierdaFlores(E esc:numero;ES f:numero)
+  comenzar
+    repetir 4
+      escalonFlores(esc,f)
+      izquierda
+      esc := esc + 1
+  fin
+  
+  proceso escalonPapeles(E esc:numero;ES p:numero)
+  comenzar
+    tomarPapeles(p)
+    repetir esc
+      mover
+    tomarPapeles(p)
+    izquierda
+    repetir esc
+      mover
+  fin
+  
+  proceso escaleraIzquierdaPapeles(E esc:numero; ES p:numero)
+  comenzar
+    repetir 4
+      escalonPapeles(esc,p)
+      derecha
+      esc := esc  -1
+  fin
+  
+  proceso escaleraDerechaPapeles(E esc:numero;ES p:numero)
+  comenzar
+    repetir 4
+      escalonPapeles(esc,p)
+      derecha
+      esc := esc + 1
+  fin
+areas
+  ciudad : AreaC(1,1,100,100)
 robots
   robot florero
   variables
-    f:numero
+    esc,f:numero
   comenzar
+    esc := 5
+    escaleraDerechaFlores(esc,f)
+    tomarFlores(f)
+    mover
+    derecha
+    BloquearEsquina(PosAv+1,PosCa)
+    mover
+    tomarFlores(f)
+    repetir 2
+      izquierda
+    mover
+    LiberarEsquina(PosAv+1,PosCa)
+    esc := 2
+    escaleraIzquierdaFlores(esc,f)
   fin
   
   robot papelero
   variables
-    p:numero
+    p,esc:numero
   comenzar
+    p := 0
+    esc := 5
+    escaleraIzquierdaPapeles(esc,p)
+    mover
+    izquierda
+    BloquearEsquina(PosAv -1,PosCa)
+    mover
+    tomarPapeles(p)
+    repetir 2
+      izquierda
+    mover
+    LiberarEsquina(PosAv-1,PosCa)
+    esc := 2
+    escaleraDerechaPapeles(esc,p)
   fin
   
 variables
   rFlores: florero
   rPapeles: papelero
 comenzar
-  AsignarArea(rFlores, florero)
-  AsignarArea(rPapeles, papelero)
+  AsignarArea(rFlores, ciudad)
+  AsignarArea(rPapeles, ciudad)
   Iniciar(rFlores,1,1)
   Iniciar(rPapeles, 31,1)
 fin
