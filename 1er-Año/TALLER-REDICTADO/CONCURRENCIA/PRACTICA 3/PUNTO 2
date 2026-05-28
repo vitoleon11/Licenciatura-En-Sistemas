@@ -78,8 +78,9 @@ areas
 robots
   robot florero
   variables
-    esc,f:numero
+    esc,f,id:numero
   comenzar
+    RecibirMensaje(id,jefe)
     esc := 5
     escaleraDerechaFlores(esc,f)
     tomarFlores(f)
@@ -94,12 +95,14 @@ robots
     LiberarEsquina(PosAv+1,PosCa)
     esc := 2
     escaleraIzquierdaFlores(esc,f)
+    EnviarMensaje(id,jefe)
   fin
   
   robot papelero
   variables
-    p,esc:numero
+    p,esc,id:numero
   comenzar
+    RecibirMensaje(id,jefe)
     p := 0
     esc := 5
     escaleraIzquierdaPapeles(esc,p)
@@ -114,14 +117,28 @@ robots
     LiberarEsquina(PosAv-1,PosCa)
     esc := 2
     escaleraDerechaPapeles(esc,p)
+    EnviarMensaje(id,jefe)
   fin
   
+  robot fiscalizador
+  variables
+    id1,id2:numero
+  comenzar
+    EnviarMensaje(1,rFlores)
+    EnviarMensaje(2,rPapeles)
+    RecibirMensaje(id1,*)
+    RecibirMensaje(id2,*)
+    Informar(id1)
+  fin
 variables
   rFlores: florero
   rPapeles: papelero
+  jefe:fiscalizador
 comenzar
   AsignarArea(rFlores, ciudad)
   AsignarArea(rPapeles, ciudad)
+  AsignarArea(jefe, ciudad)
   Iniciar(rFlores,1,1)
+  Iniciar(jefe,15,1)
   Iniciar(rPapeles, 31,1)
 fin
