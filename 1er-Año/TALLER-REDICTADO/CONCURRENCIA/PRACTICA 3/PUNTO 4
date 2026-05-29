@@ -1,0 +1,68 @@
+programa ejemplo
+procesos
+
+  proceso izquierda
+  comenzar
+    repetir 3 
+      derecha
+  fin
+  
+  proceso tomarFlores(ES f: numero)
+  comenzar
+    mientras HayFlorEnLaEsquina
+      tomarFlor
+      f := f + 1
+  fin
+  
+  proceso moverFlores(ES noHay:boolean;E av,ca:numero)
+  comenzar
+    BloquearEsquina(10,10)
+    Pos(10,10)
+    si HayFlorEnLaEsquina
+      tomarFlor
+    si ~HayFlorEnLaEsquina
+      noHay := V
+    BloquearEsquina(11,11)
+    Pos(11,11)
+    LiberarEsquina(10,10)
+    depositarFlor
+    Pos(av,ca)
+    LiberarEsquina(11,11)
+  fin
+  
+areas
+  ciudad : AreaC(1,1,100,100)
+robots
+  robot florero
+  variables
+    esc,f,id:numero
+    noHay:boolean
+  comenzar
+    noHay := F
+    mientras (noHay = F) 
+      
+  fin
+  
+  robot coordinador
+  variables
+    id1,id2:numero
+  comenzar
+  fin
+variables
+  f1: florero
+  f2: florero
+  f3: florero
+  f4: florero
+  jefe:coordinador
+comenzar
+  AsignarArea(f1, ciudad)
+  AsignarArea(f2, ciudad)
+  AsignarArea(f3, ciudad)
+  AsignarArea(f4, ciudad)
+  AsignarArea(jefe, ciudad)
+  Iniciar(f1,9,9)
+  Iniciar(f2,9,10)
+  Iniciar(f3,9,11)
+  Iniciar(f4,9,12)
+  Iniciar(jefe,1,1)
+fin
