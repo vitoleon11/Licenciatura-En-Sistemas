@@ -95,6 +95,7 @@ robots
     LiberarEsquina(PosAv+1,PosCa)
     esc := 2
     escaleraIzquierdaFlores(esc,f)
+    tomarFlores(f)
     EnviarMensaje(id,jefe)
   fin
   
@@ -106,17 +107,19 @@ robots
     p := 0
     esc := 5
     escaleraIzquierdaPapeles(esc,p)
+    tomarPapeles(p)
     mover
     izquierda
     BloquearEsquina(PosAv -1,PosCa)
     mover
     tomarPapeles(p)
     repetir 2
-      izquierda
+      derecha
     mover
     LiberarEsquina(PosAv-1,PosCa)
     esc := 2
     escaleraDerechaPapeles(esc,p)
+    tomarPapeles(p)
     EnviarMensaje(id,jefe)
   fin
   
