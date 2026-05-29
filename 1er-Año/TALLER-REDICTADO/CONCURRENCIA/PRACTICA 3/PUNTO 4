@@ -14,39 +14,53 @@ procesos
       f := f + 1
   fin
   
-  proceso moverFlores(ES noHay:boolean;E av,ca:numero)
-  comenzar
-    BloquearEsquina(10,10)
-    Pos(10,10)
-    si HayFlorEnLaEsquina
-      tomarFlor
-    si ~HayFlorEnLaEsquina
-      noHay := V
-    BloquearEsquina(11,11)
-    Pos(11,11)
-    LiberarEsquina(10,10)
-    depositarFlor
-    Pos(av,ca)
-    LiberarEsquina(11,11)
-  fin
   
 areas
   ciudad : AreaC(1,1,100,100)
 robots
   robot florero
   variables
-    esc,f,id:numero
-    noHay:boolean
+    esc,f,id,avInicial,caInicial:numero
+    noHay,termine:boolean
   comenzar
+    RecibirMensaje(id,jefe)
     noHay := F
+    avInicial := PosAv
+    caInicial := PosCa
     mientras (noHay = F) 
-      
+      BloquearEsquina(10,10)
+      Pos(10,10)
+      si HayFlorEnLaEsquina
+        tomarFlor
+      si ~HayFlorEnLaEsquina
+        noHay := V
+      BloquearEsquina(11,11)
+      Pos(11,11)
+      LiberarEsquina(10,10)
+      si HayFlorEnLaBolsa
+        depositarFlor
+      Pos(avInicial,caInicial)
+      LiberarEsquina(11,11)
+    termine := V
+    EnviarMensaje(id,jefe)
   fin
   
   robot coordinador
   variables
-    id1,id2:numero
+    id:numero
   comenzar
+    EnviarMensaje(1,f1)
+    EnviarMensaje(2,f2)
+    EnviarMensaje(3,f3)
+    EnviarMensaje(4,f4)
+    RecibirMensaje(id,*)
+    RecibirMensaje(id,*)
+    RecibirMensaje(id,*)
+    RecibirMensaje(id,*)
+    Informar(id)
+    Pos(11,11)
+    mientras HayFlorEnLaEsquina
+      tomarFlor
   fin
 variables
   f1: florero
