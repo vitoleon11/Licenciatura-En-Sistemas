@@ -24,20 +24,22 @@ robots
   comenzar
    
     RecibirMensaje(id,jefe)
-    mientras (noHay = F) 
+    mientras (noHay = F) & (PosCa < 100)
       av := PosAv
       ca := PosCa
       BloquearEsquina(11,11)
       Pos(11,11)
-      si HayFlorEnLaEsquina
-        tomarFlor
-      si ~HayFlorEnLaEsquina
+      si HayPapelEnLaEsquina
+        tomarPapel
+      si ~HayPapelEnLaEsquina
         noHay := V
       Pos(av,ca)
       LiberarEsquina(11,11)
-      si HayFlorEnLaBolsa
-        depositarFlor 
+      si HayPapelEnLaBolsa
+        depositarPapel
         mover
+    si HayPapelEnLaBolsa
+      depositarPapel
     EnviarMensaje(id,jefe)
   fin
   
