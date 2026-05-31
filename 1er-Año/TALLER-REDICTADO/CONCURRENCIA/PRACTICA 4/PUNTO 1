@@ -1,3 +1,4 @@
+
 programa ejemplo
 procesos
   proceso juntarFlores(E cant:numero)
@@ -19,18 +20,22 @@ robots
       RecibirMensaje(id,*)
       si (id = 1)
         RecibirMensaje(flores,c1)
-        RecibirMensaje(av,c1)
-        RecibirMensaje(ca,c1)
       sino 
         si (id = 2)
           RecibirMensaje(flores,c2)
-          RecibirMensaje(av,c2)
-          RecibirMensaje(ca,c2)
         sino
           RecibirMensaje(flores,c3)
-          RecibirMensaje(av,c3)
-          RecibirMensaje(ca,c3)
       si (flores <> 0)
+        si (id = 1)
+          RecibirMensaje(av,c1)
+          RecibirMensaje(ca,c1)
+        sino
+          si (id = 2)
+            RecibirMensaje(av,c2)
+            RecibirMensaje(ca,c2)
+          sino
+            RecibirMensaje(av,c3)
+            RecibirMensaje(ca,c3)
         Pos(av,ca)
         repetir flores
           depositarFlor
@@ -53,7 +58,7 @@ robots
   comenzar
     avActual := PosAv
     RecibirMensaje(id,jefe)
-    mientras (PosCa < 100)
+    mientras (PosCa <> 100)
       EnviarMensaje(id,jefe)
       Random(flores,1,4)
       EnviarMensaje(flores,jefe)
@@ -67,6 +72,7 @@ robots
       mientras (flores > 0) & (PosCa < 100)
         depositarFlor
         mover
+        flores := flores -1 
     EnviarMensaje(id,jefe)
     EnviarMensaje(0,jefe)
   fin
