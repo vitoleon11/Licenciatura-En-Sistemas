@@ -41,20 +41,34 @@ robots
     si HayPapelEnLaBolsa
       depositarPapel
     EnviarMensaje(id,jefe)
+    ca := PosCa
+    EnviarMensaje(ca,jefe)
   fin
   
   robot coordinador
   variables
-    id:numero
+    id,idMax,ca,caMax:numero
   comenzar
     EnviarMensaje(1,p1)
     EnviarMensaje(2,p2)
     EnviarMensaje(3,p3)
     EnviarMensaje(4,p4)
-    RecibirMensaje(id,p1)
-    RecibirMensaje(id,p2)
-    RecibirMensaje(id,p3)
-    RecibirMensaje(id,p4)
+    repetir 4
+      RecibirMensaje(id,*)
+      si (id = 1)
+        RecibirMensaje(ca,p1)
+      sino
+        si (id = 2)
+          RecibirMensaje(ca,p2)
+        sino
+          si (id = 3)
+            RecibirMensaje(ca,p3)
+          sino
+            RecibirMensaje(ca,p4)
+      si (ca > caMax)
+        caMax := ca
+        idMax := id
+    Informar(idMax)
   fin
   
 variables
