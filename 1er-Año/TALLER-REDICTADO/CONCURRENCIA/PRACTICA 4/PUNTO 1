@@ -1,0 +1,87 @@
+programa ejemplo
+procesos
+  proceso juntarFlores(E cant:numero)
+  comenzar
+    repetir cant
+      tomarFlor
+  fin
+areas
+  ciudad: AreaC (1,1,100,100)
+robots
+  robot servidor
+  variables
+    id,terminados,flores,av,ca:numero
+  comenzar
+    EnviarMensaje(1,c1)
+    EnviarMensaje(2,c2)
+    EnviarMensaje(3,c3)
+    mientras (terminados < 3)
+      RecibirMensaje(id,*)
+      si (id = 1)
+        RecibirMensaje(flores,c1)
+        RecibirMensaje(av,c1)
+        RecibirMensaje(ca,c1)
+      sino 
+        si (id = 2)
+          RecibirMensaje(flores,c2)
+          RecibirMensaje(av,c2)
+          RecibirMensaje(ca,c2)
+        sino
+          RecibirMensaje(flores,c3)
+          RecibirMensaje(av,c3)
+          RecibirMensaje(ca,c3)
+      si (flores <> 0)
+        Pos(av,ca)
+        repetir flores
+          depositarFlor
+        Pos(100,100)
+        si (id = 1)
+          EnviarMensaje(V,c1)
+        sino
+          si (id = 2)
+            EnviarMensaje(V,c2)
+          sino
+            EnviarMensaje(V,c3)
+      sino
+        terminados := terminados + 1
+  fin
+  
+  robot cliente
+  variables
+    id,avActual,caActual,flores:numero
+    seguir:boolean
+  comenzar
+    avActual := PosAv
+    RecibirMensaje(id,jefe)
+    mientras (PosCa < 100)
+      EnviarMensaje(id,jefe)
+      Random(flores,1,4)
+      EnviarMensaje(flores,jefe)
+      caActual := PosCa
+      EnviarMensaje(avActual,jefe)
+      EnviarMensaje(caActual + 1,jefe)
+      RecibirMensaje(seguir,jefe)
+      Pos(PosAv,PosCa +1)
+      juntarFlores(flores)
+      Pos(PosAv,PosCa -1)
+      mientras (flores > 0) & (PosCa < 100)
+        depositarFlor
+        mover
+    EnviarMensaje(id,jefe)
+    EnviarMensaje(0,jefe)
+  fin
+variables
+  jefe: servidor
+  c1 : cliente
+  c2 :cliente
+  c3 : cliente
+comenzar
+  AsignarArea(c1, ciudad)
+  AsignarArea(c2, ciudad)
+  AsignarArea(c3, ciudad)
+  AsignarArea(jefe, ciudad)
+  Iniciar(jefe, 100,100)
+  Iniciar(c1, 1,1)
+  Iniciar(c2, 2,1)
+  Iniciar(c3, 3,1)
+fin
