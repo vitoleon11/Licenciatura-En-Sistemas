@@ -1,4 +1,3 @@
-
 programa ejemplo
 procesos
   proceso juntarFlores(E cant:numero)
@@ -72,7 +71,10 @@ robots
       mientras (flores > 0) & (PosCa < 100)
         depositarFlor
         mover
-        flores := flores -1 
+        flores := flores -1
+    si (flores > 0)
+      depositarFlor
+      flores := flores -1
     EnviarMensaje(id,jefe)
     EnviarMensaje(0,jefe)
   fin
