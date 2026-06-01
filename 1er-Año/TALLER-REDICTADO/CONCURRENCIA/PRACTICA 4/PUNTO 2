@@ -18,21 +18,22 @@ procesos
     LiberarEsquina(50,50)
   fin
   
-  proceso contarOJuntarPapeles(E p:numero;E av:numero;E ca:numero)
+  proceso contarOJuntarPapeles(E p:numero;E av:numero;E ca:numero;ES intento:boolean)
   variables
     pE:numero
   comenzar
+    intento := F
     pE := 0
     BloquearEsquina(50,50)
     Pos(50,50)
-    mientras HayPapelEnLaEsquina
+    mientras (HayPapelEnLaEsquina) & (pE < p)
       tomarPapel
       pE := pE + 1
-    repetir pE
-      depositarPapel
-    si (pE >= p)
-      repetir p
-        tomarPapel
+    si (pE = p)
+      intento := V
+    sino
+      repetir pE
+        depositarPapel
     Pos(av,ca)
     LiberarEsquina(50,50)
   fin
@@ -55,13 +56,21 @@ robots
   fin
   robot consumidor
   variables
-    p,av,ca:numero
+    p,av,ca,intentosF:numero
+    int :boolean
   comenzar
     av := PosAv
     ca := PosCa
-    repetir 8
+    intentosF := 0
+    mientras (intentosF < 8)
       Random(p,2,5)
-      contarOJuntarPapeles(p,av,ca)
+      contarOJuntarPapeles(p,av,ca,int)
+      si (int = V)
+        repetir p
+          depositarPapel
+        intentosF := 0
+      sino
+        intentosF := intentosF + 1
   fin
 variables
   p1: productor
