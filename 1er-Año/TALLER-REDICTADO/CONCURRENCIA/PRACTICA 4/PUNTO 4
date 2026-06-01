@@ -1,0 +1,48 @@
+programa ejemplo
+procesos
+  proceso tomarPapeles
+  comenzar
+    mientras HayPapelEnLaEsquina
+      tomarPapel
+  fin
+  
+  proceso hacerEtapa
+  comenzar
+    repetir 5
+      tomarPapeles
+      mover
+  fin
+  
+  proceso ultimaEtapa
+  comenzar
+    repetir 4
+      tomarPapeles
+      mover
+  fin
+  
+  
+areas
+  ciudad: AreaC (1,1,100,100)
+robots
+  robot trabajador
+  variables
+  comenzar
+    
+  fin
+  
+  robot coordinador
+  comenzar
+  fin
+variables
+  t1 : trabajador
+  t2:trabajador
+  jefe:coordinador
+comenzar
+  AsignarArea(p1, ciudad)
+  AsignarArea(p2, ciudad)
+  AsignarArea(p3, ciudad)
+  AsignarArea(jefe, ciudad)
+  Iniciar(t1, 2,1)
+  Iniciar(t2, 3,1)
+  Iniciar(jefe, 1,1)
+fin
