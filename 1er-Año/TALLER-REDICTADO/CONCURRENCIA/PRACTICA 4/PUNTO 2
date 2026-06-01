@@ -1,0 +1,18 @@
+
+programa ejemplo
+procesos
+areas
+  ciudad: AreaC (1,1,100,100)
+robots
+  robot papelero
+  comenzar
+    mientras 
+  fin
+variables
+  p1: papelero
+  p2:papelero
+comenzar
+  AsignarArea(R_info, ciudad)
+  Iniciar(p1,10,1)
+  Iniciar(p2,5,1)
+fin
