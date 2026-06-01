@@ -1,0 +1,79 @@
+programa ejemplo
+procesos
+  proceso tomarPapeles
+  comenzar
+    mientras HayPapelEnLaEsquina
+      tomarPapel
+  fin
+  
+  proceso hacerEtapa
+  comenzar
+    repetir 5
+      tomarPapeles
+      mover
+  fin
+  
+  proceso ultimaEtapa
+  comenzar
+    repetir 4
+      tomarPapeles
+      mover
+  fin
+  
+  proceso enviarMensajes(E id:numero)
+  comenzar
+    si (id = 1)
+      EnviarMensaje(V,p2)
+      EnviarMensaje(V,p3)
+    sino
+      si (id = 2)
+        EnviarMensaje(V,p1)
+        EnviarMensaje(V,p3)
+      sino
+        EnviarMensaje(V,p1)
+        EnviarMensaje(V,p2)
+  fin
+  
+areas
+  ciudad: AreaC (1,1,100,100)
+robots
+  robot papelero
+  variables
+    id,pasos:numero
+    seguir:boolean
+  comenzar
+    RecibirMensaje(id,jefe)
+    pasos := 0
+    mientras (PosCa <> 100)
+      si (pasos = 5)
+        enviarMensajes(id)
+        RecibirMensaje(seguir,*)
+        RecibirMensaje(seguir,*)
+        pasos := 0
+      sino
+        tomarPapeles
+        mover
+        pasos := pasos + 1
+  fin
+  
+  robot coordinador
+  comenzar
+    EnviarMensaje(1,p1)
+    EnviarMensaje(2,p2)
+    EnviarMensaje(3,p3)
+  fin
+variables
+  p1: papelero
+  p2: papelero
+  p3: papelero
+  jefe:coordinador
+comenzar
+  AsignarArea(p1, ciudad)
+  AsignarArea(p2, ciudad)
+  AsignarArea(p3, ciudad)
+  AsignarArea(jefe, ciudad)
+  Iniciar(p1, 1,1)
+  Iniciar(p2, 2,1)
+  Iniciar(p3, 3,1)
+  Iniciar(jefe, 100,100)
+fin
