@@ -1,18 +1,80 @@
 
 programa ejemplo
 procesos
+  proceso agarrarPapeles(ES p:numero)
+  comenzar
+    mientras (HayPapelEnLaEsquina) & (p < 5)
+      tomarPapel
+      p := p + 1
+  fin
+  
+  proceso dejarEn50(E av:numero; E ca:numero)
+  comenzar
+    BloquearEsquina(50,50)
+    Pos(50,50)
+    repetir 5
+      depositarPapel
+    Pos(av,ca)
+    LiberarEsquina(50,50)
+  fin
+  
+  proceso contarOJuntarPapeles(E p:numero;E av:numero;E ca:numero)
+  variables
+    pE:numero
+  comenzar
+    pE := 0
+    BloquearEsquina(50,50)
+    Pos(50,50)
+    mientras HayPapelEnLaEsquina
+      tomarPapel
+      pE := pE + 1
+    repetir pE
+      depositarPapel
+    si (pE >= p)
+      repetir p
+        tomarPapel
+    Pos(av,ca)
+    LiberarEsquina(50,50)
+  fin
 areas
   ciudad: AreaC (1,1,100,100)
 robots
-  robot papelero
+  robot productor
+  variables
+    av,ca,p:numero
   comenzar
-    mientras 
+    mientras (PosCa <> 100)
+      av := PosAv
+      ca := PosCa
+      agarrarPapeles(p)
+      si (p = 5)
+        dejarEn50(av,ca)
+        p := 0
+      sino
+        mover
+  fin
+  robot consumidor
+  variables
+    p,av,ca:numero
+  comenzar
+    av := PosAv
+    ca := PosCa
+    repetir 8
+      Random(p,2,5)
+      contarOJuntarPapeles(p,av,ca)
   fin
 variables
-  p1: papelero
-  p2:papelero
+  p1: productor
+  p2:productor
+  c1:consumidor
+  c2:consumidor
 comenzar
-  AsignarArea(R_info, ciudad)
+  AsignarArea(p1, ciudad)
+  AsignarArea(p2, ciudad)
+  AsignarArea(c1, ciudad)
+  AsignarArea(c2, ciudad)
   Iniciar(p1,10,1)
   Iniciar(p2,5,1)
+  Iniciar(c1,11,1)
+  Iniciar(c2,12,1)
 fin
