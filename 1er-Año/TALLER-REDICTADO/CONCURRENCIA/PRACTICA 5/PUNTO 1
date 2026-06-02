@@ -1,0 +1,104 @@
+programa ejemplo
+procesos
+  proceso tomarPapeles(ES p:numero)
+  comenzar
+    mientras HayPapelEnLaEsquina
+      tomarPapel
+      p := p + 1
+  fin
+  
+  proceso tomarFlores(ES f:numero)
+  comenzar
+    mientras HayFlorEnLaEsquina
+      tomarFlor
+      f := f + 1
+  fin  
+  
+  proceso primerTramoRojo(ES f:numero)
+  comenzar
+    mientras (PosCa <> 97)
+      tomarFlores(f)
+      mover
+    tomarFlores(f)
+  fin
+  
+  proceso segundoTramoRojo(ES f:numero)
+  comenzar
+    BloquearEsquina(PosAv,PosCa+1)
+    Pos(PosAv,PosCa+1)
+    tomarFlores(f)
+    BloquearEsquina(PosAv,PosCa+1)
+    Pos(PosAv,PosCa+1)
+    LiberarEsquina(PosAv,PosCa-1)
+    tomarFlores(f)
+    Pos(PosAv,PosCa+1)
+    LiberarEsquina(PosAv,PosCa-1)
+    tomarFlores(f)
+  fin
+  
+  proceso primerTramoAzul(ES p:numero)
+  comenzar
+    BloquearEsquina(PosAv +1,PosCa)
+    Pos(PosAv+1,PosCa)
+    tomarPapeles(p)
+    BloquearEsquina(PosAv+1,PosCa)
+    Pos(PosAv+1,PosCa)
+    LiberarEsquina(PosAv-1,PosCa)
+    tomarPapeles(p)
+    Pos(PosAv+1,PosCa)
+    LiberarEsquina(PosAv-1,PosCa)
+  fin
+  
+  proceso segundoTramoAzul(ES p:numero)
+  comenzar
+    mientras (PosAv <> 100)
+      tomarPapeles(p)
+      mover
+    tomarPapeles(p)
+  fin
+  
+areas
+  ciudad: AreaC (1,1,100,100)
+robots
+  robot rojo
+  variables
+    f:numero
+  comenzar
+    f := 0
+    primerTramoRojo(f)
+    segundoTramoRojo(f)
+  fin
+  
+  robot azul
+  variables
+    p:numero
+  comenzar
+    p := 0
+    derecha
+    tomarFlores(p)
+    primerTramoAzul(p)
+    segundoTramoAzul(p)
+  fin
+  
+  robot coordinador
+  comenzar
+    RecibirMensaje
+  fin
+variables
+  R1 : rojo
+  R2: rojo
+  A1: azul
+  A2: azul
+  jefe:coordinador
+comenzar
+  AsignarArea(R1, ciudad)
+  AsignarArea(R2, ciudad)
+  AsignarArea(A1, ciudad)
+  AsignarArea(A2, ciudad)
+  AsignarArea(jefe, ciudad)
+  Iniciar(R1, 2,1)
+  Iniciar(R2, 3,1)
+  Iniciar(A1,1,98)
+  Iniciar(A2,1,99)
+  Iniciar(jefe, 1,1)
+fin
