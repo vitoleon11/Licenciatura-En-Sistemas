@@ -48,7 +48,10 @@ procesos
   fin
   
 areas
-  ciudad: AreaC (1,1,100,100)
+  cuadrante: AreaPC (2,2,100,100)
+  area1 : AreaP(2,1,2,1)
+  area2 : AreaP(3,1,3,1)
+  areaJefe: AreaP(1,1,1,1)
 robots
   robot trabajador
   variables
@@ -95,9 +98,11 @@ variables
   t2:trabajador
   jefe:coordinador
 comenzar
-  AsignarArea(t1, ciudad)
-  AsignarArea(t2, ciudad)
-  AsignarArea(jefe, ciudad)
+  AsignarArea(t1, cuadrante)
+  AsignarArea(t2, cuadrante)
+  AsignarArea(jefe, areaJefe)
+  AsignarArea(t1, area1)
+  AsignarArea(t2, area2)
   Iniciar(t1, 2,1)
   Iniciar(t2, 3,1)
   Iniciar(jefe, 1,1)
