@@ -67,6 +67,7 @@ robots
     f := 0
     primerTramoRojo(f)
     segundoTramoRojo(f)
+    EnviarMensaje(f,jefe)
   fin
   
   robot azul
@@ -78,11 +79,23 @@ robots
     tomarFlores(p)
     primerTramoAzul(p)
     segundoTramoAzul(p)
+    EnviarMensaje(p,jefe)
   fin
   
   robot coordinador
+  variables
+    f1,f2,fT,p1,p2,pT:numero
   comenzar
-    RecibirMensaje
+    RecibirMensaje(f1,R1)
+    RecibirMensaje(f2,R2)
+    RecibirMensaje(p1,A1)
+    RecibirMensaje(p2,A2)
+    fT := f1 + f2
+    pT := p1 + p2
+    si (fT > pT)
+      Informar(1)
+    sino
+      Informar(2)
   fin
 variables
   R1 : rojo
