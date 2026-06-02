@@ -16,8 +16,9 @@ areas
 robots
   robot recolector
   variables
-    f,caInicial,avInicial,av,ca:numero
+    f,caInicial,id,avInicial,av,ca:numero
   comenzar
+    RecibirMensaje(id,jefe)
     f := 0
     avInicial := PosAv
     caInicial := PosCa
@@ -32,12 +33,13 @@ robots
       depositarFlor
     Pos(avInicial,caInicial)
     LiberarEsquina(10,10)
+    EnviarMensaje(f,jefe)
   fin
   
   
   robot cosechador
   variables 
-    id,av,ca,intentos:numero
+    id,av,ca,intentos,f,fT:numero
   comenzar
     EnviarMensaje(1,r1)
     EnviarMensaje(2,r2)
@@ -61,6 +63,11 @@ robots
     EnviarMensaje(0,r1)
     EnviarMensaje(0,r2)
     EnviarMensaje(0,r3)
+    fT := 0
+    repetir 3
+      RecibirMensaje(f,*)
+      fT := fT + f
+    Informar(fT)
   fin
   
 variables
