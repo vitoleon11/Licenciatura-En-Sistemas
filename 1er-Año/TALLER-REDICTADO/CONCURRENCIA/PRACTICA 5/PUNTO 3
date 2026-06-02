@@ -1,0 +1,97 @@
+programa ejemplo
+procesos
+  proceso agarrarFlor(ES f:numero)
+  comenzar
+    si HayFlorEnLaEsquina
+      tomarFlor
+      f := f + 1
+  fin    
+  
+  
+  proceso depositarFlores(E f:numero;E av:numero;E ca:numero)
+  comenzar
+    BloquearEsquina(50,50)
+    Pos(50,50)
+    repetir f 
+      depositarFlor
+    Pos(av,ca)
+    LiberarEsquina(50,50)
+  fin
+  
+  proceso juntarFlores(E f :numero)
+  comenzar
+    BloquearEsquina(10,10)
+    Pos(10,10)
+    repetir f
+      tomarFlor
+    Pos(1,5)
+    LiberarEsquina(10,10)
+  fin
+  
+  proceso dejarFlores(E f:numero; E av:numero; E ca:numero)
+  comenzar
+    BloquearEsquina(10,10)
+    Pos(10,10)
+    repetir f
+      depositarFlor
+    Pos(av,ca)
+    LiberarEsquina(10,10)
+  fin
+  
+areas
+  ciudad: AreaC (1,1,100,100)
+robots
+  robot recolector
+  variables
+    f,caActual,avActual,esquinas :numero
+  comenzar
+    derecha
+    f := 0
+    caActual := PosCa
+    esquinas := 0
+    mientras (PosAv < 100)
+      agarrarFlor(f)
+      mover
+      esquinas := esquinas + 1
+      si ((esquinas = 15) | (f = 10))
+        avActual := PosAv
+        si (f > 0)
+          dejarFlores(f,avActual,caActual) 
+        EnviarMensaje(V,jefe)
+        EnviarMensaje(f,jefe)
+        f := 0
+        esquinas := 0
+      EnviarMensaje(F,jefe)
+  fin
+  
+  
+  robot cosechador
+  variables 
+    tarea:boolean
+    f,floresTotales,terminados:numero
+  comenzar
+    floresTotales := 0
+    terminados := 0
+    mientras (terminados <> 2)
+      RecibirMensaje(tarea,*)
+      si (tarea = V)
+        RecibirMensaje(f,*)
+        si (f > 0)
+          floresTotales := floresTotales + f
+          juntarFlores(f)
+      sino  
+        terminados := terminados + 1
+    Informar(floresTotales)
+  fin
+variables
+  r1 : recolector
+  r2: recolector  
+  jefe: cosechador 
+comenzar
+  AsignarArea(r1, ciudad)
+  AsignarArea(r2, ciudad)
+  AsignarArea(jefe, ciudad)
+  Iniciar(r1, 1,3)
+  Iniciar(r2,1,4)  
+  Iniciar(jefe, 1,5)
+fin
