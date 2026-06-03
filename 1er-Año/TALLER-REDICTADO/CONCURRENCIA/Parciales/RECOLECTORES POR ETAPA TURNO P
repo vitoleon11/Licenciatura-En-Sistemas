@@ -1,0 +1,132 @@
+programa ejemplo
+procesos
+  proceso tomarPapeles(ES p:numero)
+  comenzar
+    mientras HayPapelEnLaEsquina
+      tomarPapel
+      p := p + 1
+  fin
+  proceso tramo1(ES p:numero)
+  comenzar
+    p := 0
+    mientras (PosAv < 20)
+      tomarPapeles(p)
+      mover
+    tomarPapeles(p)
+  fin
+  
+  proceso tramo2(ES p:numero)
+  comenzar
+    p := 0
+    mientras (PosAv <> 41)
+      tomarPapeles(p)
+      mover
+    tomarPapeles(p)
+  fin
+  
+  proceso tramo3(ES p:numero)
+  comenzar
+    p := 0
+    mientras (PosAv <> 63)
+      tomarPapeles(p)
+      mover
+    tomarPapeles(p)
+  fin
+  
+  proceso depositarPapeles(E p:numero;E av:numero)
+  comenzar
+    repetir p
+      BloquearEsquina(3,20)
+      Pos(3,20)
+      depositarPapel
+      Pos(av,2)
+      LiberarEsquina(3,20)
+  fin
+  
+areas
+  ciudad: AreaC (1,1,100,100)
+robots
+  robot recolector
+  variables  
+    id,p,av:numero
+    empezar,final:boolean
+  comenzar
+    derecha
+    RecibirMensaje(id,jefe)
+    si (id = 1)
+      tramo1(p)
+      av := PosAv
+      depositarPapeles(p,av)
+      EnviarMensaje(V,r2)
+    sino
+      si (id = 2)
+        RecibirMensaje(empezar,r1)
+        tramo2(p)
+        av := PosAv
+        depositarPapeles(p,av)
+        EnviarMensaje(V,r3)
+      sino
+        RecibirMensaje(empezar,r2)
+        tramo3(p)
+        av := PosAv
+        depositarPapeles(p,av)
+    EnviarMensaje(id,jefe)
+    EnviarMensaje(p,jefe)
+    RecibirMensaje(final,jefe)
+    si (final = V)
+      Pos(3,20)
+      repetir p
+        tomarPapel
+  fin
+  
+  robot fiscalizador
+  variables
+    id,idMin,p,pMin:numero
+  comenzar
+    EnviarMensaje(1,r1)
+    EnviarMensaje(2,r2)
+    EnviarMensaje(3,r3)
+    idMin := 0
+    pMin := 1500
+    repetir 3
+      RecibirMensaje(id,*)
+      si (id = 1)
+        RecibirMensaje(p,r1)
+      sino
+        si (id = 2)
+          RecibirMensaje(p,r2)
+        sino
+          RecibirMensaje(p,r3)
+      si (p < pMin)
+        pMin := p
+        idMin := id
+    si (idMin = 1)
+      EnviarMensaje(V,r1)
+      EnviarMensaje(F,r2)
+      EnviarMensaje(F,r3)
+    sino
+      si (idMin = 2)
+        EnviarMensaje(V,r2)
+        EnviarMensaje(F,r1)
+        EnviarMensaje(F,r3)
+      sino
+        EnviarMensaje(V,r3)
+        EnviarMensaje(F,r2)
+        EnviarMensaje(F,r1)
+    Informar(pMin)
+  fin
+variables
+  r1: recolector
+  r2: recolector
+  r3: recolector
+  jefe:fiscalizador
+comenzar
+  AsignarArea(r1,ciudad)
+  AsignarArea(r2,ciudad)
+  AsignarArea(r3,ciudad)
+  AsignarArea(jefe,ciudad)
+  Iniciar(r1, 1,2)
+  Iniciar(r2, 21,2)
+  Iniciar(r3, 42,2)
+  Iniciar(jefe, 2,1)
+fin
