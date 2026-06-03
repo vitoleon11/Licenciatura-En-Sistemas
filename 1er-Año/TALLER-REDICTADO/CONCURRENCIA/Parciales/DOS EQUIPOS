@@ -1,0 +1,134 @@
+programa ejemplo
+procesos
+  proceso depositarFlorEnBase
+  comenzar
+    BloquearEsquina(12,11)
+    Pos(12,11)
+    depositarFlor
+    Pos(11,12)
+    LiberarEsquina(12,11)
+  fin
+  
+  proceso buscarFlorBase
+  variables
+    av:numero
+  comenzar
+    av := PosAv
+    BloquearEsquina(12,11)
+    Pos(12,11)
+    tomarFlor
+    Pos(av+1,12)
+    LiberarEsquina(12,11)
+  fin
+  
+  proceso depositarPapelBase
+  comenzar
+    BloquearEsquina(12,11)
+    Pos(12,11)
+    depositarPapel
+    Pos(11,10)
+    LiberarEsquina(12,11)
+  fin
+  
+  proceso buscarPapel
+  variables
+    av:numero
+  comenzar
+    av := PosAv
+    BloquearEsquina(12,11)
+    Pos(12,12)
+    tomarPapel
+    Pos(av+1,10)
+    LiberarEsquina(12,11)
+  fin
+  
+areas
+  ciudad : AreaC(1,1,100,100)
+ { areaDA: AreaP(13,12,20,12)}
+ { areaDV: AreaP(13,10,20,10)}
+ {areaBase: AreaC (12,11,12,11)}
+ {areaRA: AreaP(11,12,11,12)}
+ { areaRV: AreaP(11,10,11,10)
+ { fuenteF : AreaP (10,12,10,12)
+{ fuenteP: AreaP(10,10,10,10)
+ { areaJefe: AreaP(20,11,20,11)}
+robots
+  robot recA
+  variables
+    seguir:boolean
+  comenzar
+    RecibirMensaje(seguir,depA)
+    mientras (seguir = V)
+      Pos(10,12)
+      tomarFlor
+      depositarFlorEnBase
+      EnviarMensaje(V,depA)
+      RecibirMensaje(seguir,depA)
+  fin
+  
+  robot depA
+  variables
+    agarrar:boolean
+  comenzar
+    mientras (PosAv <> 20)
+      EnviarMensaje(V,recA)
+      RecibirMensaje(agarrar,recA)
+      buscarFlorBase
+    EnviarMensaje(F,recA)
+  fin
+  
+  robot recV
+  variables
+    seguir:boolean
+  comenzar
+    RecibirMensaje(seguir,depV)
+    mientras (seguir = V)
+      Pos(10,10)
+      tomarPapel
+      depositarPapelBase
+      EnviarMensaje(V,depV)
+      RecibirMensaje(seguir,depV)
+  fin
+  
+  robot depV
+  variables
+    agarrar:boolean
+  comenzar
+    mientras (PosAv <> 20)
+      EnviarMensaje(V,recV)
+      RecibirMensaje(agarrar,recV)
+      buscarPapelBase
+    EnviarMensaje(F,recA)
+  fin
+  
+  robot fiscal
+  comenzar
+    derecha
+  fin
+variables
+  ra: recA
+  rv: recV
+  da:depA
+  dv:depV
+  {jefe: fiscal}
+comenzar
+ { AsignarArea(ra, areaRA)
+  {AsignarArea(rv, areaRV)
+ { AsignarArea(da, areaDA)
+ { AsignarArea(dv, areaDV)
+ { AsignarArea(ra,areaBase)
+{  AsignarArea(rv,areaBase)
+{  AsignarArea(ra,fuenteF)
+{  AsignarArea(rv,fuenteP)
+{  AsignarArea(da,areaBase)
+{  AsignarArea(dv,areaBase)
+{  AsignarArea(jefe,areaJefe)
+  AsignarArea(ra,ciudad)
+  AsignarArea(rv,ciudad)
+  AsignarArea(da,ciudad)
+  AsignarArea(dv,ciudad)
+  Iniciar(ra, 11,12)
+  Iniciar(rv, 11,10)
+  Iniciar(da,12,12)
+  Iniciar(dv, 12,10)
+fin
