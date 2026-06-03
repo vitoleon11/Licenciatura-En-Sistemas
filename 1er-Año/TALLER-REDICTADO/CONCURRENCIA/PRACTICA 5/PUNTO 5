@@ -1,0 +1,78 @@
+programa ejemplo
+procesos
+  proceso dejarPapeles(E p:numero)
+  comenzar
+    BloquearEsquina(100,1)
+    Pos(100,1)
+    repetir p
+      depositarPapel
+    Pos(13,1)
+    LiberarEsquina(100,1)
+  fin 
+  
+  proceso tomarPapeles(E p:numero;E av:numero)
+  comenzar
+    BloquearEsquina(100,1)
+    Pos(100,1)
+    repetir p
+      tomarPapel
+    Pos(av,1)
+    LiberarEsquina(100,1)
+  fin 
+  
+areas
+  ciudad: AreaC (1,1,100,100)
+robots
+  robot cliente
+  variables
+    intentos,id,av,p:numero
+  comenzar
+    av := PosAv
+    RecibirMensaje(id,jefe)
+    intentos := 0
+    mientras (intentos < 4)
+      EnviarMensaje(id,jefe)
+      RecibirMensaje(p,jefe)
+      tomarPapeles(p,av)
+      intentos := intentos + 1
+    EnviarMensaje(0,jefe)
+  fin
+  
+  robot servidor
+  variables
+    terminados,id,p : numero
+  comenzar
+    EnviarMensaje(1,c1)
+    EnviarMensaje(2,c2)
+    EnviarMensaje(3,c3)
+    terminados := 0
+    mientras (terminados < 3)
+      RecibirMensaje(id,*)
+      si (id = 0)
+        terminados := terminados + 1
+      sino 
+        Random(p,1,5)
+        dejarPapeles(p)
+        si (id = 1)
+          EnviarMensaje(p,c1)
+        sino
+          si (id = 2)
+            EnviarMensaje(p,c2)
+          sino
+            EnviarMensaje(p,c3)
+  fin
+variables
+  jefe:servidor
+  c1:cliente
+  c2:cliente
+  c3:cliente
+comenzar
+  AsignarArea(jefe, ciudad)
+  AsignarArea(c1, ciudad)
+  AsignarArea(c2, ciudad)
+  AsignarArea(c3, ciudad)
+  Iniciar(jefe, 13,1)
+  Iniciar(c1, 10,1)
+  Iniciar(c2, 11,1)
+  Iniciar(c3, 12,1)
+fin
