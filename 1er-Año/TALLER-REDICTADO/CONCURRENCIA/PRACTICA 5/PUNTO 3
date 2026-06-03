@@ -61,7 +61,16 @@ robots
         EnviarMensaje(f,jefe)
         f := 0
         esquinas := 0
-      EnviarMensaje(F,jefe)
+    agarrarFlor(f)
+    si ((esquinas = 15) | (f = 10))
+      avActual := PosAv
+      si (f > 0)
+        dejarFlores(f,avActual,caActual) 
+      EnviarMensaje(V,jefe)
+      EnviarMensaje(f,jefe)
+      f := 0
+      esquinas := 0
+    EnviarMensaje(F,jefe)
   fin
   
   
