@@ -20,6 +20,16 @@ procesos
     LiberarEsquina(100,1)
   fin 
   
+  proceso enviarMensajeCant(E p:numero; E id:numero)
+  comenzar
+    si (id = 1)
+      EnviarMensaje(p,c1)
+    sino
+      si (id = 2)
+        EnviarMensaje(p,c2)
+      sino
+        EnviarMensaje(p,c3)
+  fin
 areas
   ciudad: AreaC (1,1,100,100)
 robots
@@ -53,13 +63,7 @@ robots
       sino 
         Random(p,1,5)
         dejarPapeles(p)
-        si (id = 1)
-          EnviarMensaje(p,c1)
-        sino
-          si (id = 2)
-            EnviarMensaje(p,c2)
-          sino
-            EnviarMensaje(p,c3)
+        enviarMensajeCant(p,id)
   fin
 variables
   jefe:servidor
