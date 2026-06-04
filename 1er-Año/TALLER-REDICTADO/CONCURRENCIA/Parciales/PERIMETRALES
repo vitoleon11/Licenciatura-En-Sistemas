@@ -1,0 +1,35 @@
+programa ejemplo
+procesos
+  proceso 
+areas
+  ciudad: AreaC (1,1,100,100)
+  areaR1: AreaP(1,1,10,10)
+  areaR2: AreaP(11,1,20,10)
+  areaR3: AreaP(21,1,30,10)
+robots
+
+  robot perimetral
+  comenzar
+    
+  fin
+  
+  robot fiscalizador
+  comenzar
+    
+  fin
+  
+variables
+  p1 : perimetral
+  p2: perimetral
+  p3 : perimetral
+  jefe: fiscalizador
+comenzar
+  AsignarArea(R_info, ciudad)
+  AsignarArea(R_info, ciudad)
+  AsignarArea(R_info, ciudad)
+  AsignarArea(R_info, ciudad)
+  Iniciar(r1, 1,1)
+  Iniciar(r2, 11,1)
+  Iniciar(r3, 21,1)
+  Iniciar(jefe, 31,1)
+fin
