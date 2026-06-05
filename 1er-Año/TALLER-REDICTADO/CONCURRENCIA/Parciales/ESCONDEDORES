@@ -1,0 +1,73 @@
+programa ejemplo
+procesos
+  proceso buscarFlor(E av:numero;E ca:numero;E avI:numero; E caI:numero;ES laEncontre:boolean)
+  comenzar
+    BloquearEsquina(av,ca)
+    Pos(av,ca)
+    si HayFlorEnLaEsquina
+      laEncontre := V
+    Pos(avI,caI)
+    LiberarEsquina(av,ca)
+  fin
+areas 
+  ciudad: AreaC (1,1,100,100)
+robots
+
+  robot buscador
+  variables
+    avI,caI,av,ca:numero
+    laEncontre,empezar:boolean
+  comenzar
+    avI := PosAv
+    caI := PosCa
+    laEncontre := F
+    RecibirMensaje(empezar,jefe)
+    mientras (laEncontre = F)
+      Random(av,10,13)
+      Random(ca,10,13)
+      buscarFlor(av,ca,avI,caI,laEncontre)
+      EnviarMensaje(laEncontre,jefe)
+      RecibirMensaje(laEncontre,jefe)
+  fin
+  
+  robot escondedor
+  variables
+    av,ca:numero
+    laEncontre:boolean
+  comenzar
+    Random(av,10,13)
+    Random(ca,10,13)
+    Pos(av,ca)
+    depositarFlor
+    Pos(1,1)
+    EnviarMensaje(V,b1)
+    EnviarMensaje(V,b2)
+    EnviarMensaje(V,b3)
+    laEncontre := F
+    mientras (laEncontre = F)
+      RecibirMensaje(laEncontre,*)
+      si (laEncontre = V)
+        EnviarMensaje(V,b1)
+        EnviarMensaje(V,b2)
+        EnviarMensaje(V,b3)
+      sino
+        EnviarMensaje(F,b1)
+        EnviarMensaje(F,b2)
+        EnviarMensaje(F,b3)
+  fin
+  
+variables
+  b1: buscador
+  b2: buscador
+  b3: buscador
+  jefe: escondedor
+comenzar
+  AsignarArea(jefe, ciudad)
+  AsignarArea(b1, ciudad)
+  AsignarArea(b2, ciudad)
+  AsignarArea(b3, ciudad)
+  Iniciar(jefe, 1,1)
+  Iniciar(b1, 2,2)
+  Iniciar(b2, 3,3)
+  Iniciar(b3, 4,4)
+fin
