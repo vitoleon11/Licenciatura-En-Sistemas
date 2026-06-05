@@ -1,21 +1,105 @@
 programa ejemplo
 procesos
-  proceso 
+  proceso tomarFlores(ES f:numero)
+  comenzar
+    mientras HayFlorEnLaEsquina
+      tomarFlor
+      f := f + 1
+  fin
+  
+  proceso etapa(E per:numero; ES  f:numero)
+  comenzar
+    repetir per
+      tomarFlores(f)
+      mover
+  fin
 areas
-  ciudad: AreaC (1,1,100,100)
   areaR1: AreaP(1,1,10,10)
   areaR2: AreaP(11,1,20,10)
   areaR3: AreaP(21,1,30,10)
+  areaJefe: AreaP(31,1,31,1)
+  areaPerdedores: AreaPC(31,2,31,2)
 robots
 
   robot perimetral
+  variables
+    id,per,f,av,ca:numero
+    seguir,gane :boolean
   comenzar
-    
+    RecibirMensaje(id,jefe)
+    RecibirMensaje(per,jefe)
+    repetir 4
+      etapa(per,f)
+      derecha
+      si (id = 1)
+        EnviarMensaje(V,p2)
+        EnviarMensaje(V,p3)
+        RecibirMensaje(seguir,*)
+        RecibirMensaje(seguir,*)
+      sino
+        si (id = 2)
+          EnviarMensaje(V,p1)
+          EnviarMensaje(V,p3)
+          RecibirMensaje(seguir,*)
+          RecibirMensaje(seguir,*)
+        sino
+          EnviarMensaje(V,p2)
+          EnviarMensaje(V,p1)
+          RecibirMensaje(seguir,*)
+          RecibirMensaje(seguir,*)
+    EnviarMensaje(id,jefe)
+    EnviarMensaje(f,jefe)
+    RecibirMensaje(gane,jefe)
+    av := PosAv
+    ca := PosCa
+    si (gane = F)
+      repetir f
+        BloquearEsquina(31,2)
+        Pos(31,2)
+        depositarFlor
+        Pos(av,ca)
+        LiberarEsquina(31,2)
   fin
   
   robot fiscalizador
+  variables
+    per,id,f,fMax,idMax:numero
   comenzar
-    
+    EnviarMensaje(1,p1)
+    EnviarMensaje(2,p2)
+    EnviarMensaje(3,p3)
+    Random(per,1,9)
+    EnviarMensaje(per,p1)
+    Random(per,1,9)
+    EnviarMensaje(per,p2)
+    Random(per,1,9)
+    EnviarMensaje(per,p3)
+    repetir 3
+      RecibirMensaje(id,*)
+      si (id = 1)
+        RecibirMensaje(f,p1)
+      sino
+        si (id = 2)
+          RecibirMensaje(f,p2)
+        sino  
+          RecibirMensaje(f,p3)
+      si (f > fMax)
+        fMax := f
+        idMax := id
+    Informar(idMax)
+    si (idMax = 1)
+      EnviarMensaje(V,p1)
+      EnviarMensaje(F,p2)
+      EnviarMensaje(F,p3)
+    sino
+      si(idMax = 2)
+        EnviarMensaje(V,p2)
+        EnviarMensaje(F,p1)
+        EnviarMensaje(F,p3)
+      sino
+        EnviarMensaje(V,p3)
+        EnviarMensaje(F,p1)
+        EnviarMensaje(F,p2)
   fin
   
 variables
@@ -24,12 +108,15 @@ variables
   p3 : perimetral
   jefe: fiscalizador
 comenzar
-  AsignarArea(R_info, ciudad)
-  AsignarArea(R_info, ciudad)
-  AsignarArea(R_info, ciudad)
-  AsignarArea(R_info, ciudad)
-  Iniciar(r1, 1,1)
-  Iniciar(r2, 11,1)
-  Iniciar(r3, 21,1)
+  AsignarArea(p1, areaR1)
+  AsignarArea(p2, areaR2)
+  AsignarArea(p3, areaR3)
+  AsignarArea(p1, areaPerdedores)
+  AsignarArea(p2, areaPerdedores)
+  AsignarArea(p3, areaPerdedores)
+  AsignarArea(jefe, areaJefe)
+  Iniciar(p1, 1,1)
+  Iniciar(p2, 11,1)
+  Iniciar(p3, 21,1)
   Iniciar(jefe, 31,1)
 fin
