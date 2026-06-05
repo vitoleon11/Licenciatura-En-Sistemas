@@ -14,6 +14,16 @@ procesos
       f := f + 1
   fin
   
+  proceso dejarDeAUna(E f:numero; E av:numero; E ca:numero)
+  comenzar
+    repetir f
+      BloquearEsquina(1,5)
+      Pos(1,5)
+      depositarFlor
+      Pos(av,ca)
+      LiberarEsquina(1,5)
+  fin
+  
   proceso hacerEscalon(ES f:numero;E alto:numero;E ancho:numero)
   comenzar
     repetir alto
@@ -30,13 +40,14 @@ areas
 robots
   robot robotA
   variables
-    alto,ancho,escalones,av,ca,f,av2,ca2:numero
+    alto,ancho,escalones,av,ca,f,av2,ca2,id,fTotales:numero
   comenzar
+    RecibirMensaje(id,jefe)
     Random(alto,2,5)
     Random(ancho,2,5) 
-    f := 0
     escalones := 0
     mientras (escalones < 2)
+      f := 0
       hacerEscalon(f,alto,ancho)
       escalones := escalones + 1
       izquierda
@@ -44,21 +55,27 @@ robots
       ca := PosCa
       EnviarMensaje(av,RB)
       EnviarMensaje(ca,RB)
+      si (f > 0)
+        dejarDeAUna(f,av,ca)
       si (escalones < 2)
         RecibirMensaje(av,RB)
         RecibirMensaje(ca,RB)
         Pos(av,ca+1)
+      fTotales := fTotales + f
+    EnviarMensaje(id,jefe)
+    EnviarMensaje(fTotales,jefe)
   fin
   
   robot robotB
   variables
-    alto,ancho,f,escalones,av,ca:numero
+    alto,ancho,f,escalones,av,ca,id,fTotales:numero
   comenzar
+    RecibirMensaje(id,jefe)
     Random(alto,3,6)
     Random(ancho,3,6)
     escalones := 0
-    f := 0
     mientras (escalones < 2)
+      f := 0
       RecibirMensaje(av,RA)
       RecibirMensaje(ca,RA)
       Pos(av,ca+1)
@@ -66,15 +83,37 @@ robots
       izquierda
       escalones := escalones + 1
       av := PosAv
-      ca := PosAv
+      ca := PosCa
       si (escalones < 2)
         EnviarMensaje(av,RA)
         EnviarMensaje(ca,RA)
+      si (f > 0)
+        dejarDeAUna(f,av,ca)
+      fTotales := fTotales + 1
+    EnviarMensaje(id,jefe)
+    EnviarMensaje(fTotales,jefe)
   fin
   
   robot fiscalizador
+  variables
+    id,idMax,f,fMax:numero
   comenzar
-    derecha
+    EnviarMensaje(1,RA)
+    EnviarMensaje(2,RB)
+    fMax := -1
+    repetir 2  
+      RecibirMensaje(id,*)
+      si (id = 1)
+        RecibirMensaje(f,RA)
+      sino
+        RecibirMensaje(f,RB)
+      si (f > fMax)
+        fMax := f
+        idMax := id
+    si (idMax = 1)
+      Informar('El_ganador_es_el_robot_A',idMax)
+    sino  
+      Informar('El_ganador_es_el_robot_B',idMax)
   fin
 variables
   RA: robotA
