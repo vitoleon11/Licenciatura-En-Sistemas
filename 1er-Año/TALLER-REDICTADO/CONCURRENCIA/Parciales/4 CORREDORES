@@ -1,0 +1,75 @@
+programa ejemplo
+procesos
+  proceso juntarFlores
+  comenzar
+    mientras HayFlorEnLaEsquina
+      tomarFlor
+  fin
+  
+  proceso juntarPapeles(ES p:numero)
+  comenzar
+    mientras HayPapelEnLaEsquina
+      tomarPapel
+  fin
+  
+  proceso primeraEtapa
+  comenzar
+    repetir 10
+      juntarFlores
+      mover
+  fin
+  
+  proceso descanso
+  comenzar
+    repetir 5
+      mover
+  fin
+  
+areas
+  ciudad: AreaC (1,1,100,100)
+robots
+  robot corredor
+  variables
+    pasos:numero
+  comenzar
+    derecha
+    primeraEtapa
+    descanso
+    mientras (PosAv <> 40)
+      RecibirMensaje(pasos,fiscal)
+      repetir pasos 
+        mover
+  fin
+  
+  robot fiscalizador
+  variables
+    pasos,cant:numero
+  comenzar
+    derecha
+    cant := 0
+    mientras (cant < 2)
+      Random(pasos,1,3)
+      EnviarMensaje(pasos,c1)
+      EnviarMensaje(pasos,c2)
+      EnviarMensaje(pasos,c3)
+      EnviarMensaje(pasos,c4)
+      cant := cant + 1
+  fin
+variables
+  c1: corredor
+  c2: corredor
+  c3: corredor
+  c4: corredor
+  fiscal : fiscalizador
+comenzar
+  AsignarArea(c1, ciudad)
+  AsignarArea(c2, ciudad)
+  AsignarArea(c3, ciudad)
+  AsignarArea(c4, ciudad)
+  AsignarArea(fiscal, ciudad)
+  Iniciar(c1, 10,12)
+  Iniciar(c2, 10,10)
+  Iniciar(c3, 10,8)
+  Iniciar(c4, 10,6)
+  Iniciar(fiscal, 20,15)
+fin
