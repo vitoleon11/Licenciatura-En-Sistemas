@@ -1,0 +1,90 @@
+programa ejemplo
+procesos
+
+  proceso izquierda
+  comenzar
+    repetir 3
+      derecha
+  fin
+
+  proceso tomarFlores(ES f:numero)
+  comenzar
+    mientras HayFlorEnLaEsquina
+      tomarFlor
+      f := f + 1
+  fin
+  
+  proceso hacerEscalon(ES f:numero;E alto:numero;E ancho:numero)
+  comenzar
+    repetir alto
+      tomarFlores(f)
+      mover
+    derecha
+    repetir ancho
+      tomarFlores(f)
+      mover
+    tomarFlores(f)
+  fin  
+areas
+  ciudad: AreaC (1,1,100,100)
+robots
+  robot robotA
+  variables
+    alto,ancho,escalones,av,ca,f,av2,ca2:numero
+  comenzar
+    Random(alto,2,5)
+    Random(ancho,2,5) 
+    f := 0
+    escalones := 0
+    mientras (escalones < 2)
+      hacerEscalon(f,alto,ancho)
+      escalones := escalones + 1
+      izquierda
+      av := PosAv
+      ca := PosCa
+      EnviarMensaje(av,RB)
+      EnviarMensaje(ca,RB)
+      si (escalones < 2)
+        RecibirMensaje(av,RB)
+        RecibirMensaje(ca,RB)
+        Pos(av,ca+1)
+  fin
+  
+  robot robotB
+  variables
+    alto,ancho,f,escalones,av,ca:numero
+  comenzar
+    Random(alto,3,6)
+    Random(ancho,3,6)
+    escalones := 0
+    f := 0
+    mientras (escalones < 2)
+      RecibirMensaje(av,RA)
+      RecibirMensaje(ca,RA)
+      Pos(av,ca+1)
+      hacerEscalon(f,alto,ancho)
+      izquierda
+      escalones := escalones + 1
+      av := PosAv
+      ca := PosAv
+      si (escalones < 2)
+        EnviarMensaje(av,RA)
+        EnviarMensaje(ca,RA)
+  fin
+  
+  robot fiscalizador
+  comenzar
+    derecha
+  fin
+variables
+  RA: robotA
+  RB : robotB
+  jefe :fiscalizador
+comenzar
+  AsignarArea(RA, ciudad)
+  AsignarArea(RB, ciudad)
+  AsignarArea(jefe, ciudad)
+  Iniciar(RA, 2,1)
+  Iniciar(RB, 3,1)
+  Iniciar(jefe, 4,1)
+fin
