@@ -1,0 +1,94 @@
+programa ejemplo
+procesos
+
+  proceso izquierda
+  comenzar
+    repetir 3 
+      derecha
+  fin
+
+  proceso tomarFlores(ES f:numero)
+  comenzar
+    mientras HayFlorEnLaEsquina
+      tomarFlor
+      f := f + 1
+  fin
+
+  proceso hacerEscalon(ES f:numero)
+  variables
+    f:numero
+  comenzar
+    repetir 2
+      mover
+      tomarFlores(f)
+    derecha
+    repetir 2
+      mover
+      tomarFlores(f)
+  fin
+  
+  proceso dejarFlores(E f:numero;E av :numero;E ca:numero)
+  comenzar
+    repetir f
+      BloquearEsquina(99,99)
+      Pos(99,99)
+      depositarFlor
+      Pos(av,ca)
+      LiberarEsquina(99,99)
+  fin
+  
+areas
+  ciudad: AreaC (1,1,100,100)
+robots
+  robot florero
+  variables
+    esc,sinF,f,av,ca:numero
+  comenzar
+    RecibirMensaje(esc,jefe)
+    sinF := 0
+    f := 0
+    tomarFlores(f)
+    repetir esc
+      hacerEscalon(f)
+      av := PosAv
+      ca := PosCa
+      si (f > 0)
+        dejarFlores(f,av,ca)
+      sino
+        sinF := sinF + 1
+      izquierda
+      f := 0
+    EnviarMensaje(sinF,jefe)
+  fin
+  
+  robot fiscalizador
+  variables
+    esc,total,sinF:numero
+  comenzar
+    Random(esc,1,5)
+    EnviarMensaje(esc,f1)
+    Random(esc,1,5)
+    EnviarMensaje(esc,f2)
+    Random(esc,1,5)
+    EnviarMensaje(esc,f3)
+    total := 0
+    repetir 3
+      RecibirMensaje(sinF,*)
+      total := total + sinF
+    Informar(total)
+  fin
+variables
+  f1: florero
+  f2: florero
+  f3: florero
+  jefe: fiscalizador
+comenzar
+  AsignarArea(f1, ciudad)
+  AsignarArea(f2, ciudad)
+  AsignarArea(f3, ciudad)
+  AsignarArea(jefe, ciudad)
+  Iniciar(f1, 2,1)
+  Iniciar(f2, 20,1)
+  Iniciar(f3, 40,1)
+  Iniciar(jefe, 1,1)
+fin
