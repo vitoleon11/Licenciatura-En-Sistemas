@@ -1,0 +1,139 @@
+programa ParcialTurnoFTema1
+
+procesos
+  proceso limpiarFlores(ES cantFlores: numero)
+  comenzar
+    mientras HayFlorEnLaEsquina
+      tomarFlor
+      cantFlores:= cantFlores + 1
+  fin
+  
+  proceso hacerLado (ES cantFlores: numero)
+  comenzar
+    repetir 10
+      limpiarFlores(cantFlores)
+      mover
+  fin
+  
+  proceso hacerLado2 (ES cantFlores: numero)
+  comenzar
+    repetir 9
+      limpiarFlores(cantFlores)
+      mover
+  fin
+  
+  proceso darseVuelta
+  comenzar
+    repetir 2
+      derecha
+  fin
+  
+  proceso dejarFloresDeposito (ES cantFlores: numero)
+  variables
+    avOri, caOri: numero
+  comenzar
+    avOri:= PosAv
+    caOri:= PosCa
+    repetir cantFlores
+      BloquearEsquina(20,20)
+      Pos(20,20)
+      depositarFlor
+      Pos(avOri, caOri)
+      LiberarEsquina(20,20)
+  fin
+  
+areas
+  ciudad: AreaC (1,1,100,100)
+  
+robots
+  robot robot1
+  variables
+    cantFlores: numero
+    equipo: numero
+  comenzar
+    RecibirMensaje(equipo, rFisc)
+    cantFlores:= 0
+    hacerLado(cantFlores)
+    derecha
+    hacerLado(cantFlores)
+    limpiarFlores(cantFlores)
+    
+    si (equipo = 1)
+      EnviarMensaje(cantFlores, rA2)
+    sino
+      EnviarMensaje(cantFlores, rB2)
+      
+    dejarFloresDeposito(cantFlores)    
+    
+    
+    
+  fin
+  
+  robot robot2
+  variables
+    cantFlores, cantFloresTotal: numero
+    equipo: numero
+  comenzar
+    RecibirMensaje(equipo, rFisc)
+    cantFlores:= 0
+    darseVuelta
+    
+    si (equipo = 1)
+      RecibirMensaje(cantFloresTotal, rA1)
+    sino
+      RecibirMensaje(cantFloresTotal, rB1)
+    
+    hacerLado2(cantFlores)
+    derecha
+    hacerLado2(cantFlores)
+    limpiarFlores(cantFlores)
+    cantFloresTotal:= cantFloresTotal + cantFlores
+    
+    dejarFloresDeposito(cantFlores)
+    
+    EnviarMensaje(equipo, rFisc)
+    EnviarMensaje(cantFloresTotal, rFisc)
+  fin
+  
+  robot fiscalizador
+  variables
+    equipo: numero
+    cantFlores, cantFloMax: numero
+  comenzar
+    EnviarMensaje(1, rA1)
+    EnviarMensaje(1, rA2)
+    EnviarMensaje(2, rB1)
+    EnviarMensaje(2, rB2)
+    
+    cantFloMax:= -1
+    repetir 2
+      RecibirMensaje(equipo, *)
+      si (equipo = 1)
+        RecibirMensaje(cantFlores, rA2)
+      sino
+        RecibirMensaje(cantFlores, rB2)
+        
+      si (cantFlores > cantFloMax)
+        cantFloMax:= cantFlores
+      
+    Informar(cantFloMax)
+  fin
+  
+variables
+  rA1: robot1
+  rA2: robot2
+  rB1: robot1
+  rB2: robot2
+  rFisc: fiscalizador
+comenzar
+  AsignarArea(rA1, ciudad)
+  AsignarArea(rA2, ciudad)
+  AsignarArea(rB1, ciudad)
+  AsignarArea(rB2, ciudad)
+  AsignarArea(rFisc, ciudad)
+  Iniciar(rA1, 1,1)
+  Iniciar(rA2, 11,10)
+  Iniciar(rB1, 13,1)
+  Iniciar(rB2, 23,10)
+  Iniciar(rFisc, 30,1)
+fin
