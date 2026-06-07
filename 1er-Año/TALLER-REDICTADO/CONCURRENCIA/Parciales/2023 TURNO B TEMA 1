@@ -1,24 +1,58 @@
 programa ejemplo
+procesos
+  proceso tomarFlores(ES f:numero)
+  comenzar
+    mientras HayFlorEnLaEsquina
+      tomarFlor
+      f := f + 1
+  fin
 areas
   ciudad: AreaC (1,1,100,100)
 robots
   robot florero1
   variables
-    id,pasos:numero
+    id,pasos,ca,f:numero
   comenzar
     RecibirMensaje(id,jefe)
+    RecibirMensaje(ca,jefe)
     pasos := 0
+    mientras (pasos < 60) & (PosCa <> (ca - 1))
+      tomarFlores(f)
+      mover
+      pasos := pasos + 1
+    BloquearEsquina(PosAv,PosCa+1)
+    Pos(PosAv,PosCa+1)
+    tomarFlores(f)
+    Pos(PosAv,PosCa+1)
+    LiberarEsquina(PosAv,PosCa-1)
     mientras (pasos < 60)
+      tomarFlores(f)
+      mover
+      pasos := pasos + 1 
   fin
   
   robot florero2
   variables
-    id,ca,pasos:numero
+    id,ca,pasos,f:numero
   comenzar
     derecha
     RecibirMensaje(id,jefe)
     RecibirMensaje(ca,jefe)
     Pos(1,ca)
+    pasos := 0
+    mientras (pasos < 60) & (PosAv <> 5)
+      tomarFlores(f)
+      mover
+      pasos := pasos + 1
+    BloquearEsquina(PosAv + 1,ca)
+    Pos(PosAv+1,ca)
+    tomarFlores(f)
+    Pos(PosAv+1,ca)
+    LiberarEsquina(PosAv-1,ca)
+    mientras (pasos < 60)
+      tomarFlores(f)
+      mover
+      pasos := pasos + 1
   fin
   
   robot fiscalizador
@@ -29,6 +63,7 @@ robots
     EnviarMensaje(2,f2)
     Random(ca,2,50)
     EnviarMensaje(ca,f2)
+    EnviarMensaje(ca,f1)
   fin
   
 variables
