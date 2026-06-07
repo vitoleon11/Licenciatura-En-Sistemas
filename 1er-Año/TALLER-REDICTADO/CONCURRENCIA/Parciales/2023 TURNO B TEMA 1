@@ -16,6 +16,7 @@ robots
     RecibirMensaje(id,jefe)
     RecibirMensaje(ca,jefe)
     pasos := 0
+    f := 0
     mientras (pasos < 60) & (PosCa <> (ca - 1))
       tomarFlores(f)
       mover
@@ -25,10 +26,14 @@ robots
     tomarFlores(f)
     Pos(PosAv,PosCa+1)
     LiberarEsquina(PosAv,PosCa-1)
+    EnviarMensaje(id,jefe)
+    EnviarMensaje(V,jefe)
     mientras (pasos < 60)
       tomarFlores(f)
       mover
       pasos := pasos + 1 
+    EnviarMensaje(id,jefe)
+    EnviarMensaje(f,jefe)
   fin
   
   robot florero2
@@ -40,6 +45,7 @@ robots
     RecibirMensaje(ca,jefe)
     Pos(1,ca)
     pasos := 0
+    f := 0
     mientras (pasos < 60) & (PosAv <> 5)
       tomarFlores(f)
       mover
@@ -49,21 +55,51 @@ robots
     tomarFlores(f)
     Pos(PosAv+1,ca)
     LiberarEsquina(PosAv-1,ca)
+    EnviarMensaje(id,jefe)
+    EnviarMensaje(V,jefe)
     mientras (pasos < 60)
       tomarFlores(f)
       mover
       pasos := pasos + 1
+    EnviarMensaje(id,jefe)
+    EnviarMensaje(f,jefe)
   fin
   
   robot fiscalizador
   variables
-    id,ca:numero
+    id,ca,primero,mensajes,fl1,fl2,fPrimero:numero
+    ganador :boolean
   comenzar
     EnviarMensaje(1,f1)
     EnviarMensaje(2,f2)
     Random(ca,2,50)
     EnviarMensaje(ca,f2)
     EnviarMensaje(ca,f1)
+    mensajes := 1
+    repetir 2 
+      RecibirMensaje(id,*)
+      RecibirMensaje(ganador,*)
+      si ((id = 1) & (mensajes = 1))
+        primero := 1
+      sino
+        si (id = 2) & (mensajes = 1)
+          primero := 2
+      mensajes := mensajes + 1 
+
+    repetir 2
+      RecibirMensaje(id,*)
+      si (id = 1)
+        RecibirMensaje(fl1,f1)
+      sino
+        RecibirMensaje(fl2,f2)
+        
+    si (primero = 1)
+      fPrimero := fl1
+    sino
+      fPrimero := fl2
+      
+    Informar(primero)
+    Informar(fPrimero)
   fin
   
 variables
