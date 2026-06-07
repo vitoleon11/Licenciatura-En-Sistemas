@@ -1,0 +1,45 @@
+programa ejemplo
+areas
+  ciudad: AreaC (1,1,100,100)
+robots
+  robot florero1
+  variables
+    id,pasos:numero
+  comenzar
+    RecibirMensaje(id,jefe)
+    pasos := 0
+    mientras (pasos < 60)
+  fin
+  
+  robot florero2
+  variables
+    id,ca,pasos:numero
+  comenzar
+    derecha
+    RecibirMensaje(id,jefe)
+    RecibirMensaje(ca,jefe)
+    Pos(1,ca)
+  fin
+  
+  robot fiscalizador
+  variables
+    id,ca:numero
+  comenzar
+    EnviarMensaje(1,f1)
+    EnviarMensaje(2,f2)
+    Random(ca,2,50)
+    EnviarMensaje(ca,f2)
+  fin
+  
+variables
+  f1: florero1
+  f2: florero2
+  jefe: fiscalizador
+comenzar
+  AsignarArea(f1, ciudad)
+  AsignarArea(f2, ciudad)
+  AsignarArea(jefe, ciudad)
+  Iniciar(f1, 6,1)
+  Iniciar(f2, 1,2)
+  Iniciar(jefe, 100,100)
+fin
